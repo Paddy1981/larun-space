@@ -1,0 +1,446 @@
+/* LARUN.SPACE - Space Theme Effects */
+/* Animated stars, particles, and cosmic visuals */
+
+/* ============================================
+   STAR FIELD BACKGROUND
+   ============================================ */
+.star-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Canvas-based stars container */
+#star-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* CSS-based stars (fallback / additional layer) */
+.stars-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.stars-layer-1 {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, white, transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 90px 40px, white, transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 160px 120px, white, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.stars-layer-2 {
+  background-image:
+    radial-gradient(1px 1px at 75px 45px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 100px 100px, white, transparent),
+    radial-gradient(1px 1px at 125px 10px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 150px 140px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 175px 60px, white, transparent);
+  background-repeat: repeat;
+  background-size: 250px 250px;
+  animation: twinkle 6s ease-in-out infinite 1s;
+}
+
+.stars-layer-3 {
+  background-image:
+    radial-gradient(1.5px 1.5px at 50px 50px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 100px 150px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 180px 80px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 220px 180px, rgba(255,255,255,0.6), transparent);
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  animation: twinkle 8s ease-in-out infinite 2s;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ============================================
+   SHOOTING STARS
+   ============================================ */
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, white, transparent);
+  opacity: 0;
+  animation: shoot 3s ease-in-out infinite;
+}
+
+.shooting-star:nth-child(1) {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.shooting-star:nth-child(2) {
+  top: 30%;
+  left: 60%;
+  animation-delay: 2s;
+}
+
+.shooting-star:nth-child(3) {
+  top: 50%;
+  left: 30%;
+  animation-delay: 4s;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateX(0) translateY(0) rotate(-45deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  15% {
+    transform: translateX(300px) translateY(300px) rotate(-45deg);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   NEBULA / GRADIENT OVERLAYS
+   ============================================ */
+.nebula-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+}
+
+/* ============================================
+   FLOATING PARTICLES
+   ============================================ */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: float 15s infinite ease-in-out;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 1s; animation-duration: 14s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 2s; animation-duration: 16s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 3s; animation-duration: 13s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 4s; animation-duration: 15s; }
+.particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 17s; }
+.particle:nth-child(7) { left: 70%; animation-delay: 6s; animation-duration: 14s; }
+.particle:nth-child(8) { left: 80%; animation-delay: 7s; animation-duration: 16s; }
+.particle:nth-child(9) { left: 90%; animation-delay: 8s; animation-duration: 12s; }
+.particle:nth-child(10) { left: 95%; animation-delay: 9s; animation-duration: 15s; }
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(10vh) scale(1);
+  }
+  100% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   CONSTELLATION LINES (Optional decorative)
+   ============================================ */
+.constellation {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+.constellation-line {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1;
+  fill: none;
+}
+
+.constellation-star {
+  fill: white;
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+.glow-purple {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   PLANET ORBIT ANIMATION (decorative)
+   ============================================ */
+.orbit-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-1 {
+  width: 100px;
+  height: 100px;
+}
+
+.orbit-2 {
+  width: 180px;
+  height: 180px;
+}
+
+.orbit-3 {
+  width: 260px;
+  height: 260px;
+}
+
+.orbiting-planet {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--cosmic-purple-light);
+  border-radius: 50%;
+  animation: orbit 10s linear infinite;
+}
+
+.orbit-1 .orbiting-planet { animation-duration: 5s; }
+.orbit-2 .orbiting-planet { animation-duration: 8s; }
+.orbit-3 .orbiting-planet { animation-duration: 12s; }
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(50px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(50px) rotate(-360deg);
+  }
+}
+
+/* ============================================
+   LIGHT CURVE VISUALIZATION STYLING
+   ============================================ */
+.light-curve-container {
+  position: relative;
+  background: var(--space-dark);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  overflow: hidden;
+}
+
+.light-curve-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(90deg, transparent 49px, rgba(255,255,255,0.02) 50px),
+    linear-gradient(transparent 49px, rgba(255,255,255,0.02) 50px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+/* ============================================
+   TRANSIT DIP HIGHLIGHT
+   ============================================ */
+.transit-marker {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: var(--cosmic-purple);
+  opacity: 0.5;
+}
+
+.transit-marker::after {
+  content: 'Transit';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: var(--cosmic-purple-light);
+  white-space: nowrap;
+}
+
+/* ============================================
+   PULSE ANIMATION (for buttons/notifications)
+   ============================================ */
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* ============================================
+   SPACE DIVIDER
+   ============================================ */
+.space-divider {
+  position: relative;
+  height: 1px;
+  background: var(--border-gray);
+  margin: var(--space-2xl) 0;
+  overflow: visible;
+}
+
+.space-divider::before {
+  content: '✦';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--space-black);
+  padding: 0 var(--space-md);
+  color: var(--medium-gray);
+  font-size: 1rem;
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+.loading-stars {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-star {
+  width: 8px;
+  height: 8px;
+  background: var(--pure-white);
+  border-radius: 50%;
+  animation: loading-pulse 1s ease-in-out infinite;
+}
+
+.loading-star:nth-child(2) { animation-delay: 0.2s; }
+.loading-star:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes loading-pulse {
+  0%, 100% {
+    transform: scale(0.5);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+  .nebula-overlay {
+    opacity: 0.2;
+  }
+
+  .shooting-star {
+    display: none;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .stars-layer-1,
+  .stars-layer-2,
+  .stars-layer-3,
+  .shooting-star,
+  .particle,
+  .orbiting-planet,
+  .pulse {
+    animation: none;
+  }
+
+  .stars-layer-1,
+  .stars-layer-2,
+  .stars-layer-3 {
+    opacity: 0.7;
+  }
+}

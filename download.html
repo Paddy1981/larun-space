@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Download LARUN CLI tools for exoplanet detection">
+  <title>Download - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+
+  <style>
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-xl);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .download-card {
+      background: var(--space-dark);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      transition: all var(--transition-normal);
+    }
+
+    .download-card:hover {
+      border-color: var(--cosmic-purple);
+      transform: translateY(-2px);
+    }
+
+    .download-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .download-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--space-gray);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cosmic-purple-light);
+    }
+
+    .download-title {
+      font-size: 1.25rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .download-subtitle {
+      font-size: 0.875rem;
+      color: var(--medium-gray);
+    }
+
+    .download-description {
+      color: var(--light-gray);
+      font-size: 0.9375rem;
+      margin-bottom: var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .download-features {
+      margin-bottom: var(--space-xl);
+    }
+
+    .download-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) 0;
+      font-size: 0.875rem;
+      color: var(--light-gray);
+    }
+
+    .download-feature svg {
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .download-feature.disabled {
+      color: var(--medium-gray);
+    }
+
+    .download-feature.disabled svg {
+      color: var(--medium-gray);
+    }
+
+    .download-limits {
+      background: var(--space-gray);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .download-limits-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--medium-gray);
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0.05em;
+    }
+
+    .download-limit-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      padding: var(--space-xs) 0;
+    }
+
+    .download-limit-item span:first-child {
+      color: var(--light-gray);
+    }
+
+    .download-limit-item span:last-child {
+      color: var(--pure-white);
+      font-family: var(--font-mono);
+    }
+
+    .download-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .version-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--cosmic-purple-light);
+      background: rgba(99, 102, 241, 0.1);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-full);
+      margin-left: var(--space-sm);
+    }
+
+    .code-block {
+      background: var(--space-gray);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      overflow-x: auto;
+      margin: var(--space-lg) 0;
+    }
+
+    .code-block code {
+      color: var(--off-white);
+    }
+
+    .installation-section {
+      max-width: 800px;
+      margin: var(--space-3xl) auto 0;
+      padding: var(--space-2xl);
+      background: var(--space-dark);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-xl);
+    }
+  </style>
+</head>
+<body>
+  <!-- Star Field Background -->
+  <div class="star-field" style="opacity: 0.5;">
+    <div class="stars-layer stars-layer-1"></div>
+    <div class="stars-layer stars-layer-2"></div>
+  </div>
+
+  <!-- Nebula Overlay -->
+  <div class="nebula-overlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main style="padding-top: calc(var(--header-height) + var(--space-3xl));">
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h1 class="section-title" style="font-size: 2.5rem;">Download CLI Tools</h1>
+          <p class="section-subtitle" style="font-size: 1.125rem;">
+            Run exoplanet detection locally with our Python CLI tools
+          </p>
+        </div>
+
+        <!-- Download Cards -->
+        <div class="download-grid">
+          <!-- Core CLI -->
+          <div class="download-card">
+            <div class="download-card-header">
+              <div class="download-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M8 21h8M12 17v4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="download-title">Core CLI <span class="version-tag">v1.0.0</span></h3>
+                <p class="download-subtitle">larun.py</p>
+              </div>
+            </div>
+
+            <p class="download-description">
+              Command-line interface for transit detection and analysis. Perfect for scripting, automation, and integration with your existing workflows.
+            </p>
+
+            <div class="download-features">
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>TinyML transit detection</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>BLS periodogram analysis</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>TESS data fetching</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Local processing (offline capable)</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>JSON/CSV output formats</span>
+              </div>
+            </div>
+
+            <div class="download-limits">
+              <div class="download-limits-title">Free Tier Limits</div>
+              <div class="download-limit-item">
+                <span>Targets per month</span>
+                <span>10</span>
+              </div>
+              <div class="download-limit-item">
+                <span>Data source</span>
+                <span>TESS only</span>
+              </div>
+              <div class="download-limit-item">
+                <span>Features</span>
+                <span>Basic</span>
+              </div>
+            </div>
+
+            <div class="download-actions">
+              <a href="https://github.com/larun/larun-cli/releases/latest/download/larun.py" class="btn btn-primary" style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download Free
+              </a>
+              <a href="pricing.html" class="btn btn-secondary" style="width: 100%;">
+                Upgrade for Full Access
+              </a>
+            </div>
+          </div>
+
+          <!-- Chat Interface CLI -->
+          <div class="download-card">
+            <div class="download-card-header">
+              <div class="download-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="download-title">Chat CLI <span class="version-tag">v1.0.0</span></h3>
+                <p class="download-subtitle">larun_chat.py</p>
+              </div>
+            </div>
+
+            <p class="download-description">
+              Interactive conversational interface for natural language queries. Ask questions about targets, run analyses, and explore the cosmos through conversation.
+            </p>
+
+            <div class="download-features">
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Natural language queries</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Conversational memory</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Rich terminal output</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>All Core CLI features included</span>
+              </div>
+              <div class="download-feature">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Report generation</span>
+              </div>
+            </div>
+
+            <div class="download-limits">
+              <div class="download-limits-title">Free Tier Limits</div>
+              <div class="download-limit-item">
+                <span>Targets per month</span>
+                <span>10</span>
+              </div>
+              <div class="download-limit-item">
+                <span>Chat messages</span>
+                <span>50/day</span>
+              </div>
+              <div class="download-limit-item">
+                <span>Reports</span>
+                <span>None</span>
+              </div>
+            </div>
+
+            <div class="download-actions">
+              <a href="https://github.com/larun/larun-cli/releases/latest/download/larun_chat.py" class="btn btn-primary" style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download Free
+              </a>
+              <a href="pricing.html" class="btn btn-secondary" style="width: 100%;">
+                Upgrade for Full Access
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paid Version Comparison -->
+        <div style="max-width: 900px; margin: var(--space-3xl) auto 0;">
+          <h2 class="section-title text-center" style="margin-bottom: var(--space-xl);">Free vs Paid CLI</h2>
+
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th style="text-align: center;">Free</th>
+                  <th style="text-align: center;">Researcher ($9/mo)</th>
+                  <th style="text-align: center;">Scientist ($29/mo)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Targets per month</td>
+                  <td style="text-align: center;">10</td>
+                  <td style="text-align: center;">Unlimited</td>
+                  <td style="text-align: center;">Unlimited</td>
+                </tr>
+                <tr>
+                  <td>TinyML Detection</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>BLS Periodogram</td>
+                  <td style="text-align: center; color: var(--medium-gray);">Basic</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>Transit Fitting</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>TESS Data</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>Kepler Data</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>JWST Data</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>Report Generation</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>TTV Analysis</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center; color: var(--success);">&#10003;</td>
+                </tr>
+                <tr>
+                  <td>API Access</td>
+                  <td style="text-align: center; color: var(--medium-gray);">&#8212;</td>
+                  <td style="text-align: center;">1,000/mo</td>
+                  <td style="text-align: center;">Unlimited</td>
+                </tr>
+                <tr>
+                  <td>Support</td>
+                  <td style="text-align: center;">Community</td>
+                  <td style="text-align: center;">Priority</td>
+                  <td style="text-align: center;">Direct</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Installation Instructions -->
+        <div class="installation-section">
+          <h2 style="margin-bottom: var(--space-lg);">Installation</h2>
+
+          <h3 style="margin-bottom: var(--space-md);">Requirements</h3>
+          <ul style="margin-bottom: var(--space-xl); padding-left: var(--space-xl);">
+            <li style="color: var(--light-gray); margin-bottom: var(--space-sm);">Python 3.8 or higher</li>
+            <li style="color: var(--light-gray); margin-bottom: var(--space-sm);">pip (Python package manager)</li>
+            <li style="color: var(--light-gray); margin-bottom: var(--space-sm);">Internet connection for data fetching</li>
+          </ul>
+
+          <h3 style="margin-bottom: var(--space-md);">Quick Install via pip</h3>
+          <div class="code-block">
+            <code>pip install larun</code>
+          </div>
+
+          <h3 style="margin-bottom: var(--space-md);">Manual Installation</h3>
+          <div class="code-block">
+            <code># Clone the repository
+git clone https://github.com/larun/larun-cli.git
+cd larun-cli
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the CLI
+python larun.py --help</code>
+          </div>
+
+          <h3 style="margin-bottom: var(--space-md);">Usage Examples</h3>
+          <div class="code-block">
+            <code># Search for transits in a target
+python larun.py search TIC307210830
+
+# Run BLS analysis
+python larun.py bls TIC307210830 --period-min 0.5 --period-max 15
+
+# Start the chat interface
+python larun_chat.py
+
+# Authenticate for paid features
+python larun.py auth --token YOUR_API_KEY</code>
+          </div>
+
+          <h3 style="margin-bottom: var(--space-md);">Getting Your API Key</h3>
+          <p style="color: var(--light-gray); margin-bottom: var(--space-md);">
+            After subscribing to a paid plan, you can generate an API key from your account settings:
+          </p>
+          <ol style="padding-left: var(--space-xl); color: var(--light-gray);">
+            <li style="margin-bottom: var(--space-sm);">Sign in to <a href="app.html" style="color: var(--cosmic-purple-light);">app.larun.space</a></li>
+            <li style="margin-bottom: var(--space-sm);">Go to Settings > API Keys</li>
+            <li style="margin-bottom: var(--space-sm);">Click "Generate New Key"</li>
+            <li style="margin-bottom: var(--space-sm);">Copy the key and use it with <code>larun.py auth --token YOUR_KEY</code></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
+        <a href="https://github.com/larun" class="footer-link" target="_blank">GitHub</a>
+        <a href="docs.html" class="footer-link">Docs</a>
+        <a href="pricing.html" class="footer-link">Pricing</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="auth-modal-title">Sign In</h3>
+        <button class="modal-close" onclick="closeAuthModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="auth-form" onsubmit="handleAuth(event)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <input type="email" class="input" placeholder="Email" required id="auth-email">
+          <input type="password" class="input" placeholder="Password" required id="auth-password">
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <span id="auth-submit-text">Sign In</span>
+          </button>
+        </div>
+        <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
+          <span id="auth-toggle-text">Don't have an account?</span>
+          <a href="#" onclick="toggleAuthMode()" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+</body>
+</html>

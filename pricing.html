@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE Pricing - Choose your plan for exoplanet detection">
+  <title>Pricing - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background -->
+  <div class="star-field" style="opacity: 0.5;">
+    <div class="stars-layer stars-layer-1"></div>
+    <div class="stars-layer stars-layer-2"></div>
+    <div class="stars-layer stars-layer-3"></div>
+  </div>
+
+  <!-- Nebula Overlay -->
+  <div class="nebula-overlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main style="padding-top: calc(var(--header-height) + var(--space-3xl));">
+    <!-- Pricing Header -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h1 class="section-title" style="font-size: 2.5rem;">Pricing</h1>
+          <p class="section-subtitle" style="font-size: 1.25rem; font-style: italic;">
+            "The stars belong to everyone. Now, so does the science."
+          </p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="pricing-grid">
+          <!-- Explorer (Free) -->
+          <div class="pricing-card">
+            <div class="pricing-tier">EXPLORER</div>
+            <div class="pricing-price">
+              <span class="pricing-amount">Free</span>
+            </div>
+            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
+              Perfect for getting started with exoplanet discovery
+            </p>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>10 targets per month</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Basic CLI access</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>TinyML detection</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Community support</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>TESS data access</span>
+              </div>
+            </div>
+            <a href="app.html" class="btn btn-secondary pricing-cta">
+              Get Started
+            </a>
+          </div>
+
+          <!-- Researcher -->
+          <div class="pricing-card featured">
+            <div class="pricing-tier">RESEARCHER</div>
+            <div class="pricing-price">
+              <span class="pricing-amount">$9</span>
+              <span class="pricing-period">/month</span>
+            </div>
+            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
+              For serious amateur astronomers and students
+            </p>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Unlimited targets</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>BLS periodogram analysis</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Transit parameter fitting</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>1,000 API calls/month</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Priority support</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Export reports (PDF)</span>
+              </div>
+            </div>
+            <button class="btn btn-accent pricing-cta" onclick="subscribe('researcher')">
+              Subscribe
+            </button>
+          </div>
+
+          <!-- Scientist -->
+          <div class="pricing-card">
+            <div class="pricing-tier">SCIENTIST</div>
+            <div class="pricing-price">
+              <span class="pricing-amount">$29</span>
+              <span class="pricing-period">/month</span>
+            </div>
+            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
+              Full power for professional researchers
+            </p>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Everything in Researcher</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Multi-mission data (TESS + Kepler)</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Unlimited API access</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>JWST spectroscopy data</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>TTV analysis</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Publication templates</span>
+              </div>
+              <div class="pricing-feature">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Direct researcher support</span>
+              </div>
+            </div>
+            <button class="btn btn-primary pricing-cta" onclick="subscribe('scientist')">
+              Subscribe
+            </button>
+          </div>
+        </div>
+
+        <!-- Enterprise Card -->
+        <div class="enterprise-card">
+          <h3 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Enterprise</h3>
+          <p style="color: var(--light-gray); margin-bottom: var(--space-lg);">
+            Custom solutions for universities, observatories, and research institutions
+          </p>
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-lg); margin-bottom: var(--space-xl); color: var(--medium-gray);">
+            <span>White-labeling</span>
+            <span>•</span>
+            <span>On-premise deployment</span>
+            <span>•</span>
+            <span>Volume licensing</span>
+            <span>•</span>
+            <span>Custom integrations</span>
+          </div>
+          <a href="mailto:enterprise@larun.space" class="btn btn-secondary btn-lg">
+            Contact Sales
+          </a>
+        </div>
+
+        <!-- FAQ / Notes -->
+        <div style="max-width: 700px; margin: var(--space-3xl) auto 0; text-align: center;">
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Core tools always free for research & education
+            </p>
+            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              BSL-1.1 → MIT License after 4 years
+            </p>
+            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Cancel anytime, no questions asked
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table (optional) -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title text-center" style="margin-bottom: var(--space-2xl);">Feature Comparison</h2>
+
+        <div style="overflow-x: auto;">
+          <table class="data-table" style="max-width: 900px; margin: 0 auto;">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th style="text-align: center;">Explorer</th>
+                <th style="text-align: center;">Researcher</th>
+                <th style="text-align: center;">Scientist</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Targets per month</td>
+                <td style="text-align: center;">10</td>
+                <td style="text-align: center;">Unlimited</td>
+                <td style="text-align: center;">Unlimited</td>
+              </tr>
+              <tr>
+                <td>TinyML Detection</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>BLS Periodogram</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>Transit Fitting</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>API Access</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center;">1,000/mo</td>
+                <td style="text-align: center;">Unlimited</td>
+              </tr>
+              <tr>
+                <td>Kepler Data</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>JWST Data</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>TTV Analysis</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>PDF Reports</td>
+                <td style="text-align: center; color: var(--medium-gray);">—</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+                <td style="text-align: center; color: var(--success);">✓</td>
+              </tr>
+              <tr>
+                <td>Support</td>
+                <td style="text-align: center;">Community</td>
+                <td style="text-align: center;">Priority</td>
+                <td style="text-align: center;">Direct</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
+        <a href="https://github.com/larun" class="footer-link" target="_blank">GitHub</a>
+        <a href="docs.html" class="footer-link">Docs</a>
+        <a href="download.html" class="footer-link">Download</a>
+        <a href="app.html" class="footer-link">App</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="auth-modal-title">Sign In</h3>
+        <button class="modal-close" onclick="closeAuthModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="auth-form" onsubmit="handleAuth(event)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <input type="email" class="input" placeholder="Email" required id="auth-email">
+          <input type="password" class="input" placeholder="Password" required id="auth-password">
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <span id="auth-submit-text">Sign In</span>
+          </button>
+        </div>
+        <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
+          <span id="auth-toggle-text">Don't have an account?</span>
+          <a href="#" onclick="toggleAuthMode()" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script>
+    function subscribe(tier) {
+      // Check if user is logged in
+      const user = localStorage.getItem('larun_user');
+      if (!user) {
+        openAuthModal('signup');
+        return;
+      }
+      // In production, this would redirect to Stripe checkout
+      alert(`Subscribing to ${tier} tier. This would redirect to Stripe in production.`);
+    }
+  </script>
+</body>
+</html>

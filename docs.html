@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE Documentation - Learn how to use the exoplanet detection API">
+  <title>Documentation - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+
+  <style>
+    .docs-layout {
+      display: flex;
+      min-height: 100vh;
+      padding-top: var(--header-height);
+    }
+
+    .docs-sidebar {
+      width: 260px;
+      background: var(--space-dark);
+      border-right: 1px solid var(--border-gray);
+      padding: var(--space-xl) var(--space-lg);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      overflow-y: auto;
+    }
+
+    .docs-nav-section {
+      margin-bottom: var(--space-xl);
+    }
+
+    .docs-nav-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--medium-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .docs-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .docs-nav-link {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      color: var(--light-gray);
+      font-size: 0.9375rem;
+      transition: all var(--transition-fast);
+    }
+
+    .docs-nav-link:hover {
+      background: var(--space-gray);
+      color: var(--pure-white);
+    }
+
+    .docs-nav-link.active {
+      background: var(--space-gray);
+      color: var(--cosmic-purple-light);
+    }
+
+    .docs-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: var(--space-2xl) var(--space-2xl);
+      max-width: 900px;
+    }
+
+    .docs-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-lg);
+    }
+
+    .docs-content h2 {
+      font-size: 1.75rem;
+      margin-top: var(--space-2xl);
+      margin-bottom: var(--space-md);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--border-gray);
+    }
+
+    .docs-content h3 {
+      font-size: 1.25rem;
+      margin-top: var(--space-xl);
+      margin-bottom: var(--space-md);
+    }
+
+    .docs-content p {
+      margin-bottom: var(--space-md);
+      line-height: 1.7;
+    }
+
+    .docs-content ul, .docs-content ol {
+      margin-bottom: var(--space-md);
+      padding-left: var(--space-xl);
+    }
+
+    .docs-content li {
+      color: var(--light-gray);
+      margin-bottom: var(--space-sm);
+    }
+
+    .docs-content code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: var(--space-gray);
+      padding: 0.1em 0.4em;
+      border-radius: var(--radius-sm);
+      color: var(--cosmic-purple-light);
+    }
+
+    .docs-content pre {
+      background: var(--space-dark);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      overflow-x: auto;
+      margin: var(--space-lg) 0;
+    }
+
+    .docs-content pre code {
+      background: none;
+      padding: 0;
+      color: var(--off-white);
+    }
+
+    .endpoint-card {
+      background: var(--space-dark);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-lg);
+      margin: var(--space-lg) 0;
+      overflow: hidden;
+    }
+
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--space-gray);
+      border-bottom: 1px solid var(--border-gray);
+    }
+
+    .endpoint-method {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      background: var(--cosmic-purple);
+      color: var(--pure-white);
+    }
+
+    .endpoint-method.get {
+      background: var(--nebula-blue);
+    }
+
+    .endpoint-path {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      color: var(--pure-white);
+    }
+
+    .endpoint-body {
+      padding: var(--space-lg);
+    }
+
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: var(--space-md);
+    }
+
+    .param-table th,
+    .param-table td {
+      padding: var(--space-sm) var(--space-md);
+      text-align: left;
+      border-bottom: 1px solid var(--border-gray);
+    }
+
+    .param-table th {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--medium-gray);
+      text-transform: uppercase;
+    }
+
+    .param-name {
+      font-family: var(--font-mono);
+      color: var(--cosmic-purple-light);
+    }
+
+    .param-type {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--medium-gray);
+    }
+
+    .param-required {
+      font-size: 0.75rem;
+      color: var(--error);
+    }
+
+    @media (max-width: 768px) {
+      .docs-sidebar {
+        display: none;
+      }
+
+      .docs-content {
+        margin-left: 0;
+        padding: var(--space-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Star Field Background (subtle) -->
+  <div class="star-field" style="opacity: 0.2;">
+    <div class="stars-layer stars-layer-1"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Docs Layout -->
+  <div class="docs-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="docs-sidebar">
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Getting Started</div>
+        <div class="docs-nav-links">
+          <a href="#introduction" class="docs-nav-link active">Introduction</a>
+          <a href="#quickstart" class="docs-nav-link">Quick Start</a>
+          <a href="#authentication" class="docs-nav-link">Authentication</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Chat Interface</div>
+        <div class="docs-nav-links">
+          <a href="#chat-basics" class="docs-nav-link">Chat Basics</a>
+          <a href="#example-queries" class="docs-nav-link">Example Queries</a>
+          <a href="#file-uploads" class="docs-nav-link">File Uploads</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">API Reference</div>
+        <div class="docs-nav-links">
+          <a href="#api-overview" class="docs-nav-link">Overview</a>
+          <a href="#bls-endpoint" class="docs-nav-link">BLS Analysis</a>
+          <a href="#fit-endpoint" class="docs-nav-link">Transit Fitting</a>
+          <a href="#classify-endpoint" class="docs-nav-link">Star Classification</a>
+          <a href="#hz-endpoint" class="docs-nav-link">Habitable Zone</a>
+          <a href="#pipeline-endpoint" class="docs-nav-link">Full Pipeline</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Resources</div>
+        <div class="docs-nav-links">
+          <a href="#data-sources" class="docs-nav-link">Data Sources</a>
+          <a href="#limitations" class="docs-nav-link">Limitations</a>
+          <a href="#faq" class="docs-nav-link">FAQ</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <h1 id="introduction">Documentation</h1>
+      <p>
+        Welcome to LARUN.SPACE documentation. This guide covers everything you need to know
+        to discover exoplanets using our AI-powered detection system.
+      </p>
+
+      <h2 id="quickstart">Quick Start</h2>
+      <p>
+        The fastest way to get started is through our chat interface. Simply navigate to the
+        <a href="app.html" style="color: var(--cosmic-purple-light);">app</a> and start asking questions.
+      </p>
+
+      <h3>Example: Search for Transits</h3>
+      <p>Type in the chat:</p>
+      <pre><code>Search for transits in TIC 307210830</code></pre>
+      <p>
+        LARUN will automatically fetch the light curve from NASA TESS, run TinyML detection,
+        and present you with the results.
+      </p>
+
+      <h2 id="authentication">Authentication</h2>
+      <p>
+        Free tier users can analyze up to 10 targets per month without authentication.
+        For unlimited access and API usage, create an account and subscribe to a paid plan.
+      </p>
+
+      <h3>API Authentication</h3>
+      <p>For programmatic access, include your API key in the request header:</p>
+      <pre><code>Authorization: Bearer YOUR_API_KEY</code></pre>
+
+      <h2 id="chat-basics">Chat Basics</h2>
+      <p>
+        The chat interface understands natural language queries about exoplanet detection.
+        You can ask about specific targets, request analyses, or explore astronomical concepts.
+      </p>
+
+      <h3>Supported Query Types</h3>
+      <ul>
+        <li><strong>Target Search:</strong> "Search for transits in TIC 123456789"</li>
+        <li><strong>Analysis:</strong> "Run BLS periodogram on Kepler-11"</li>
+        <li><strong>Habitability:</strong> "Is this planet in the habitable zone?"</li>
+        <li><strong>Reports:</strong> "Generate a report for my candidate"</li>
+      </ul>
+
+      <h2 id="example-queries">Example Queries</h2>
+
+      <h3>Finding Transits</h3>
+      <pre><code>Search for transits in TIC 307210830
+Analyze light curve for TOI-700
+Look for periodic dips in KIC 8462852</code></pre>
+
+      <h3>Parameter Fitting</h3>
+      <pre><code>Fit transit parameters for my candidate
+What is the orbital period?
+Estimate the planet radius</code></pre>
+
+      <h3>Habitable Zone Analysis</h3>
+      <pre><code>Is TOI-700 d in the habitable zone?
+Check habitability for my candidate
+What is the equilibrium temperature?</code></pre>
+
+      <h2 id="file-uploads">File Uploads</h2>
+      <p>
+        You can upload your own light curve data for analysis. Supported formats:
+      </p>
+      <ul>
+        <li><strong>FITS:</strong> Standard astronomical data format</li>
+        <li><strong>CSV:</strong> Comma-separated values with time and flux columns</li>
+        <li><strong>TXT:</strong> Space-separated text files</li>
+      </ul>
+
+      <h3>CSV Format</h3>
+      <pre><code>time,flux,flux_err
+0.0,1.0001,0.0001
+0.1,0.9998,0.0001
+0.2,1.0002,0.0001
+...</code></pre>
+
+      <h2 id="api-overview">API Overview</h2>
+      <p>
+        The LARUN API provides programmatic access to all detection and analysis features.
+        Base URL: <code>https://api.larun.space/v1</code>
+      </p>
+
+      <h2 id="bls-endpoint">BLS Analysis</h2>
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method">POST</span>
+          <span class="endpoint-path">/analyze/bls</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Run Box Least Squares periodogram analysis to detect transit signals.</p>
+
+          <h4>Parameters</h4>
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">tic_id</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>TIC identifier (e.g., "307210830")</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">period_min</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Minimum period to search (days). Default: 0.5</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">period_max</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Maximum period to search (days). Default: 15.0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>Example Request</h4>
+          <pre><code>curl -X POST https://api.larun.space/v1/analyze/bls \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tic_id": "307210830",
+    "period_min": 0.5,
+    "period_max": 15.0
+  }'</code></pre>
+
+          <h4>Response</h4>
+          <pre><code>{
+  "status": "success",
+  "period": 3.4254,
+  "period_err": 0.0012,
+  "t0": 2458765.432,
+  "depth": 0.0023,
+  "duration": 2.5,
+  "snr": 12.4,
+  "is_candidate": true
+}</code></pre>
+        </div>
+      </div>
+
+      <h2 id="fit-endpoint">Transit Fitting</h2>
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method">POST</span>
+          <span class="endpoint-path">/analyze/fit</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Fit transit model to derive planetary parameters.</p>
+
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">tic_id</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>TIC identifier</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">period</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Orbital period in days</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">t0</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Transit mid-time (BJD)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 id="classify-endpoint">Star Classification</h2>
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method">POST</span>
+          <span class="endpoint-path">/stellar/classify</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Classify the host star and retrieve stellar parameters.</p>
+
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">tic_id</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>TIC identifier</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 id="hz-endpoint">Habitable Zone</h2>
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method">POST</span>
+          <span class="endpoint-path">/planet/hz</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Check if a planet candidate is within the habitable zone.</p>
+
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">stellar_teff</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Stellar effective temperature (K)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">stellar_luminosity</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Stellar luminosity (solar units)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">semi_major_axis</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">float</span></td>
+                <td>Planet semi-major axis (AU)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 id="pipeline-endpoint">Full Pipeline</h2>
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method">POST</span>
+          <span class="endpoint-path">/pipeline</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Run the complete exoplanet detection and characterization pipeline.</p>
+
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">tic_id</span> <span class="param-required">required</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>TIC identifier</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">full_report</span></td>
+                <td><span class="param-type">boolean</span></td>
+                <td>Generate full PDF report. Default: false</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 id="data-sources">Data Sources</h2>
+      <p>LARUN.SPACE uses data from the following NASA missions:</p>
+      <ul>
+        <li><strong>TESS:</strong> Transiting Exoplanet Survey Satellite</li>
+        <li><strong>Kepler:</strong> Kepler Space Telescope (Scientist tier)</li>
+        <li><strong>JWST:</strong> James Webb Space Telescope spectroscopy (Scientist tier)</li>
+      </ul>
+
+      <h2 id="limitations">Limitations</h2>
+      <ul>
+        <li>TinyML detection accuracy: 81.8% (may produce false positives)</li>
+        <li>Period search range: 0.5 - 15 days (configurable)</li>
+        <li>Minimum transit depth: ~0.1% (depends on stellar noise)</li>
+        <li>API rate limits apply based on subscription tier</li>
+      </ul>
+
+      <h2 id="faq">FAQ</h2>
+
+      <h3>What is TinyML detection?</h3>
+      <p>
+        TinyML is a machine learning approach optimized for edge devices. Our neural network
+        can identify transit signals in light curves with 81.8% accuracy while running
+        efficiently in the browser.
+      </p>
+
+      <h3>Can I discover real exoplanets?</h3>
+      <p>
+        Yes! Many exoplanet candidates are discovered by citizen scientists. If LARUN
+        identifies a promising candidate, you can submit it to professional follow-up
+        programs like TFOP (TESS Follow-up Observing Program).
+      </p>
+
+      <h3>How do I report a bug?</h3>
+      <p>
+        Please open an issue on our
+        <a href="https://github.com/larun" style="color: var(--cosmic-purple-light);">GitHub repository</a>
+        or contact support at <a href="mailto:support@larun.space" style="color: var(--cosmic-purple-light);">support@larun.space</a>.
+      </p>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script>
+    // Highlight active nav link based on scroll position
+    const sections = document.querySelectorAll('h2[id], h1[id]');
+    const navLinks = document.querySelectorAll('.docs-nav-link');
+
+    function highlightNavLink() {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', highlightNavLink);
+  </script>
+</body>
+</html>

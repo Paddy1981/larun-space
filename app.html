@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE - AI-powered exoplanet detection chat interface">
+  <title>LARUN.SPACE - Exoplanet Discovery</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+  <link rel="stylesheet" href="css/chat.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background (subtle in app) -->
+  <div class="star-field" style="opacity: 0.3;">
+    <div class="stars-layer stars-layer-1"></div>
+    <div class="stars-layer stars-layer-2"></div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button class="new-chat-btn" onclick="startNewChat()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          New Chat
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Today</div>
+          <div class="conversation-list" id="today-conversations">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Yesterday</div>
+          <div class="conversation-list" id="yesterday-conversations">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Previous 7 Days</div>
+          <div class="conversation-list" id="week-conversations">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-menu" onclick="toggleUserMenu()">
+          <div class="user-avatar" id="user-avatar">?</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">Guest</div>
+            <div class="user-tier" id="user-tier">Explorer (Free)</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <div class="chat-header-left">
+          <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          <a href="index.html" class="logo">
+            <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+          </a>
+        </div>
+
+        <div class="chat-header-right">
+          <a href="pricing.html" class="btn btn-sm btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+            Upgrade
+          </a>
+          <a href="docs.html" class="btn btn-sm btn-ghost">Docs</a>
+          <button class="btn btn-sm btn-ghost" onclick="openSettings()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages Container -->
+      <div class="messages-container" id="messages-container">
+        <div class="messages-wrapper" id="messages-wrapper">
+          <!-- Welcome Screen (shown when no conversation) -->
+          <div class="welcome-screen" id="welcome-screen">
+            <h1 class="welcome-logo">Larun<span class="text-accent">.Space</span></h1>
+            <p class="welcome-subtitle">What would you like to discover today?</p>
+
+            <div class="suggested-prompts">
+              <button class="suggested-prompt" onclick="useSuggestedPrompt('Search for transits in TIC 307210830')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <span>Search for transits in TIC 307210830</span>
+              </button>
+
+              <button class="suggested-prompt" onclick="useSuggestedPrompt('Is TOI-700 d in the habitable zone?')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>Is TOI-700 d in the habitable zone?</span>
+              </button>
+
+              <button class="suggested-prompt" onclick="useSuggestedPrompt('Analyze light curve for Kepler-11')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3v18h18"/>
+                  <path d="M18 17l-5-10-4 8-3-4"/>
+                </svg>
+                <span>Analyze light curve for Kepler-11</span>
+              </button>
+
+              <button class="suggested-prompt" onclick="useSuggestedPrompt('Generate a report for my candidate planet')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <path d="M14 2v6h6M16 13H8M16 17H8"/>
+                </svg>
+                <span>Generate a report for my candidate planet</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages will be inserted here by JS -->
+          <div id="messages-list"></div>
+
+          <!-- Typing Indicator -->
+          <div class="message hidden" id="typing-indicator">
+            <div class="message-avatar assistant">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+            </div>
+            <div class="message-content">
+              <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="input-area">
+        <div class="input-wrapper">
+          <div class="input-box">
+            <textarea
+              class="message-input"
+              id="message-input"
+              placeholder="Ask LARUN anything about exoplanets..."
+              rows="1"
+              onkeydown="handleInputKeydown(event)"
+              oninput="autoResizeInput(this)"
+            ></textarea>
+            <div class="input-actions">
+              <button class="input-action-btn" onclick="openFileUpload()" title="Upload light curve">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </button>
+              <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13"/>
+                  <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-actions">
+            <span class="quick-action" onclick="useSuggestedPrompt('TIC lookup for ')">TIC lookup</span>
+            <span class="quick-action" onclick="openFileUpload()">Upload light curve</span>
+            <span class="quick-action" onclick="useSuggestedPrompt('Run detection on ')">Run detection</span>
+            <span class="quick-action" onclick="useSuggestedPrompt('Check habitable zone for ')">Check HZ</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- File Upload Modal -->
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Upload Light Curve</h3>
+        <button class="modal-close" onclick="closeUploadModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div style="padding: var(--space-lg); text-align: center;">
+        <div style="border: 2px dashed var(--border-gray); border-radius: var(--radius-lg); padding: var(--space-2xl); margin-bottom: var(--space-lg);">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--medium-gray)" stroke-width="1.5" style="margin-bottom: var(--space-md);">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p style="color: var(--light-gray); margin-bottom: var(--space-sm);">Drag & drop or click to upload</p>
+          <p style="color: var(--medium-gray); font-size: 0.875rem;">Supports FITS, CSV, or TXT files</p>
+        </div>
+        <input type="file" id="file-input" accept=".fits,.csv,.txt" style="display: none;" onchange="handleFileUpload(event)">
+        <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
+          Select File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="hidden-file-input" accept=".fits,.csv,.txt" style="display: none;">
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
