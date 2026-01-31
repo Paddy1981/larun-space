@@ -11,8 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <!-- Favicon & PWA -->
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LARUN Chat">
 
   <style>
     :root {
@@ -792,6 +798,44 @@
 
     // Initialize
     checkAuth();
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        console.log('Service Worker registered');
+      });
+    }
+
+    // Install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      showInstallButton();
+    });
+
+    function showInstallButton() {
+      const header = document.querySelector('.header-actions');
+      if (!document.getElementById('install-btn')) {
+        const installBtn = document.createElement('button');
+        installBtn.id = 'install-btn';
+        installBtn.className = 'btn btn-primary';
+        installBtn.innerHTML = 'Install App';
+        installBtn.onclick = installApp;
+        header.insertBefore(installBtn, header.firstChild);
+      }
+    }
+
+    async function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('install-btn')?.remove();
+        }
+        deferredPrompt = null;
+      }
+    }
   </script>
 </body>
 </html>
