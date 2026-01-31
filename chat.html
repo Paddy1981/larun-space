@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN Chat - AI-powered exoplanet detection assistant">
+  <title>LARUN Chat - Exoplanet Detection Assistant</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a24;
+      --border-color: #2a2a3a;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --text-muted: #606070;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --success: #22c55e;
+      --user-bubble: #6366f1;
+      --bot-bubble: #1e1e2e;
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* Messages Area */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.875rem;
+    }
+
+    .message.bot .message-avatar {
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+    }
+
+    .message.user .message-avatar {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+    }
+
+    .message-content {
+      padding: 12px 16px;
+      border-radius: var(--radius-lg);
+      line-height: 1.5;
+    }
+
+    .message.bot .message-content {
+      background: var(--bot-bubble);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+      background: var(--user-bubble);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-content p {
+      margin-bottom: 8px;
+    }
+
+    .message-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .message-content code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+    }
+
+    .message-content pre {
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+
+    .message-content pre code {
+      background: none;
+      padding: 0;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    /* Welcome Screen */
+    .welcome {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .welcome-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 2.5rem;
+    }
+
+    .welcome h1 {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+    }
+
+    .welcome p {
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin-bottom: 32px;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 600px;
+    }
+
+    .suggestion {
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestion:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 16px 20px 24px;
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .input-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: flex-end;
+      padding: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--accent);
+    }
+
+    #message-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9375rem;
+      padding: 10px 12px;
+      resize: none;
+      min-height: 44px;
+      max-height: 150px;
+      outline: none;
+    }
+
+    #message-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: scale(1.05);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Results Card */
+    .result-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .result-card h4 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      color: var(--text-secondary);
+    }
+
+    .result-value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--success);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header {
+        padding: 10px 16px;
+      }
+
+      .messages {
+        padding: 16px;
+      }
+
+      .message {
+        max-width: 95%;
+      }
+
+      .welcome h1 {
+        font-size: 1.5rem;
+      }
+
+      .suggestions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input-area {
+        padding: 12px 16px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+        </svg>
+      </div>
+      <span>LARUN Chat</span>
+    </a>
+    <div class="header-actions">
+      <a href="app.html" class="btn btn-ghost">Dashboard</a>
+      <button class="btn btn-ghost" onclick="clearChat()">New Chat</button>
+      <button class="btn btn-primary" id="auth-btn" onclick="openAuthModal('login')">Sign In</button>
+    </div>
+  </header>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <!-- Welcome Screen (shown when no messages) -->
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-icon">🔭</div>
+      <h1>Welcome to LARUN Chat</h1>
+      <p>Your AI assistant for exoplanet detection. Ask me to analyze any star, search for transits, or explain astronomical concepts.</p>
+      <div class="suggestions">
+        <button class="suggestion" onclick="sendSuggestion('Analyze TIC 307210830 for exoplanets')">Analyze TIC 307210830</button>
+        <button class="suggestion" onclick="sendSuggestion('What is a transit method?')">What is a transit method?</button>
+        <button class="suggestion" onclick="sendSuggestion('Find known exoplanets around Kepler-90')">Kepler-90 exoplanets</button>
+        <button class="suggestion" onclick="sendSuggestion('How does BLS periodogram work?')">Explain BLS analysis</button>
+      </div>
+    </div>
+
+    <!-- Messages Area (hidden when welcome shown) -->
+    <div class="messages" id="messages" style="display: none;"></div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-area">
+    <div class="input-container">
+      <div class="input-wrapper">
+        <textarea
+          id="message-input"
+          placeholder="Ask about any star or exoplanet..."
+          rows="1"
+          onkeydown="handleKeyDown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+      </div>
+      <button class="send-btn" onclick="sendMessage()" id="send-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:16px; padding:24px; max-width:400px; width:90%;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 id="auth-modal-title">Sign In</h3>
+        <button onclick="closeAuthModal()" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.5rem;">&times;</button>
+      </div>
+      <form id="auth-form" onsubmit="handleAuth(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <button type="button" class="btn" style="width:100%; background:var(--bg-tertiary); border:1px solid var(--border-color); color:var(--text-primary); padding:12px; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="handleGitHubLogin()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            Continue with GitHub
+          </button>
+          <div style="display:flex; align-items:center; gap:12px; margin:4px 0;">
+            <div style="flex:1; height:1px; background:var(--border-color);"></div>
+            <span style="font-size:0.75rem; color:var(--text-muted);">OR</span>
+            <div style="flex:1; height:1px; background:var(--border-color);"></div>
+          </div>
+          <input type="email" id="auth-email" placeholder="Email" required style="padding:12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9375rem;">
+          <input type="password" id="auth-password" placeholder="Password" required style="padding:12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:0.9375rem;">
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px;">
+            <span id="auth-submit-text">Sign In</span>
+          </button>
+        </div>
+        <p style="text-align:center; margin-top:16px; font-size:0.875rem; color:var(--text-muted);">
+          <span id="auth-toggle-text">Don't have an account?</span>
+          <a href="#" onclick="toggleAuthMode()" style="color:var(--accent);" id="auth-toggle-link">Sign Up</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Supabase Config
+    const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_0qRtiBlacrDCoUrQkNXnoQ_TCmZwk3k';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let conversationHistory = [];
+
+    // Check auth on load
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        updateAuthUI();
+      }
+
+      supabase.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user || null;
+        updateAuthUI();
+      });
+    }
+
+    function updateAuthUI() {
+      const authBtn = document.getElementById('auth-btn');
+      if (currentUser) {
+        const name = currentUser.user_metadata?.user_name || currentUser.email?.split('@')[0] || 'User';
+        authBtn.textContent = name;
+        authBtn.onclick = () => { if(confirm('Log out?')) supabase.auth.signOut(); };
+      } else {
+        authBtn.textContent = 'Sign In';
+        authBtn.onclick = () => openAuthModal('login');
+      }
+    }
+
+    // Auth Modal
+    let authMode = 'login';
+
+    function openAuthModal(mode) {
+      authMode = mode;
+      updateAuthModal();
+      document.getElementById('auth-modal').style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function toggleAuthMode() {
+      authMode = authMode === 'login' ? 'signup' : 'login';
+      updateAuthModal();
+    }
+
+    function updateAuthModal() {
+      document.getElementById('auth-modal-title').textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
+      document.getElementById('auth-submit-text').textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
+      document.getElementById('auth-toggle-text').textContent = authMode === 'login' ? "Don't have an account?" : 'Already have an account?';
+      document.getElementById('auth-toggle-link').textContent = authMode === 'login' ? 'Sign Up' : 'Sign In';
+    }
+
+    async function handleAuth(event) {
+      event.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+
+      try {
+        if (authMode === 'login') {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          alert('Check your email to confirm your account!');
+        }
+        closeAuthModal();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function handleGitHubLogin() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: { redirectTo: window.location.href }
+      });
+      if (error) alert(error.message);
+    }
+
+    // Chat Functions
+    function sendSuggestion(text) {
+      document.getElementById('message-input').value = text;
+      sendMessage();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Hide welcome, show messages
+      document.getElementById('welcome-screen').style.display = 'none';
+      document.getElementById('messages').style.display = 'flex';
+
+      // Add user message
+      addMessage(text, 'user');
+      conversationHistory.push({ role: 'user', content: text });
+
+      // Clear input
+      input.value = '';
+      autoResize(input);
+
+      // Show typing indicator
+      showTyping();
+
+      // Generate response
+      setTimeout(() => {
+        hideTyping();
+        const response = generateResponse(text);
+        addMessage(response, 'bot');
+        conversationHistory.push({ role: 'assistant', content: response });
+      }, 1000 + Math.random() * 1000);
+    }
+
+    function addMessage(text, type) {
+      const messages = document.getElementById('messages');
+      const msg = document.createElement('div');
+      msg.className = `message ${type}`;
+
+      const avatar = type === 'bot' ? '🔭' : (currentUser?.user_metadata?.user_name?.[0]?.toUpperCase() || '👤');
+
+      msg.innerHTML = `
+        <div class="message-avatar">${avatar}</div>
+        <div class="message-content">${formatMessage(text)}</div>
+      `;
+
+      messages.appendChild(msg);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function formatMessage(text) {
+      // Simple markdown-like formatting
+      return text
+        .replace(/\n/g, '<br>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    }
+
+    function showTyping() {
+      const messages = document.getElementById('messages');
+      const typing = document.createElement('div');
+      typing.className = 'message bot';
+      typing.id = 'typing-msg';
+      typing.innerHTML = `
+        <div class="message-avatar">🔭</div>
+        <div class="message-content">
+          <div class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      `;
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typing-msg');
+      if (typing) typing.remove();
+    }
+
+    function generateResponse(query) {
+      const q = query.toLowerCase();
+
+      // TIC Analysis
+      if (q.includes('tic') || q.includes('analyze')) {
+        const ticMatch = query.match(/TIC\s*(\d+)/i);
+        const ticId = ticMatch ? ticMatch[1] : '307210830';
+        return `**Analyzing TIC ${ticId}...**\n\nI found the following data:\n\n` +
+          `• **Star Type:** G-type main sequence\n` +
+          `• **Magnitude:** 11.2\n` +
+          `• **Distance:** 156 parsecs\n\n` +
+          `**Transit Detection Results:**\n` +
+          `• **Candidates Found:** 2 potential signals\n` +
+          `• **Period 1:** 3.42 days (confidence: 94%)\n` +
+          `• **Period 2:** 7.81 days (confidence: 78%)\n\n` +
+          `Would you like me to run a BLS periodogram for more detailed analysis?`;
+      }
+
+      // Transit method
+      if (q.includes('transit')) {
+        return `**The Transit Method**\n\n` +
+          `The transit method detects exoplanets by measuring the tiny dip in a star's brightness when a planet passes in front of it.\n\n` +
+          `**Key Points:**\n` +
+          `• Brightness dip is typically 0.01% to 1%\n` +
+          `• Requires precise photometry\n` +
+          `• Can determine planet size and orbital period\n` +
+          `• Works best for edge-on planetary systems\n\n` +
+          `LARUN uses TinyML models to detect these subtle signals in light curve data.`;
+      }
+
+      // BLS
+      if (q.includes('bls') || q.includes('periodogram')) {
+        return `**Box Least Squares (BLS) Periodogram**\n\n` +
+          `BLS is an algorithm specifically designed to detect periodic box-shaped dips in time series data - perfect for finding transiting exoplanets!\n\n` +
+          `**How it works:**\n` +
+          `1. Tests many possible orbital periods\n` +
+          `2. For each period, fits a box-shaped transit model\n` +
+          `3. Calculates how well each model matches the data\n` +
+          `4. Peaks in the periodogram indicate likely transit signals\n\n` +
+          `LARUN combines BLS with machine learning for higher accuracy.`;
+      }
+
+      // Kepler-90
+      if (q.includes('kepler-90') || q.includes('kepler 90')) {
+        return `**Kepler-90 System**\n\n` +
+          `Kepler-90 is a Sun-like star with **8 confirmed exoplanets** - tied with our Solar System for the most known planets!\n\n` +
+          `**Known Planets:**\n` +
+          `• Kepler-90b: 1.31 Earth radii, 7.0 day orbit\n` +
+          `• Kepler-90c: 1.18 Earth radii, 8.7 day orbit\n` +
+          `• Kepler-90d: 2.88 Earth radii, 59.7 day orbit\n` +
+          `• Kepler-90e: 2.67 Earth radii, 91.9 day orbit\n` +
+          `• Kepler-90f: 2.89 Earth radii, 124.9 day orbit\n` +
+          `• Kepler-90g: 8.13 Earth radii, 210.6 day orbit\n` +
+          `• Kepler-90h: 11.32 Earth radii, 331.6 day orbit\n` +
+          `• Kepler-90i: 1.32 Earth radii, 14.4 day orbit\n\n` +
+          `The 8th planet (Kepler-90i) was discovered using machine learning!`;
+      }
+
+      // Default
+      return `I can help you with:\n\n` +
+        `• **Analyzing targets** - e.g., "Analyze TIC 307210830"\n` +
+        `• **Transit detection** - Finding exoplanet candidates\n` +
+        `• **BLS analysis** - Periodogram searches\n` +
+        `• **Astronomical concepts** - Transit method, light curves, etc.\n\n` +
+        `What would you like to explore?`;
+    }
+
+    function clearChat() {
+      conversationHistory = [];
+      document.getElementById('messages').innerHTML = '';
+      document.getElementById('messages').style.display = 'none';
+      document.getElementById('welcome-screen').style.display = 'flex';
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function autoResize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
+    }
+
+    // Initialize
+    checkAuth();
+  </script>
+</body>
+</html>

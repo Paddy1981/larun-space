@@ -158,10 +158,40 @@
       font-size: 0.875rem;
       overflow-x: auto;
       margin: var(--space-lg) 0;
+      position: relative;
     }
 
     .code-block code {
       color: var(--off-white);
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--space-dark);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      color: var(--light-gray);
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--cosmic-purple);
+      border-color: var(--cosmic-purple);
+      color: white;
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
     }
 
     .installation-section {
@@ -497,11 +527,25 @@
 
           <h3 style="margin-bottom: var(--space-md);">Quick Install via pip</h3>
           <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
             <code>pip install larun</code>
           </div>
 
           <h3 style="margin-bottom: var(--space-md);">Manual Installation</h3>
           <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
             <code># Clone the repository
 git clone https://github.com/Paddy1981/larun.git
 cd larun
@@ -515,6 +559,13 @@ python larun.py --help</code>
 
           <h3 style="margin-bottom: var(--space-md);">Usage Examples</h3>
           <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
             <code># Search for transits in a target
 python larun.py search TIC307210830
 
@@ -597,5 +648,32 @@ python larun.py auth --token YOUR_API_KEY</code>
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/auth.js"></script>
+  <script>
+    function copyCode(btn) {
+      const codeBlock = btn.parentElement;
+      const code = codeBlock.querySelector('code').textContent;
+
+      navigator.clipboard.writeText(code).then(() => {
+        btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Copied!
+        `;
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+          btn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          `;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
 </body>
 </html>
