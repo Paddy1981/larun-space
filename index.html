@@ -343,9 +343,18 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/stars.js"></script>
-  <script src="js/auth.js"></script>
   <script>
-    // Essential auth modal functions (inline to ensure availability)
+    // Supabase configuration
+    const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk';
+
+    // Initialize Supabase client
+    let supabaseClient = null;
+    if (window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // Essential auth modal functions
     let authMode = 'login';
 
     function openAuthModal(mode) {
@@ -383,12 +392,12 @@
     }
 
     async function handleGitHubLogin() {
-      if (typeof supabase === 'undefined' || !supabase) {
+      if (!supabaseClient) {
         alert('Authentication service not loaded. Please refresh and try again.');
         return;
       }
       try {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'github',
           options: { redirectTo: window.location.origin + '/app.html' }
         });
@@ -406,7 +415,7 @@
 
     async function handleAuth(event) {
       event.preventDefault();
-      if (typeof supabase === 'undefined' || !supabase) {
+      if (!supabaseClient) {
         alert('Authentication service not loaded. Please refresh and try again.');
         return;
       }
@@ -419,9 +428,9 @@
       try {
         let result;
         if (authMode === 'login') {
-          result = await supabase.auth.signInWithPassword({ email, password });
+          result = await supabaseClient.auth.signInWithPassword({ email, password });
         } else {
-          result = await supabase.auth.signUp({ email, password });
+          result = await supabaseClient.auth.signUp({ email, password });
         }
         if (result.error) {
           alert(result.error.message);
