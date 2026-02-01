@@ -7,11 +7,28 @@
 const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk';
 
-// Initialize Supabase client
-let supabase;
-if (window.supabase) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialize Supabase client - the CDN exposes supabase.createClient globally
+let supabaseClient = null;
+
+function initSupabaseClient() {
+  if (supabaseClient && supabaseClient.auth) {
+    return supabaseClient;
+  }
+  // The CDN exposes 'supabase' as a global object with createClient method
+  if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase client initialized successfully');
+    return supabaseClient;
+  }
+  console.warn('Supabase CDN not loaded yet');
+  return null;
 }
+
+// Try to initialize immediately
+initSupabaseClient();
+
+// Alias for backward compatibility
+let supabase = supabaseClient;
 
 const Auth = {
   // State
@@ -52,13 +69,15 @@ const Auth = {
 
   // Initialize auth
   async init() {
-    if (!supabase) {
+    // Ensure Supabase client is initialized
+    const client = initSupabaseClient();
+    if (!client || !client.auth) {
       console.warn('Supabase not loaded');
       return;
     }
 
     // Check for existing session
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await client.auth.getSession();
     if (session) {
       this.session = session;
       this.user = session.user;
@@ -67,7 +86,7 @@ const Auth = {
     }
 
     // Listen for auth changes
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    client.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth event:', event);
       if (session) {
         this.session = session;
@@ -88,9 +107,11 @@ const Auth = {
   // Load user profile from database
   async loadUserProfile() {
     if (!this.user) return;
+    const client = initSupabaseClient();
+    if (!client) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('profiles')
         .select('*')
         .eq('id', this.user.id)
@@ -110,8 +131,11 @@ const Auth = {
 
   // Login with email
   async login(email, password) {
+    const client = initSupabaseClient();
+    if (!client || !client.auth) throw new Error('Auth service not available');
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await client.auth.signInWithPassword({
         email,
         password,
       });
@@ -133,8 +157,11 @@ const Auth = {
 
   // Signup with email
   async signup(email, password) {
+    const client = initSupabaseClient();
+    if (!client || !client.auth) throw new Error('Auth service not available');
+
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await client.auth.signUp({
         email,
         password,
       });
@@ -156,8 +183,11 @@ const Auth = {
 
   // Login with GitHub
   async loginWithGitHub() {
+    const client = initSupabaseClient();
+    if (!client || !client.auth) throw new Error('Auth service not available');
+
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await client.auth.signInWithOAuth({
         provider: 'github',
         options: {
           redirectTo: window.location.origin + '/app.html'
@@ -174,8 +204,11 @@ const Auth = {
 
   // Logout
   async logout() {
+    const client = initSupabaseClient();
+    if (!client || !client.auth) return;
+
     try {
-      await supabase.auth.signOut();
+      await client.auth.signOut();
       this.user = null;
       this.session = null;
       this.isAuthenticated = false;
@@ -202,7 +235,10 @@ const Auth = {
     const keyHash = await this.hashString(apiKey);
 
     // Store in database (only the hash)
-    const { data, error } = await supabase
+    const client = initSupabaseClient();
+    if (!client) throw new Error('Database not available');
+
+    const { data, error } = await client
       .from('api_keys')
       .insert({
         user_id: this.user.id,
@@ -228,8 +264,10 @@ const Auth = {
   // List user's API keys
   async listApiKeys() {
     if (!this.user) return [];
+    const client = initSupabaseClient();
+    if (!client) return [];
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('api_keys')
       .select('id, name, key_prefix, created_at, last_used_at')
       .eq('user_id', this.user.id)
@@ -245,8 +283,10 @@ const Auth = {
   // Revoke an API key
   async revokeApiKey(keyId) {
     if (!this.user) throw new Error('Must be logged in');
+    const client = initSupabaseClient();
+    if (!client) throw new Error('Database not available');
 
-    const { error } = await supabase
+    const { error } = await client
       .from('api_keys')
       .delete()
       .eq('id', keyId)
@@ -475,16 +515,14 @@ async function handleAuth(event) {
 }
 
 async function handleGitHubLogin() {
-  alert('Starting GitHub login...');
-
-  if (!supabase) {
+  const client = initSupabaseClient();
+  if (!client || !client.auth) {
     alert('Authentication service not loaded. Please refresh the page and try again.');
     return;
   }
 
   try {
-    alert('Calling Supabase OAuth...');
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await client.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo: window.location.origin + '/app.html'
@@ -492,11 +530,9 @@ async function handleGitHubLogin() {
     });
 
     if (error) {
-      alert('OAuth error: ' + error.message);
+      alert('GitHub login error: ' + error.message);
       return;
     }
-
-    alert('OAuth initiated. URL: ' + (data?.url || 'No URL returned'));
 
     // If we have a URL, redirect manually
     if (data?.url) {
