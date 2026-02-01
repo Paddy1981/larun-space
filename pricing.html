@@ -416,16 +416,88 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/auth.js"></script>
   <script>
-    function subscribe(tier) {
-      // Check if user is logged in
-      const user = localStorage.getItem('larun_user');
-      if (!user) {
+    // Stripe Price IDs (replace with your actual Stripe price IDs)
+    const STRIPE_PRICES = {
+      researcher: 'price_researcher_monthly', // Replace with actual Stripe price ID
+      scientist: 'price_scientist_monthly'    // Replace with actual Stripe price ID
+    };
+
+    async function subscribe(tier) {
+      // Check if user is logged in via Supabase Auth
+      if (!Auth.isAuthenticated || !Auth.user) {
+        // User not logged in, show signup modal
         openAuthModal('signup');
+        // Store intended tier for after signup
+        sessionStorage.setItem('pending_subscription', tier);
         return;
       }
-      // In production, this would redirect to Stripe checkout
-      alert(`Subscribing to ${tier} tier. This would redirect to Stripe in production.`);
+
+      // Show loading state
+      const btn = event?.target;
+      const originalText = btn?.textContent;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Processing...';
+      }
+
+      try {
+        // Call Supabase Edge Function to create Stripe checkout session
+        const response = await fetch('https://mwmbcfcvnkwegrjlauis.supabase.co/functions/v1/create-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Auth.session?.access_token || ''}`
+          },
+          body: JSON.stringify({
+            tier: tier,
+            user_id: Auth.user.id,
+            user_email: Auth.user.email,
+            success_url: window.location.origin + '/app.html?subscription=success',
+            cancel_url: window.location.origin + '/pricing.html?subscription=cancelled'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create checkout session');
+        }
+
+        const data = await response.json();
+
+        if (data.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL returned');
+        }
+      } catch (error) {
+        console.error('Subscription error:', error);
+        // Fallback: show info message
+        alert(`To subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month), please contact us at support@larun.space or complete the checkout when Stripe is configured.`);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = originalText;
+        }
+      }
     }
+
+    // Check for pending subscription after login
+    document.addEventListener('DOMContentLoaded', () => {
+      // Listen for auth state changes
+      const checkPendingSubscription = setInterval(() => {
+        if (Auth.isAuthenticated) {
+          const pendingTier = sessionStorage.getItem('pending_subscription');
+          if (pendingTier) {
+            sessionStorage.removeItem('pending_subscription');
+            setTimeout(() => subscribe(pendingTier), 500);
+          }
+          clearInterval(checkPendingSubscription);
+        }
+      }, 500);
+
+      // Stop checking after 10 seconds
+      setTimeout(() => clearInterval(checkPendingSubscription), 10000);
+    });
   </script>
 </body>
 </html>

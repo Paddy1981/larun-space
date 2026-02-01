@@ -39,10 +39,29 @@ supabase secrets set GEMINI_API_KEY=your-gemini-api-key --project-ref mwmbcfcvnk
 
 Without the Gemini key, the chat function will use simulated responses that still provide helpful exoplanet analysis guidance.
 
-### 5. Deploy the Edge Functions
+### 5. Set Stripe Keys (for subscriptions)
+
+1. Create a [Stripe account](https://stripe.com) if you don't have one
+2. Get your API keys from the Stripe Dashboard
+3. Create products and prices for Researcher ($9/mo) and Scientist ($29/mo) plans
+4. Set the secrets:
+
+```bash
+supabase secrets set STRIPE_SECRET_KEY=sk_live_... --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set STRIPE_PRICE_RESEARCHER=price_... --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set STRIPE_PRICE_SCIENTIST=price_... --project-ref mwmbcfcvnkwegrjlauis
+```
+
+### 6. Deploy the Edge Functions
 
 ```bash
 supabase functions deploy chat
+supabase functions deploy create-checkout
+```
+
+Or use the deploy script:
+```bash
+./supabase/deploy.sh
 ```
 
 ## Available Functions
@@ -68,6 +87,36 @@ AI-powered chat endpoint for exoplanet analysis.
 {
   "response": "AI response text...",
   "conversation_id": "conversation-id"
+}
+```
+
+### create-checkout
+
+Creates a Stripe Checkout session for subscription payments.
+
+**Endpoint:** `https://mwmbcfcvnkwegrjlauis.supabase.co/functions/v1/create-checkout`
+
+**Method:** POST
+
+**Headers:**
+- `Authorization: Bearer <user_access_token>`
+
+**Request Body:**
+```json
+{
+  "tier": "researcher",
+  "user_id": "user-uuid",
+  "user_email": "user@example.com",
+  "success_url": "https://larun.space/app.html?subscription=success",
+  "cancel_url": "https://larun.space/pricing.html?subscription=cancelled"
+}
+```
+
+**Response:**
+```json
+{
+  "url": "https://checkout.stripe.com/...",
+  "session_id": "cs_..."
 }
 ```
 
