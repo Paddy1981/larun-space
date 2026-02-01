@@ -87,7 +87,7 @@
     <a href="docs.html" class="nav-link">Docs</a>
     <a href="download.html" class="nav-link">Download</a>
     <div class="nav-actions">
-      <button class="btn btn-ghost btn-lg" onclick="toggleMobileMenu(); openAuthModal('login')">Sign In</button>
+      <button class="btn btn-ghost btn-lg" onclick="mobileSignIn()">Sign In</button>
       <a href="app.html" class="btn btn-primary btn-lg">Get Started</a>
     </div>
   </div>
@@ -367,6 +367,14 @@
         closeIcon.style.display = 'none';
         document.body.style.overflow = '';
       }
+    }
+
+    // Mobile sign in - close menu first, then open auth modal
+    function mobileSignIn() {
+      toggleMobileMenu();
+      setTimeout(function() {
+        openAuthModal('login');
+      }, 300);
     }
   </script>
 </body>
