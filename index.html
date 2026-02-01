@@ -345,12 +345,97 @@
   <script src="js/stars.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Fallback auth modal function (in case auth.js fails to load)
-    if (typeof openAuthModal === 'undefined') {
-      window.openAuthModal = function(mode) {
-        var modal = document.getElementById('auth-modal');
-        if (modal) modal.classList.add('active');
-      };
+    // Essential auth modal functions (inline to ensure availability)
+    let authMode = 'login';
+
+    function openAuthModal(mode) {
+      authMode = mode || 'login';
+      updateAuthModal();
+      document.getElementById('auth-modal')?.classList.add('active');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal')?.classList.remove('active');
+    }
+
+    function toggleAuthMode() {
+      authMode = authMode === 'login' ? 'signup' : 'login';
+      updateAuthModal();
+    }
+
+    function updateAuthModal() {
+      const title = document.getElementById('auth-modal-title');
+      const submitText = document.getElementById('auth-submit-text');
+      const toggleText = document.getElementById('auth-toggle-text');
+      const toggleLink = document.getElementById('auth-toggle-link');
+
+      if (authMode === 'login') {
+        if (title) title.textContent = 'Sign In';
+        if (submitText) submitText.textContent = 'Sign In';
+        if (toggleText) toggleText.textContent = "Don't have an account?";
+        if (toggleLink) toggleLink.textContent = 'Sign Up';
+      } else {
+        if (title) title.textContent = 'Create Account';
+        if (submitText) submitText.textContent = 'Create Account';
+        if (toggleText) toggleText.textContent = 'Already have an account?';
+        if (toggleLink) toggleLink.textContent = 'Sign In';
+      }
+    }
+
+    async function handleGitHubLogin() {
+      if (typeof supabase === 'undefined' || !supabase) {
+        alert('Authentication service not loaded. Please refresh and try again.');
+        return;
+      }
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'github',
+          options: { redirectTo: window.location.origin + '/app.html' }
+        });
+        if (error) {
+          alert('GitHub login error: ' + error.message);
+          return;
+        }
+        if (data?.url) {
+          window.location.href = data.url;
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function handleAuth(event) {
+      event.preventDefault();
+      if (typeof supabase === 'undefined' || !supabase) {
+        alert('Authentication service not loaded. Please refresh and try again.');
+        return;
+      }
+      const email = document.getElementById('auth-email')?.value;
+      const password = document.getElementById('auth-password')?.value;
+      if (!email || !password) {
+        alert('Please enter email and password.');
+        return;
+      }
+      try {
+        let result;
+        if (authMode === 'login') {
+          result = await supabase.auth.signInWithPassword({ email, password });
+        } else {
+          result = await supabase.auth.signUp({ email, password });
+        }
+        if (result.error) {
+          alert(result.error.message);
+        } else {
+          closeAuthModal();
+          if (authMode === 'signup') {
+            alert('Check your email to confirm your account!');
+          } else {
+            window.location.href = 'app.html';
+          }
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
     }
 
     // Initialize star animation
