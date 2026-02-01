@@ -345,6 +345,14 @@
   <script src="js/stars.js"></script>
   <script src="js/auth.js"></script>
   <script>
+    // Fallback auth modal function (in case auth.js fails to load)
+    if (typeof openAuthModal === 'undefined') {
+      window.openAuthModal = function(mode) {
+        var modal = document.getElementById('auth-modal');
+        if (modal) modal.classList.add('active');
+      };
+    }
+
     // Initialize star animation
     if (typeof initStars === 'function') {
       initStars('star-canvas');
