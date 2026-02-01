@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE FAQ - Frequently asked questions about exoplanet detection">
+  <title>FAQ - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+  <link rel="stylesheet" href="css/docs.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background (subtle) -->
+  <div class="star-field" style="opacity: 0.2;">
+    <div class="stars-layer stars-layer-1"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="page-content">
+    <div class="container">
+      <div class="page-header">
+        <h1>Frequently Asked Questions</h1>
+        <p class="lead">
+          Everything you need to know about LARUN.SPACE and exoplanet detection.
+        </p>
+      </div>
+
+      <!-- FAQ Categories -->
+      <div class="faq-categories">
+        <a href="#general" class="faq-category-link active">General</a>
+        <a href="#detection" class="faq-category-link">Detection</a>
+        <a href="#models" class="faq-category-link">Models</a>
+        <a href="#data" class="faq-category-link">Data</a>
+        <a href="#account" class="faq-category-link">Account & Pricing</a>
+        <a href="#technical" class="faq-category-link">Technical</a>
+      </div>
+
+      <!-- General -->
+      <section class="faq-section" id="general">
+        <h2>General Questions</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is LARUN.SPACE?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN (Light Analysis Research Utility Network) is an AI-powered platform for
+              discovering exoplanets in NASA telescope data. It uses a federation of TinyML
+              models to detect transit signals - the tiny dips in starlight caused by planets
+              passing in front of their host stars.
+            </p>
+            <p>
+              Unlike traditional astronomy software, LARUN uses a conversational interface.
+              You can ask questions in plain English, and LARUN handles the complex data
+              processing automatically.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Do I need astronomy expertise to use LARUN?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              No! LARUN is designed to be accessible to everyone. Our motto is "No PhD required."
+              The chat interface uses natural language, so you can simply ask things like
+              "Search for transits in TIC 307210830" without knowing any programming.
+            </p>
+            <p>
+              That said, understanding basic concepts like what a transit is will help you
+              interpret results. Check out our <a href="guide.html">User Guide</a> and the
+              ASTRA educational module for learning resources.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I really discover new exoplanets?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes! Citizen scientists have contributed to numerous exoplanet discoveries.
+              Notable examples include:
+            </p>
+            <ul>
+              <li>K2-138 system - discovered through the Exoplanet Explorers project</li>
+              <li>TOI-700 d - one of the first Earth-sized habitable zone planets from TESS</li>
+              <li>Kepler-90i - found using machine learning by citizen scientists</li>
+            </ul>
+            <p>
+              If LARUN identifies a promising candidate, you can submit it to the TESS
+              Follow-up Observing Program (TFOP) for professional validation.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Is LARUN free to use?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN offers a free tier that allows you to analyze up to 10 targets per month.
+              This is enough for casual exploration and learning.
+            </p>
+            <p>
+              For more intensive use, we offer paid plans:
+            </p>
+            <ul>
+              <li><strong>Explorer ($9/mo):</strong> 100 targets, basic features</li>
+              <li><strong>Pro ($29/mo):</strong> 500 targets, API access, priority support</li>
+              <li><strong>Scientist ($99/mo):</strong> Unlimited, batch processing, Kepler + JWST data</li>
+            </ul>
+            <p>
+              See our <a href="pricing.html">Pricing page</a> for details.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detection -->
+      <section class="faq-section" id="detection">
+        <h2>Detection & Analysis</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is a transit?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              A transit occurs when a planet passes between its host star and Earth,
+              causing a small, temporary decrease in the star's brightness. This dip
+              is typically 0.01% to 2% of the star's light, depending on the planet's size.
+            </p>
+            <p>
+              By measuring these periodic dips, we can determine:
+            </p>
+            <ul>
+              <li><strong>Orbital period:</strong> How long the planet takes to orbit</li>
+              <li><strong>Planet size:</strong> Larger planets block more light</li>
+              <li><strong>Orbital distance:</strong> Combined with stellar properties</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How accurate is LARUN's detection?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN's TinyML transit detection model achieves 81.8% accuracy on our test set.
+              This means:
+            </p>
+            <ul>
+              <li>~82% of real transits are correctly identified (true positives)</li>
+              <li>~18% of real transits may be missed (false negatives)</li>
+              <li>Some non-transit signals may be flagged (false positives)</li>
+            </ul>
+            <p>
+              To improve reliability, LARUN uses multiple vetting steps including BLS
+              periodogram, model ensemble voting, and false positive probability calculations.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is False Positive Probability (FPP)?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              FPP is the probability that a transit-like signal is caused by something
+              other than a planet, such as an eclipsing binary star or instrumental artifact.
+            </p>
+            <ul>
+              <li><strong>FPP &lt; 1%:</strong> VALIDATED - Very likely a real planet</li>
+              <li><strong>FPP 1-50%:</strong> CANDIDATE - Promising but needs more analysis</li>
+              <li><strong>FPP &gt; 50%:</strong> LIKELY_FP - Probably a false positive</li>
+            </ul>
+            <p>
+              LARUN calculates FPP by comparing the likelihood of different scenarios
+              (planet, eclipsing binary, background binary, etc.) based on the signal properties.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What period range can LARUN detect?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              By default, LARUN searches for periods between 0.5 and 15 days. This range
+              catches most transiting planets observable by TESS.
+            </p>
+            <p>
+              For longer periods, you can adjust the search range:
+            </p>
+            <div class="code-block">
+              <pre><code>"Search for long-period transits up to 30 days"</code></pre>
+            </div>
+            <p>
+              Note: Detecting long-period planets requires more observation time - at least
+              3 complete transits for confident detection.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is the smallest planet LARUN can detect?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              The smallest detectable planet depends on:
+            </p>
+            <ul>
+              <li><strong>Star size:</strong> Smaller stars = deeper transits for same planet</li>
+              <li><strong>Data quality:</strong> Less noise = smaller signals detectable</li>
+              <li><strong>Number of transits:</strong> More transits = better signal averaging</li>
+            </ul>
+            <p>
+              For bright, quiet M-dwarf stars with TESS 2-minute cadence data, LARUN can
+              potentially detect planets as small as 1.5 Earth radii. For G-type stars
+              like the Sun, the limit is around 2-3 Earth radii.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Models -->
+      <section class="faq-section" id="models">
+        <h2>TinyML Models</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is TinyML?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              TinyML is machine learning optimized for "edge" devices - small, low-power
+              systems like microcontrollers, smartphones, or browsers. LARUN's models are:
+            </p>
+            <ul>
+              <li><strong>Small:</strong> Under 100KB each (fits in browser cache)</li>
+              <li><strong>Fast:</strong> Inference in under 50 milliseconds</li>
+              <li><strong>Efficient:</strong> Runs without GPU or cloud servers</li>
+            </ul>
+            <p>
+              This allows LARUN to run entirely in your browser, protecting your privacy
+              and enabling offline analysis.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How many models does LARUN use?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN uses a federation of 9 specialized models:
+            </p>
+            <ul>
+              <li><strong>EXOPLANET-001:</strong> Transit detection (core)</li>
+              <li><strong>VSTAR-001:</strong> Variable star classification</li>
+              <li><strong>FLARE-001:</strong> Stellar flare detection</li>
+              <li><strong>ASTERO-001:</strong> Asteroseismology analysis</li>
+              <li><strong>SPECTYPE-001:</strong> Spectral type classification</li>
+              <li><strong>GALAXY-001:</strong> Galaxy morphology</li>
+              <li><strong>SUPERNOVA-001:</strong> Supernova classification</li>
+              <li><strong>MICROLENS-001:</strong> Microlensing detection</li>
+              <li><strong>TRAINER-001 (ASTRA):</strong> Educational AI tutor</li>
+            </ul>
+            <p>
+              See our <a href="models.html">Models page</a> for detailed documentation.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How are the models trained?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN models are trained on real astronomical data:
+            </p>
+            <ul>
+              <li><strong>Training data:</strong> NASA TESS and Kepler light curves</li>
+              <li><strong>Labels:</strong> Confirmed planets, known eclipsing binaries, etc.</li>
+              <li><strong>Augmentation:</strong> Synthetic transits injected into real data</li>
+              <li><strong>Validation:</strong> Tested against held-out confirmed planets</li>
+            </ul>
+            <p>
+              Models are retrained weekly with new data and undergo quality gates
+              before deployment (accuracy ≥80%, size ≤100KB, inference ≤50ms).
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is ASTRA?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              ASTRA (Astronomical Science Tutor and Research Assistant) is LARUN's
+              AI-powered educational companion. Unlike the detection models, ASTRA uses
+              Retrieval-Augmented Generation (RAG) to answer questions about space science.
+            </p>
+            <p>
+              ASTRA can:
+            </p>
+            <ul>
+              <li>Explain astronomical concepts in plain language</li>
+              <li>Provide interactive lessons on exoplanets, stars, and missions</li>
+              <li>Give quizzes to test your knowledge</li>
+              <li>Explain why models made specific predictions</li>
+            </ul>
+            <p>
+              Try it by typing <code>/learn</code> in the chat!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data -->
+      <section class="faq-section" id="data">
+        <h2>Data Sources</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Where does LARUN get its data?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN fetches data from NASA's Mikulski Archive for Space Telescopes (MAST):
+            </p>
+            <ul>
+              <li><strong>TESS:</strong> Full-frame images, 2-minute cadence, 20-second cadence</li>
+              <li><strong>Kepler:</strong> Long and short cadence (Scientist tier)</li>
+              <li><strong>K2:</strong> Extended Kepler mission data</li>
+              <li><strong>Gaia DR3:</strong> Stellar parameters</li>
+            </ul>
+            <p>
+              All data is publicly available through NASA's open access policy.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I upload my own data?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes! LARUN accepts custom light curves in several formats:
+            </p>
+            <ul>
+              <li><strong>FITS:</strong> Standard astronomical format</li>
+              <li><strong>CSV:</strong> Comma-separated values</li>
+              <li><strong>TXT:</strong> Space-separated text</li>
+            </ul>
+            <p>
+              Your data should include time (BJD or relative), flux, and optionally flux errors.
+              See the <a href="guide.html#custom-data">User Guide</a> for format details.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is a TIC ID?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              TIC stands for TESS Input Catalog. Every star observed by TESS has a unique
+              TIC ID number (e.g., TIC 307210830). You can find TIC IDs through:
+            </p>
+            <ul>
+              <li><a href="https://exofop.ipac.caltech.edu/tess/" target="_blank">ExoFOP-TESS</a></li>
+              <li><a href="https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html" target="_blank">MAST Portal</a></li>
+              <li>Searching by coordinates or common name in LARUN</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Account & Pricing -->
+      <section class="faq-section" id="account">
+        <h2>Account & Pricing</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I get an API key?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              API access is available on Pro and Scientist tiers. To get your key:
+            </p>
+            <ol>
+              <li>Sign in to your account</li>
+              <li>Go to Settings → API Keys</li>
+              <li>Click "Generate New Key"</li>
+              <li>Copy and store securely (it's only shown once)</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I use LARUN for academic research?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes! We offer educational discounts for students and researchers.
+              Contact us at <a href="mailto:academic@larun.space">academic@larun.space</a>
+              with your institutional email for special pricing.
+            </p>
+            <p>
+              If you publish research using LARUN, please cite us:
+            </p>
+            <div class="code-block">
+              <pre><code>LARUN.SPACE, 2026, "TinyML Federation for Exoplanet Detection"
+https://larun.space</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What happens if I exceed my monthly limit?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              When you reach your monthly target limit, you'll receive a notification.
+              You can:
+            </p>
+            <ul>
+              <li>Wait until next month (limits reset on billing date)</li>
+              <li>Upgrade to a higher tier</li>
+              <li>Purchase additional targets as a one-time add-on</li>
+            </ul>
+            <p>
+              We never charge overage fees without your explicit consent.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Technical -->
+      <section class="faq-section" id="technical">
+        <h2>Technical Questions</h2>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Does LARUN work offline?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Partially. The TinyML models run entirely in your browser and can work
+              offline once loaded. However, you need internet access to:
+            </p>
+            <ul>
+              <li>Fetch light curves from NASA MAST</li>
+              <li>Use ASTRA (requires LLM API)</li>
+              <li>Save analyses to cloud storage</li>
+            </ul>
+            <p>
+              For fully offline work, download your target data in advance.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What browsers are supported?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              LARUN works on modern browsers that support WebGL and WebAssembly:
+            </p>
+            <ul>
+              <li>Chrome 90+ (recommended)</li>
+              <li>Firefox 88+</li>
+              <li>Safari 14+</li>
+              <li>Edge 90+</li>
+            </ul>
+            <p>
+              For best performance, use Chrome with hardware acceleration enabled.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Is my data private?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes. LARUN processes your data locally in your browser. We don't upload
+              your light curves or analysis results to our servers unless you explicitly
+              choose to save them.
+            </p>
+            <p>
+              If you use ASTRA, your questions are sent to the LLM provider (Anthropic,
+              OpenAI, or Ollama depending on configuration), subject to their privacy policies.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I report a bug?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Please report bugs through:
+            </p>
+            <ul>
+              <li>
+                <a href="https://github.com/Paddy1981/larun/issues" target="_blank">GitHub Issues</a>
+                (preferred - helps other users too)
+              </li>
+              <li>Email: <a href="mailto:support@larun.space">support@larun.space</a></li>
+            </ul>
+            <p>
+              When reporting, please include:
+            </p>
+            <ul>
+              <li>What you were trying to do</li>
+              <li>What happened instead</li>
+              <li>Browser and OS version</li>
+              <li>Target ID if applicable</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I self-host LARUN?</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes! LARUN is open source. You can deploy it yourself:
+            </p>
+            <div class="code-block">
+              <pre><code>git clone https://github.com/Paddy1981/larun.git
+cd larun
+pip install -r requirements.txt
+python larun.py</code></pre>
+            </div>
+            <p>
+              See the <a href="https://github.com/Paddy1981/larun" target="_blank">GitHub repository</a>
+              for full setup instructions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section class="faq-section">
+        <h2>Still Have Questions?</h2>
+        <div class="contact-options">
+          <a href="https://github.com/Paddy1981/larun/discussions" target="_blank" class="contact-card">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            <h4>Community Forum</h4>
+            <p>Ask the community on GitHub Discussions</p>
+          </a>
+
+          <a href="mailto:support@larun.space" class="contact-card">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <h4>Email Support</h4>
+            <p>support@larun.space</p>
+          </a>
+
+          <a href="guide.html" class="contact-card">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <h4>Documentation</h4>
+            <p>Read the full user guide</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="guide.html" class="footer-link">User Guide</a>
+        <a href="models.html" class="footer-link">Models</a>
+        <a href="workflow.html" class="footer-link">Workflow</a>
+        <a href="tips.html" class="footer-link">Tips</a>
+        <a href="faq.html" class="footer-link">FAQ</a>
+        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // FAQ accordion functionality
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.parentElement;
+        const isOpen = item.classList.contains('open');
+
+        // Close all items
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+        // Open clicked item if it wasn't open
+        if (!isOpen) {
+          item.classList.add('open');
+        }
+      });
+    });
+
+    // Category navigation
+    document.querySelectorAll('.faq-category-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        document.querySelectorAll('.faq-category-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

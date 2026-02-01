@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE User Guide - Complete guide to discovering exoplanets with AI">
+  <title>User Guide - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+  <link rel="stylesheet" href="css/docs.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background (subtle) -->
+  <div class="star-field" style="opacity: 0.2;">
+    <div class="stars-layer stars-layer-1"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Docs Layout -->
+  <div class="docs-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="docs-sidebar">
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">User Guide</div>
+        <div class="docs-nav-links">
+          <a href="#welcome" class="docs-nav-link active">Welcome</a>
+          <a href="#first-steps" class="docs-nav-link">First Steps</a>
+          <a href="#chat-interface" class="docs-nav-link">Chat Interface</a>
+          <a href="#understanding-results" class="docs-nav-link">Understanding Results</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Workflows</div>
+        <div class="docs-nav-links">
+          <a href="#transit-search" class="docs-nav-link">Transit Search</a>
+          <a href="#candidate-vetting" class="docs-nav-link">Candidate Vetting</a>
+          <a href="#habitability" class="docs-nav-link">Habitability Analysis</a>
+          <a href="#report-generation" class="docs-nav-link">Report Generation</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Advanced</div>
+        <div class="docs-nav-links">
+          <a href="#custom-data" class="docs-nav-link">Custom Data</a>
+          <a href="#api-access" class="docs-nav-link">API Access</a>
+          <a href="#batch-processing" class="docs-nav-link">Batch Processing</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Resources</div>
+        <div class="docs-nav-links">
+          <a href="models.html" class="docs-nav-link">TinyML Models</a>
+          <a href="workflow.html" class="docs-nav-link">How It Works</a>
+          <a href="tips.html" class="docs-nav-link">Tips & Tricks</a>
+          <a href="faq.html" class="docs-nav-link">FAQ</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <h1 id="welcome">User Guide</h1>
+      <p class="lead">
+        Welcome to LARUN.SPACE! This guide will help you discover exoplanets using our
+        AI-powered detection system. No astronomy degree required.
+      </p>
+
+      <div class="info-box">
+        <strong>What is LARUN?</strong>
+        <p>
+          LARUN (Light Analysis Research Utility Network) is a federation of TinyML models
+          designed to detect exoplanets in NASA telescope data. Each model specializes in
+          a different aspect of astronomical analysis, from transit detection to stellar classification.
+        </p>
+      </div>
+
+      <h2 id="first-steps">First Steps</h2>
+
+      <h3>1. Create an Account (Optional)</h3>
+      <p>
+        Free users can analyze up to 10 targets per month. Create an account to:
+      </p>
+      <ul>
+        <li>Save your analysis history</li>
+        <li>Access advanced features</li>
+        <li>Get API access for programmatic use</li>
+        <li>Join the community of citizen scientists</li>
+      </ul>
+
+      <h3>2. Navigate to the App</h3>
+      <p>
+        Click <a href="app.html" class="link-accent">Get Started</a> to open the chat interface.
+        This is where all the magic happens.
+      </p>
+
+      <h3>3. Choose Your Target</h3>
+      <p>
+        You can search for any star observed by NASA's TESS or Kepler missions. Common identifiers:
+      </p>
+      <ul>
+        <li><strong>TIC ID:</strong> TESS Input Catalog (e.g., TIC 307210830)</li>
+        <li><strong>KIC ID:</strong> Kepler Input Catalog (e.g., KIC 8462852)</li>
+        <li><strong>TOI:</strong> TESS Object of Interest (e.g., TOI-700)</li>
+        <li><strong>Common Name:</strong> Some stars have names (e.g., TRAPPIST-1)</li>
+      </ul>
+
+      <h2 id="chat-interface">Chat Interface</h2>
+      <p>
+        LARUN uses a conversational interface. Simply type what you want to do in natural language.
+      </p>
+
+      <h3>Example Commands</h3>
+      <div class="code-block">
+        <pre><code># Search for transit signals
+"Search for transits in TIC 307210830"
+"Analyze TIC 12345678 for planets"
+"Look for periodic dips in TOI-700"
+
+# Get stellar information
+"What type of star is TIC 307210830?"
+"Tell me about the host star"
+"Is this a red dwarf?"
+
+# Habitability analysis
+"Is this planet in the habitable zone?"
+"Could this planet have liquid water?"
+"Calculate equilibrium temperature"
+
+# Generate reports
+"Create a report for this candidate"
+"Generate PDF summary"
+"Export my results"</code></pre>
+      </div>
+
+      <h3>Understanding the Response</h3>
+      <p>
+        When you analyze a target, LARUN will:
+      </p>
+      <ol>
+        <li><strong>Fetch Data:</strong> Download light curve from NASA archives</li>
+        <li><strong>Preprocess:</strong> Clean the data, remove outliers, detrend</li>
+        <li><strong>Detect:</strong> Run TinyML models to find transit signals</li>
+        <li><strong>Analyze:</strong> Fit parameters, estimate planet properties</li>
+        <li><strong>Report:</strong> Present results in an easy-to-understand format</li>
+      </ol>
+
+      <h2 id="understanding-results">Understanding Results</h2>
+
+      <h3>Key Parameters</h3>
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="param-name">Period</span></td>
+            <td>Time for one complete orbit (days)</td>
+            <td>3.42 days</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">Depth</span></td>
+            <td>How much the star dims during transit (%)</td>
+            <td>0.23%</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">Duration</span></td>
+            <td>How long the transit lasts (hours)</td>
+            <td>2.5 hours</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">SNR</span></td>
+            <td>Signal-to-noise ratio (higher is better)</td>
+            <td>12.4</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">R_p</span></td>
+            <td>Planet radius (Earth radii)</td>
+            <td>1.8 R_Earth</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">FPP</span></td>
+            <td>False Positive Probability (lower is better)</td>
+            <td>0.02</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Disposition Categories</h3>
+      <div class="card-grid">
+        <div class="info-card success">
+          <h4>VALIDATED</h4>
+          <p>FPP &lt; 1%. Very likely a real planet. Suitable for follow-up.</p>
+        </div>
+        <div class="info-card warning">
+          <h4>CANDIDATE</h4>
+          <p>FPP 1-50%. Promising signal that needs more analysis.</p>
+        </div>
+        <div class="info-card error">
+          <h4>LIKELY_FP</h4>
+          <p>FPP &gt; 50%. Probably an eclipsing binary or other false positive.</p>
+        </div>
+      </div>
+
+      <h2 id="transit-search">Transit Search Workflow</h2>
+      <p>
+        The most common workflow is searching for transit signals in a star's light curve.
+      </p>
+
+      <div class="workflow-steps">
+        <div class="workflow-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Enter Target ID</h4>
+            <p>Type: "Search for transits in TIC 307210830"</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>View Light Curve</h4>
+            <p>LARUN displays the raw and detrended light curve</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>BLS Analysis</h4>
+            <p>Box Least Squares detects periodic dips</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>TinyML Detection</h4>
+            <p>Neural network confirms transit signal</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h4>Parameter Fitting</h4>
+            <p>Transit model fitted to derive planet properties</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="candidate-vetting">Candidate Vetting</h2>
+      <p>
+        Not every transit signal is a real planet. LARUN helps you vet candidates:
+      </p>
+
+      <h3>False Positive Scenarios</h3>
+      <ul>
+        <li><strong>Eclipsing Binary (EB):</strong> Two stars orbiting each other</li>
+        <li><strong>Background EB:</strong> Distant binary blended with target star</li>
+        <li><strong>Hierarchical EB:</strong> Binary companion to the target star</li>
+        <li><strong>Stellar Variability:</strong> Starspots, pulsations, flares</li>
+      </ul>
+
+      <h3>Vetting Commands</h3>
+      <div class="code-block">
+        <pre><code>"Calculate false positive probability"
+"Check for secondary eclipse"
+"Look for odd-even depth differences"
+"Analyze centroid motion"</code></pre>
+      </div>
+
+      <h2 id="habitability">Habitability Analysis</h2>
+      <p>
+        Once you've found a candidate, LARUN can assess its potential habitability.
+      </p>
+
+      <h3>What We Calculate</h3>
+      <ul>
+        <li><strong>Habitable Zone Boundaries:</strong> Inner and outer edges where liquid water could exist</li>
+        <li><strong>Equilibrium Temperature:</strong> Expected surface temperature</li>
+        <li><strong>Insolation:</strong> Amount of stellar radiation received</li>
+        <li><strong>Atmospheric Retention:</strong> Can the planet hold an atmosphere?</li>
+      </ul>
+
+      <div class="code-block">
+        <pre><code>"Is this planet in the habitable zone?"
+"What is the equilibrium temperature?"
+"Compare to Earth's habitability"</code></pre>
+      </div>
+
+      <h2 id="report-generation">Report Generation</h2>
+      <p>
+        Generate publication-ready reports for your discoveries.
+      </p>
+
+      <h3>Report Contents</h3>
+      <ul>
+        <li>Target overview and stellar parameters</li>
+        <li>Light curve plots (raw, detrended, phase-folded)</li>
+        <li>BLS periodogram with detected periods</li>
+        <li>Transit model fit and residuals</li>
+        <li>Planet parameter estimates with uncertainties</li>
+        <li>Habitability assessment</li>
+        <li>False positive analysis</li>
+        <li>Recommendations for follow-up</li>
+      </ul>
+
+      <h3>Export Formats</h3>
+      <ul>
+        <li><strong>HTML:</strong> Interactive web report</li>
+        <li><strong>PDF:</strong> Print-ready document</li>
+        <li><strong>JSON:</strong> Machine-readable data</li>
+        <li><strong>CSV:</strong> Spreadsheet-compatible tables</li>
+      </ul>
+
+      <h2 id="custom-data">Using Custom Data</h2>
+      <p>
+        You can upload your own light curve data for analysis.
+      </p>
+
+      <h3>Supported Formats</h3>
+      <ul>
+        <li><strong>FITS:</strong> Standard astronomical format (.fits)</li>
+        <li><strong>CSV:</strong> Comma-separated values (.csv)</li>
+        <li><strong>TXT:</strong> Space-separated text (.txt)</li>
+      </ul>
+
+      <h3>CSV Format Example</h3>
+      <div class="code-block">
+        <pre><code>time,flux,flux_err
+2458765.0,1.00023,0.00012
+2458765.1,0.99987,0.00011
+2458765.2,0.99234,0.00013
+...</code></pre>
+      </div>
+
+      <div class="info-box warning">
+        <strong>Data Requirements</strong>
+        <ul>
+          <li>Time in BJD (Barycentric Julian Date) or relative days</li>
+          <li>Flux normalized to ~1.0</li>
+          <li>At least 1000 data points recommended</li>
+          <li>Cadence of 2 minutes or better for small planets</li>
+        </ul>
+      </div>
+
+      <h2 id="api-access">API Access</h2>
+      <p>
+        Pro and Scientist tier users get API access for programmatic analysis.
+      </p>
+
+      <h3>Getting Your API Key</h3>
+      <ol>
+        <li>Sign in to your account</li>
+        <li>Go to Settings &gt; API Keys</li>
+        <li>Click "Generate New Key"</li>
+        <li>Copy and store securely</li>
+      </ol>
+
+      <h3>Example Request</h3>
+      <div class="code-block">
+        <pre><code>curl -X POST https://api.larun.space/v1/pipeline \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tic_id": "307210830",
+    "full_report": true
+  }'</code></pre>
+      </div>
+
+      <p>See the <a href="docs.html#api-overview" class="link-accent">API Documentation</a> for complete reference.</p>
+
+      <h2 id="batch-processing">Batch Processing</h2>
+      <p>
+        Analyze multiple targets at once (Scientist tier only).
+      </p>
+
+      <h3>Batch Commands</h3>
+      <div class="code-block">
+        <pre><code>"Analyze TIC 1, TIC 2, TIC 3"
+"Run pipeline on TOI-700, TOI-1338, TOI-1452"
+"Process all targets in my list"</code></pre>
+      </div>
+
+      <h3>Uploading a Target List</h3>
+      <p>
+        Upload a CSV file with one TIC ID per line:
+      </p>
+      <div class="code-block">
+        <pre><code>tic_id
+307210830
+123456789
+987654321</code></pre>
+      </div>
+
+      <div class="cta-box">
+        <h3>Ready to Start Discovering?</h3>
+        <p>Jump into the app and find your first exoplanet candidate!</p>
+        <a href="app.html" class="btn btn-primary btn-lg">Launch LARUN App</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="guide.html" class="footer-link">User Guide</a>
+        <a href="models.html" class="footer-link">Models</a>
+        <a href="workflow.html" class="footer-link">Workflow</a>
+        <a href="tips.html" class="footer-link">Tips</a>
+        <a href="faq.html" class="footer-link">FAQ</a>
+        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/docs-nav.js"></script>
+</body>
+</html>

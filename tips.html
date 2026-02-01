@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE Tips & Tricks - Get the most out of your exoplanet hunting">
+  <title>Tips & Tricks - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+  <link rel="stylesheet" href="css/docs.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background (subtle) -->
+  <div class="star-field" style="opacity: 0.2;">
+    <div class="stars-layer stars-layer-1"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="page-content">
+    <div class="container">
+      <div class="page-header">
+        <h1>Tips & Tricks</h1>
+        <p class="lead">
+          Pro tips to help you find more exoplanets and avoid common pitfalls.
+          From beginners to advanced users.
+        </p>
+      </div>
+
+      <!-- Quick Tips -->
+      <section class="section-block">
+        <h2>Quick Tips</h2>
+        <div class="tips-grid">
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            </div>
+            <h3>Start with Known Planets</h3>
+            <p>
+              Practice on confirmed exoplanets like TOI-700 or Kepler-11 before searching
+              for new candidates. This helps you understand what real transits look like.
+            </p>
+          </div>
+
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+            </div>
+            <h3>Check Stellar Type</h3>
+            <p>
+              M-dwarfs (red dwarfs) are ideal for finding small planets because their
+              small size makes transits deeper and easier to detect.
+            </p>
+          </div>
+
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3v18h18"/>
+                <path d="M18 17l-5-10-4 8-3-4"/>
+              </svg>
+            </div>
+            <h3>Look at the Phase-Fold</h3>
+            <p>
+              The phase-folded light curve shows all transits stacked. A clear, consistent
+              dip is a good sign. Noisy or irregular dips may be false positives.
+            </p>
+          </div>
+
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <path d="M8 21h8M12 17v4"/>
+              </svg>
+            </div>
+            <h3>Use Multiple Sectors</h3>
+            <p>
+              TESS observes targets multiple times. Combining sectors increases signal
+              strength and helps confirm period accuracy.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Finding Good Targets -->
+      <section class="section-block">
+        <h2>Finding Good Targets</h2>
+
+        <div class="tip-detailed">
+          <h3>Best Star Types for Planet Hunting</h3>
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Star Type</th>
+                <th>Advantages</th>
+                <th>Challenges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">M-dwarf</span></td>
+                <td>Deeper transits, shorter periods, habitable zone closer</td>
+                <td>Fainter, more flares, potentially tidally locked planets</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">K-dwarf</span></td>
+                <td>Good balance of transit depth and stellar activity</td>
+                <td>Moderate transit depth</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">G-dwarf</span></td>
+                <td>Sun-like, well-understood physics</td>
+                <td>Shallow transits for Earth-sized planets</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">F-dwarf</span></td>
+                <td>Bright, good photometry</td>
+                <td>Faster rotation, harder to detect small planets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tip-detailed">
+          <h3>What Makes a Target Observable</h3>
+          <ul>
+            <li>
+              <strong>Brightness (V mag &lt; 12):</strong>
+              Brighter stars have less photometric noise
+            </li>
+            <li>
+              <strong>Low stellar variability:</strong>
+              Active stars with spots can mask or mimic transits
+            </li>
+            <li>
+              <strong>Not in crowded field:</strong>
+              Nearby stars can dilute transit signal or cause confusion
+            </li>
+            <li>
+              <strong>Multiple observation sectors:</strong>
+              More data = better detection confidence
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Avoiding False Positives -->
+      <section class="section-block">
+        <h2>Avoiding False Positives</h2>
+
+        <div class="warning-box">
+          <h3>Common False Positive Sources</h3>
+          <p>
+            Up to 50% of transit candidates turn out to be false positives!
+            Here's how to identify them:
+          </p>
+        </div>
+
+        <div class="fp-grid">
+          <div class="fp-card">
+            <h4>Eclipsing Binaries</h4>
+            <p class="fp-signs"><strong>Signs:</strong></p>
+            <ul>
+              <li>Transit depth &gt; 5% (most planets are &lt; 2%)</li>
+              <li>Secondary eclipse visible at phase 0.5</li>
+              <li>V-shaped transit (planets have flat bottom)</li>
+              <li>Odd-even depth differences</li>
+            </ul>
+            <p class="fp-action"><strong>Action:</strong> Check for secondary eclipse and depth asymmetry</p>
+          </div>
+
+          <div class="fp-card">
+            <h4>Background Eclipsing Binary</h4>
+            <p class="fp-signs"><strong>Signs:</strong></p>
+            <ul>
+              <li>Centroid shifts during eclipse</li>
+              <li>Transit depth changes with aperture size</li>
+              <li>Nearby bright star in the field</li>
+            </ul>
+            <p class="fp-action"><strong>Action:</strong> Run centroid analysis, check different apertures</p>
+          </div>
+
+          <div class="fp-card">
+            <h4>Stellar Variability</h4>
+            <p class="fp-signs"><strong>Signs:</strong></p>
+            <ul>
+              <li>Irregular transit timing</li>
+              <li>Transit shape changes between events</li>
+              <li>Strong rotation signal in light curve</li>
+            </ul>
+            <p class="fp-action"><strong>Action:</strong> Run VSTAR-001 to classify variability type</p>
+          </div>
+
+          <div class="fp-card">
+            <h4>Instrumental Artifacts</h4>
+            <p class="fp-signs"><strong>Signs:</strong></p>
+            <ul>
+              <li>Transit occurs at same spacecraft time</li>
+              <li>Signal correlates with CCD column</li>
+              <li>Multiple stars show same "transit"</li>
+            </ul>
+            <p class="fp-action"><strong>Action:</strong> Check quality flags, compare nearby stars</p>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <h4>The Vetting Checklist</h4>
+          <ol>
+            <li>Is the transit depth physically reasonable? (&lt; 5% for planets)</li>
+            <li>Is there a secondary eclipse? (Suggests EB)</li>
+            <li>Are odd and even transits the same depth? (Different = EB)</li>
+            <li>Does the centroid stay stable? (Shift = BEB)</li>
+            <li>Does depth change with aperture? (Yes = contamination)</li>
+            <li>Is the period stable across sectors? (Variable = stellar)</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Improving Detection -->
+      <section class="section-block">
+        <h2>Improving Detection Success</h2>
+
+        <div class="tip-detailed">
+          <h3>Optimize Your BLS Search</h3>
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Default</th>
+                <th>When to Adjust</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">period_min</span></td>
+                <td>0.5 days</td>
+                <td>Increase to 1+ day if looking for habitable zone planets around Sun-like stars</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">period_max</span></td>
+                <td>15 days</td>
+                <td>Increase for long-period planets (needs more data)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">duration_grid</span></td>
+                <td>0.01-0.15</td>
+                <td>Narrow for known stellar type; widen for exploratory searches</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tip-detailed">
+          <h3>Dealing with Noisy Data</h3>
+          <ul>
+            <li>
+              <strong>Use sigma-clipping:</strong>
+              Remove outliers that can confuse the BLS algorithm
+            </li>
+            <li>
+              <strong>Try different detrending:</strong>
+              Polynomial may work better than spline for quiet stars
+            </li>
+            <li>
+              <strong>Bin the data:</strong>
+              For very noisy data, binning to 10-30 minute cadence can help
+            </li>
+            <li>
+              <strong>Combine sectors:</strong>
+              More data always helps for marginal detections
+            </li>
+          </ul>
+        </div>
+
+        <div class="tip-detailed">
+          <h3>Finding Multi-Planet Systems</h3>
+          <p>
+            Many stars host multiple planets! After finding one transit:
+          </p>
+          <ol>
+            <li>Subtract the best-fit transit model from the data</li>
+            <li>Run BLS again on the residuals</li>
+            <li>Look for additional periods in the periodogram</li>
+            <li>Check for TTVs (Transit Timing Variations) - a sign of unseen planets</li>
+          </ol>
+          <div class="code-block">
+            <pre><code>"Find additional planets after removing the first signal"
+"Check for transit timing variations"
+"Look for additional periods in the residuals"</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advanced Techniques -->
+      <section class="section-block">
+        <h2>Advanced Techniques</h2>
+
+        <div class="tip-detailed">
+          <h3>Transit Timing Variations (TTVs)</h3>
+          <p>
+            If transits don't happen exactly on schedule, there might be another planet
+            gravitationally tugging on the transiting one.
+          </p>
+          <ul>
+            <li>Measure individual transit times precisely</li>
+            <li>Calculate O-C (Observed minus Calculated) residuals</li>
+            <li>Look for periodic patterns in the residuals</li>
+            <li>TTVs are strongest near mean-motion resonances (2:1, 3:2)</li>
+          </ul>
+          <div class="code-block">
+            <pre><code>"Analyze transit timing variations"
+"Calculate TTV for each transit"
+"Check for mean-motion resonance"</code></pre>
+          </div>
+        </div>
+
+        <div class="tip-detailed">
+          <h3>Combining TESS and Kepler Data</h3>
+          <p>
+            Some targets were observed by both missions. Combining data:
+          </p>
+          <ul>
+            <li>Improves period precision (longer baseline)</li>
+            <li>Helps detect long-period planets</li>
+            <li>Enables TTV analysis over decades</li>
+          </ul>
+          <div class="info-box">
+            <strong>Note:</strong> Different instruments have different systematics.
+            Normalize and detrend each dataset separately before combining.
+          </div>
+        </div>
+
+        <div class="tip-detailed">
+          <h3>Single Transit Events</h3>
+          <p>
+            Sometimes only one transit is observed. These are hard to confirm but can be valuable:
+          </p>
+          <ul>
+            <li>Long-period planets (P &gt; observation baseline)</li>
+            <li>Need follow-up observations to confirm period</li>
+            <li>Can estimate minimum period from transit duration</li>
+          </ul>
+          <div class="code-block">
+            <pre><code>"Analyze single transit event"
+"Estimate period from duration"
+"Flag for follow-up observation"</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts -->
+      <section class="section-block">
+        <h2>Keyboard Shortcuts</h2>
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th>Shortcut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Ctrl + Enter</code></td>
+              <td>Send message</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + K</code></td>
+              <td>Quick search</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + /</code></td>
+              <td>Show commands</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + S</code></td>
+              <td>Save current analysis</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + P</code></td>
+              <td>Generate report</td>
+            </tr>
+            <tr>
+              <td><code>Esc</code></td>
+              <td>Cancel current operation</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Common Mistakes -->
+      <section class="section-block">
+        <h2>Common Mistakes to Avoid</h2>
+
+        <div class="mistake-list">
+          <div class="mistake-item">
+            <div class="mistake-icon error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
+            <div class="mistake-content">
+              <h4>Ignoring Stellar Parameters</h4>
+              <p>
+                Planet radius depends on stellar radius. If the star's size is wrong,
+                your planet size will be wrong too. Always verify stellar parameters.
+              </p>
+            </div>
+          </div>
+
+          <div class="mistake-item">
+            <div class="mistake-icon error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
+            <div class="mistake-content">
+              <h4>Over-Aggressive Detrending</h4>
+              <p>
+                Too much detrending can remove the transit signal along with stellar
+                variability. Start with gentle detrending and increase only if needed.
+              </p>
+            </div>
+          </div>
+
+          <div class="mistake-item">
+            <div class="mistake-icon error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
+            <div class="mistake-content">
+              <h4>Trusting Low-SNR Detections</h4>
+              <p>
+                Signals with SNR &lt; 7 are often noise. Require higher confidence before
+                claiming a detection. When in doubt, get more data.
+              </p>
+            </div>
+          </div>
+
+          <div class="mistake-item">
+            <div class="mistake-icon error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
+            <div class="mistake-content">
+              <h4>Not Checking for Harmonics</h4>
+              <p>
+                The BLS might pick up a harmonic (half or double) of the true period.
+                Always check the phase-fold at 2x and 0.5x the detected period.
+              </p>
+            </div>
+          </div>
+
+          <div class="mistake-item">
+            <div class="mistake-icon error">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
+            <div class="mistake-content">
+              <h4>Ignoring the Odd-Even Test</h4>
+              <p>
+                Eclipsing binaries often show different depths for alternating eclipses.
+                Always compare odd and even transit depths before validating.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pro Tips -->
+      <section class="section-block">
+        <h2>Pro Tips from the Community</h2>
+
+        <div class="pro-tips">
+          <div class="pro-tip">
+            <blockquote>
+              "When vetting, I always look at the target pixel file directly.
+              Sometimes the aperture includes flux from a nearby eclipsing binary."
+            </blockquote>
+            <cite>- Sarah K., Citizen Scientist</cite>
+          </div>
+
+          <div class="pro-tip">
+            <blockquote>
+              "Multi-sector targets are gold. I found my first validated planet by
+              combining 4 TESS sectors - the signal was marginal in each alone."
+            </blockquote>
+            <cite>- Michael T., Amateur Astronomer</cite>
+          </div>
+
+          <div class="pro-tip">
+            <blockquote>
+              "Don't skip the boring step of checking against known EB catalogs.
+              You'll save hours of work on false positives."
+            </blockquote>
+            <cite>- Dr. Emily R., Astrophysicist</cite>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-box">
+        <h3>Ready to Apply These Tips?</h3>
+        <p>Put your knowledge to work and find exoplanets!</p>
+        <div class="cta-buttons">
+          <a href="app.html" class="btn btn-primary btn-lg">Start Hunting</a>
+          <a href="faq.html" class="btn btn-secondary btn-lg">Read FAQ</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="guide.html" class="footer-link">User Guide</a>
+        <a href="models.html" class="footer-link">Models</a>
+        <a href="workflow.html" class="footer-link">Workflow</a>
+        <a href="tips.html" class="footer-link">Tips</a>
+        <a href="faq.html" class="footer-link">FAQ</a>
+        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

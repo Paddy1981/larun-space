@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LARUN.SPACE TinyML Models - Learn about our AI models for exoplanet detection">
+  <title>TinyML Models - LARUN.SPACE</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/space-theme.css">
+  <link rel="stylesheet" href="css/docs.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- Star Field Background (subtle) -->
+  <div class="star-field" style="opacity: 0.2;">
+    <div class="stars-layer stars-layer-1"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
+      </a>
+
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="index.html#features" class="nav-link">Features</a>
+          <a href="pricing.html" class="nav-link">Pricing</a>
+          <a href="docs.html" class="nav-link">Docs</a>
+          <a href="download.html" class="nav-link">Download</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
+          <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Docs Layout -->
+  <div class="docs-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="docs-sidebar">
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Overview</div>
+        <div class="docs-nav-links">
+          <a href="#introduction" class="docs-nav-link active">Introduction</a>
+          <a href="#architecture" class="docs-nav-link">Architecture</a>
+          <a href="#federation" class="docs-nav-link">Model Federation</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Detection Models</div>
+        <div class="docs-nav-links">
+          <a href="#exoplanet-001" class="docs-nav-link">EXOPLANET-001</a>
+          <a href="#vstar-001" class="docs-nav-link">VSTAR-001</a>
+          <a href="#flare-001" class="docs-nav-link">FLARE-001</a>
+          <a href="#supernova-001" class="docs-nav-link">SUPERNOVA-001</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Analysis Models</div>
+        <div class="docs-nav-links">
+          <a href="#astero-001" class="docs-nav-link">ASTERO-001</a>
+          <a href="#spectype-001" class="docs-nav-link">SPECTYPE-001</a>
+          <a href="#galaxy-001" class="docs-nav-link">GALAXY-001</a>
+          <a href="#microlens-001" class="docs-nav-link">MICROLENS-001</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Educational</div>
+        <div class="docs-nav-links">
+          <a href="#trainer-001" class="docs-nav-link">TRAINER-001 (ASTRA)</a>
+        </div>
+      </div>
+
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Resources</div>
+        <div class="docs-nav-links">
+          <a href="guide.html" class="docs-nav-link">User Guide</a>
+          <a href="workflow.html" class="docs-nav-link">How It Works</a>
+          <a href="tips.html" class="docs-nav-link">Tips & Tricks</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <h1 id="introduction">TinyML Models</h1>
+      <p class="lead">
+        LARUN uses a federation of specialized TinyML models, each optimized for a specific
+        astronomical detection or analysis task. All models are under 100KB, enabling
+        edge deployment and browser-based inference.
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">9</div>
+          <div class="stat-label">Specialized Models</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">&lt;100KB</div>
+          <div class="stat-label">Per Model</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">81.8%</div>
+          <div class="stat-label">Detection Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">&lt;50ms</div>
+          <div class="stat-label">Inference Time</div>
+        </div>
+      </div>
+
+      <h2 id="architecture">Model Architecture</h2>
+      <p>
+        All LARUN models share a common architecture optimized for TinyML deployment:
+      </p>
+
+      <div class="architecture-diagram">
+        <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                    INPUT LIGHT CURVE                         │
+│              (normalized flux vs. time)                      │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  PREPROCESSING LAYER                         │
+│     Normalization │ Detrending │ Outlier Removal            │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│              FEATURE EXTRACTION (1D-CNN)                     │
+│     Conv1D(32) → ReLU → MaxPool → Conv1D(64) → ReLU         │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 CLASSIFICATION HEAD                          │
+│        Flatten → Dense(128) → Dropout → Dense(N)            │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      OUTPUT                                  │
+│           Class probabilities or regression values           │
+└─────────────────────────────────────────────────────────────┘
+        </pre>
+      </div>
+
+      <h3>Optimization Techniques</h3>
+      <ul>
+        <li><strong>INT8 Quantization:</strong> Reduces model size 4x with minimal accuracy loss</li>
+        <li><strong>Pruning:</strong> Removes redundant weights</li>
+        <li><strong>Knowledge Distillation:</strong> Trained from larger teacher models</li>
+        <li><strong>TensorFlow Lite:</strong> Optimized for edge inference</li>
+      </ul>
+
+      <h2 id="federation">Model Federation</h2>
+      <p>
+        LARUN models work together as a federation, sharing information and combining
+        predictions for robust analysis.
+      </p>
+
+      <div class="federation-diagram">
+        <pre>
+                    ┌─────────────────┐
+                    │   ORCHESTRATOR  │
+                    │   (Coordinator) │
+                    └────────┬────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        │                    │                    │
+        ▼                    ▼                    ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│ EXOPLANET-001 │   │   VSTAR-001   │   │  FLARE-001    │
+│ Transit Det.  │   │ Variable Star │   │ Flare Det.    │
+└───────────────┘   └───────────────┘   └───────────────┘
+        │                    │                    │
+        └────────────────────┼────────────────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │ ENSEMBLE VOTE   │
+                    │ Final Decision  │
+                    └─────────────────┘
+        </pre>
+      </div>
+
+      <h3>How Federation Works</h3>
+      <ol>
+        <li><strong>Task Routing:</strong> Orchestrator routes input to relevant models</li>
+        <li><strong>Parallel Inference:</strong> Multiple models process simultaneously</li>
+        <li><strong>Ensemble Voting:</strong> Results combined with confidence weighting</li>
+        <li><strong>Conflict Resolution:</strong> Disagreements resolved by specialized arbiter</li>
+      </ol>
+
+      <!-- EXOPLANET-001 -->
+      <h2 id="exoplanet-001">EXOPLANET-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Transit Detection</h3>
+            <span class="model-badge primary">Core Model</span>
+          </div>
+        </div>
+
+        <p>
+          The flagship model for detecting exoplanet transits. Identifies periodic dips in
+          stellar brightness caused by planets passing in front of their host stars.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">48 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">81.8%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Inference</span>
+            <span class="spec-value">23 ms</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Training Data</span>
+            <span class="spec-value">5,000+ transits</span>
+          </div>
+        </div>
+
+        <h4>Input</h4>
+        <ul>
+          <li>Light curve: 1000-5000 flux measurements</li>
+          <li>Cadence: 2-minute to 30-minute</li>
+          <li>Normalized to median flux = 1.0</li>
+        </ul>
+
+        <h4>Output</h4>
+        <ul>
+          <li><code>is_transit</code>: Binary classification (true/false)</li>
+          <li><code>confidence</code>: Probability score (0-1)</li>
+          <li><code>period_estimate</code>: Rough period if detected</li>
+        </ul>
+
+        <h4>Use Cases</h4>
+        <ul>
+          <li>Initial transit candidate detection</li>
+          <li>Vetting potential false positives</li>
+          <li>Bulk screening of target lists</li>
+        </ul>
+      </div>
+
+      <!-- VSTAR-001 -->
+      <h2 id="vstar-001">VSTAR-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Variable Star Classification</h3>
+            <span class="model-badge success">High Accuracy</span>
+          </div>
+        </div>
+
+        <p>
+          Classifies variable stars into categories including eclipsing binaries, pulsators,
+          and rotational variables. Critical for distinguishing real transits from stellar variability.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">68 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">87.2%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Inference</span>
+            <span class="spec-value">31 ms</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Classes</span>
+            <span class="spec-value">12</span>
+          </div>
+        </div>
+
+        <h4>Classification Categories</h4>
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Description</th>
+              <th>Period Range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="param-name">EA</span></td>
+              <td>Detached eclipsing binary</td>
+              <td>0.5 - 100 days</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">EB</span></td>
+              <td>Beta Lyrae type binary</td>
+              <td>0.5 - 10 days</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">EW</span></td>
+              <td>W UMa contact binary</td>
+              <td>0.2 - 1 day</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">RRAB</span></td>
+              <td>RR Lyrae fundamental mode</td>
+              <td>0.3 - 1 day</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">RRC</span></td>
+              <td>RR Lyrae first overtone</td>
+              <td>0.2 - 0.5 day</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">DSCT</span></td>
+              <td>Delta Scuti pulsator</td>
+              <td>0.02 - 0.3 day</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">GDOR</span></td>
+              <td>Gamma Doradus pulsator</td>
+              <td>0.3 - 3 days</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">CEPH</span></td>
+              <td>Classical Cepheid</td>
+              <td>1 - 100 days</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">ROT</span></td>
+              <td>Rotational variable</td>
+              <td>0.1 - 50 days</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">LPV</span></td>
+              <td>Long period variable</td>
+              <td>50 - 1000 days</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FLARE-001 -->
+      <h2 id="flare-001">FLARE-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Stellar Flare Detection</h3>
+            <span class="model-badge warning">Real-time</span>
+          </div>
+        </div>
+
+        <p>
+          Detects stellar flares - sudden brightening events caused by magnetic reconnection
+          on the stellar surface. Important for assessing habitability around active stars.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">42 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">89.5%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Inference</span>
+            <span class="spec-value">18 ms</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Training Data</span>
+            <span class="spec-value">10,000+ flares</span>
+          </div>
+        </div>
+
+        <h4>Output Parameters</h4>
+        <ul>
+          <li><code>flare_detected</code>: Boolean flag</li>
+          <li><code>flare_start</code>: Start time (BJD)</li>
+          <li><code>flare_peak</code>: Peak brightness time</li>
+          <li><code>flare_energy</code>: Estimated energy (ergs)</li>
+          <li><code>flare_amplitude</code>: Peak amplitude (relative flux)</li>
+        </ul>
+      </div>
+
+      <!-- ASTERO-001 -->
+      <h2 id="astero-001">ASTERO-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/>
+              <path d="M18 17l-5-10-4 8-3-4"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Asteroseismology</h3>
+            <span class="model-badge">Stellar Physics</span>
+          </div>
+        </div>
+
+        <p>
+          Analyzes stellar oscillations to determine fundamental stellar parameters like
+          mass, radius, and age. Essential for accurate planet characterization.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">72 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">92.1%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Parameters</span>
+            <span class="spec-value">nu_max, delta_nu</span>
+          </div>
+        </div>
+
+        <h4>Derived Parameters</h4>
+        <ul>
+          <li><code>nu_max</code>: Frequency of maximum power (microHz)</li>
+          <li><code>delta_nu</code>: Large frequency separation (microHz)</li>
+          <li><code>stellar_mass</code>: Derived mass (solar masses)</li>
+          <li><code>stellar_radius</code>: Derived radius (solar radii)</li>
+          <li><code>stellar_age</code>: Estimated age (Gyr)</li>
+        </ul>
+      </div>
+
+      <!-- SPECTYPE-001 -->
+      <h2 id="spectype-001">SPECTYPE-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Spectral Classification</h3>
+            <span class="model-badge success">Fast</span>
+          </div>
+        </div>
+
+        <p>
+          Classifies stellar spectral types (O, B, A, F, G, K, M) from photometric colors
+          or low-resolution spectra. Used for habitable zone calculations.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">38 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">94.3%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Classes</span>
+            <span class="spec-value">OBAFGKM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GALAXY-001 -->
+      <h2 id="galaxy-001">GALAXY-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Galaxy Morphology</h3>
+            <span class="model-badge">Image-based</span>
+          </div>
+        </div>
+
+        <p>
+          Classifies galaxy morphologies (spiral, elliptical, irregular, merger).
+          Uses 2D image input rather than 1D light curves.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">95 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">88.7%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Input</span>
+            <span class="spec-value">64x64 image</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPERNOVA-001 -->
+      <h2 id="supernova-001">SUPERNOVA-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Supernova Classification</h3>
+            <span class="model-badge error">Alert System</span>
+          </div>
+        </div>
+
+        <p>
+          Classifies supernova types from early light curve data. Enables rapid
+          classification for follow-up observations.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">58 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">85.4%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Classes</span>
+            <span class="spec-value">Ia, II, Ibc</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MICROLENS-001 -->
+      <h2 id="microlens-001">MICROLENS-001</h2>
+      <div class="model-card">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>Microlensing Detection</h3>
+            <span class="model-badge">Rare Events</span>
+          </div>
+        </div>
+
+        <p>
+          Detects gravitational microlensing events - temporary brightening caused by
+          a massive object passing between us and a background star. Can reveal planets
+          even around distant stars.
+        </p>
+
+        <div class="model-specs">
+          <div class="spec">
+            <span class="spec-label">Size</span>
+            <span class="spec-value">52 KB</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Accuracy</span>
+            <span class="spec-value">78.9%</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Events/year</span>
+            <span class="spec-value">~3000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRAINER-001 (ASTRA) -->
+      <h2 id="trainer-001">TRAINER-001 (ASTRA)</h2>
+      <div class="model-card featured">
+        <div class="model-header">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <div class="model-meta">
+            <h3>ASTRA - Educational AI Tutor</h3>
+            <span class="model-badge primary">RAG-Powered</span>
+          </div>
+        </div>
+
+        <p>
+          <strong>ASTRA</strong> (Astronomical Science Tutor and Research Assistant) is
+          LARUN's AI-powered space science educator. Unlike other models, ASTRA uses
+          Retrieval-Augmented Generation (RAG) to provide accurate, sourced answers
+          about space science.
+        </p>
+
+        <div class="info-box">
+          <strong>ASTRA's Personality</strong>
+          <p>
+            ASTRA is enthusiastic, patient, and curious. It loves sharing "did you know?"
+            facts and uses analogies to explain complex concepts. ASTRA always cites sources
+            and encourages further exploration.
+          </p>
+        </div>
+
+        <h4>Knowledge Sources</h4>
+        <ul>
+          <li><strong>NASA:</strong> TESS, Kepler, JWST mission data</li>
+          <li><strong>ESA:</strong> Gaia, CHEOPS, ExoMars</li>
+          <li><strong>ISRO:</strong> AstroSat, Chandrayaan</li>
+          <li><strong>JAXA:</strong> Japanese space exploration</li>
+          <li><strong>SpaceX:</strong> Launch and mission data</li>
+          <li><strong>CNSA:</strong> Chinese space program</li>
+          <li><strong>arXiv:</strong> Research papers</li>
+        </ul>
+
+        <h4>Features</h4>
+        <ul>
+          <li><strong>Interactive Lessons:</strong> Structured learning paths</li>
+          <li><strong>Quizzes:</strong> Test your knowledge</li>
+          <li><strong>Model Explainer:</strong> Understand why models make predictions</li>
+          <li><strong>Memory:</strong> Remembers your learning progress</li>
+          <li><strong>Hot-swap Models:</strong> Always uses latest model versions</li>
+        </ul>
+
+        <h4>Example Interactions</h4>
+        <div class="code-block">
+          <pre><code># Learning
+"/learn topic exoplanets"
+"/learn quiz transits"
+
+# Questions
+"What is the transit method?"
+"How does TESS find planets?"
+"Explain the habitable zone"
+
+# Explanations
+"/learn explain"  # Why did the model predict this?</code></pre>
+        </div>
+      </div>
+
+      <div class="cta-box">
+        <h3>Explore the Models in Action</h3>
+        <p>See how our TinyML federation works together to find exoplanets.</p>
+        <a href="app.html" class="btn btn-primary btn-lg">Try LARUN Now</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="guide.html" class="footer-link">User Guide</a>
+        <a href="models.html" class="footer-link">Models</a>
+        <a href="workflow.html" class="footer-link">Workflow</a>
+        <a href="tips.html" class="footer-link">Tips</a>
+        <a href="faq.html" class="footer-link">FAQ</a>
+        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/docs-nav.js"></script>
+</body>
+</html>
