@@ -382,11 +382,14 @@ const Auth = {
 // ============================================
 
 let authMode = 'login';
+let modalJustOpened = false;
 
 function openAuthModal(mode = 'login') {
   authMode = mode;
   updateAuthModal();
+  modalJustOpened = true;
   document.getElementById('auth-modal')?.classList.add('active');
+  setTimeout(() => { modalJustOpened = false; }, 400);
 }
 
 function closeAuthModal() {
@@ -491,7 +494,7 @@ function openSettings() {
 
 // Close modal on overlay click
 document.addEventListener('click', (event) => {
-  if (event.target.classList.contains('modal-overlay')) {
+  if (event.target.classList.contains('modal-overlay') && !modalJustOpened) {
     event.target.classList.remove('active');
   }
 });
