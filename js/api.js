@@ -4,7 +4,16 @@
  */
 
 const LarunAPI = {
-  // Configuration
+  // Configuration - Use Supabase Edge Functions
+  supabaseURL: 'https://mwmbcfcvnkwegrjlauis.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk',
+
+  // Get Edge Function URL
+  getFunctionURL(functionName) {
+    return `${this.supabaseURL}/functions/v1/${functionName}`;
+  },
+
+  // Legacy API URL (for future backend)
   baseURL: 'https://api.larun.space',
   version: 'v1',
 
@@ -13,16 +22,13 @@ const LarunAPI = {
     return `${this.baseURL}/${this.version}${endpoint}`;
   },
 
-  // Get auth headers
+  // Get auth headers for Supabase Edge Functions
   getHeaders() {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'apikey': this.supabaseAnonKey,
+      'Authorization': `Bearer ${this.supabaseAnonKey}`
     };
-
-    const token = localStorage.getItem('larun_token');
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
 
     return headers;
   },
@@ -211,15 +217,31 @@ const LarunAPI = {
   // ============================================
 
   /**
-   * Send chat message for AI processing
+   * Send chat message for AI processing via Supabase Edge Function
    * @param {string} message - User message
    * @param {string} conversationId - Conversation ID
    */
   async chat(message, conversationId = null) {
-    return this.request('POST', '/chat', {
-      message,
-      conversation_id: conversationId
-    });
+    try {
+      const response = await fetch(this.getFunctionURL('chat'), {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          message,
+          conversation_id: conversationId
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `API Error: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Chat API Error:', error);
+      throw error;
+    }
   },
 
   /**

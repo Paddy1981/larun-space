@@ -166,20 +166,22 @@ const Chat = {
     }
   },
 
-  // Process message (AI response simulation or API call)
+  // Process message (AI response via Supabase Edge Function)
   async processMessage(message) {
     // Try to use API if available
     if (typeof LarunAPI !== 'undefined') {
       try {
+        console.log('Calling LARUN API...');
         const response = await LarunAPI.chat(message, this.currentConversation?.id);
+        console.log('API Response:', response);
         return response.response || response.message || this.getSimulatedResponse(message);
       } catch (e) {
-        console.log('API not available, using simulated response');
+        console.log('API error, using simulated response:', e.message);
         // Fall through to simulated response
       }
     }
 
-    // Simulated response for demo
+    // Simulated response for demo/fallback
     return this.getSimulatedResponse(message);
   },
 
