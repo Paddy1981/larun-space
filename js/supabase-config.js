@@ -1,6 +1,6 @@
 // Supabase Configuration for LARUN.SPACE
 const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_0qRtiBlacrDCoUrQkNXnoQ_TCmZwk3k';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk';
 
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
