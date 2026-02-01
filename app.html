@@ -300,6 +300,17 @@
     if (typeof openAuthModal === 'undefined') {
       let authMode = 'login';
 
+      // Get Supabase client - uses auth.js's initSupabaseClient if available
+      function getSupabaseClient() {
+        if (typeof initSupabaseClient === 'function') {
+          return initSupabaseClient();
+        }
+        if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+          return supabaseClient;
+        }
+        return null;
+      }
+
       window.openAuthModal = function(mode) {
         authMode = mode || 'login';
         updateAuthModal();
@@ -335,12 +346,13 @@
       };
 
       window.handleGitHubLogin = async function() {
-        if (typeof supabase === 'undefined' || !supabase) {
+        const client = getSupabaseClient();
+        if (!client || !client.auth) {
           alert('Authentication service not loaded. Please refresh and try again.');
           return;
         }
         try {
-          const { data, error } = await supabase.auth.signInWithOAuth({
+          const { data, error } = await client.auth.signInWithOAuth({
             provider: 'github',
             options: { redirectTo: window.location.origin + '/app.html' }
           });
@@ -352,13 +364,15 @@
             window.location.href = data.url;
           }
         } catch (err) {
+          console.error('GitHub login error:', err);
           alert('Error: ' + err.message);
         }
       };
 
       window.handleAuth = async function(event) {
         event.preventDefault();
-        if (typeof supabase === 'undefined' || !supabase) {
+        const client = getSupabaseClient();
+        if (!client || !client.auth) {
           alert('Authentication service not loaded. Please refresh and try again.');
           return;
         }
@@ -371,9 +385,9 @@
         try {
           let result;
           if (authMode === 'login') {
-            result = await supabase.auth.signInWithPassword({ email, password });
+            result = await client.auth.signInWithPassword({ email, password });
           } else {
-            result = await supabase.auth.signUp({ email, password });
+            result = await client.auth.signUp({ email, password });
           }
           if (result.error) {
             alert(result.error.message);
@@ -384,6 +398,7 @@
             }
           }
         } catch (err) {
+          console.error('Auth error:', err);
           alert('Error: ' + err.message);
         }
       };

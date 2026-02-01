@@ -348,11 +348,21 @@
     const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk';
 
-    // Initialize Supabase client
+    // Initialize Supabase client - the CDN exposes supabase.createClient globally
     let supabaseClient = null;
-    if (window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function initSupabase() {
+      if (typeof supabase !== 'undefined' && supabase.createClient) {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Supabase initialized successfully');
+        return true;
+      }
+      console.warn('Supabase not available yet');
+      return false;
     }
+
+    // Try to initialize immediately
+    initSupabase();
 
     // Essential auth modal functions
     let authMode = 'login';
@@ -392,7 +402,11 @@
     }
 
     async function handleGitHubLogin() {
+      // Try to initialize if not ready
       if (!supabaseClient) {
+        initSupabase();
+      }
+      if (!supabaseClient || !supabaseClient.auth) {
         alert('Authentication service not loaded. Please refresh and try again.');
         return;
       }
@@ -409,13 +423,18 @@
           window.location.href = data.url;
         }
       } catch (err) {
+        console.error('GitHub login error:', err);
         alert('Error: ' + err.message);
       }
     }
 
     async function handleAuth(event) {
       event.preventDefault();
+      // Try to initialize if not ready
       if (!supabaseClient) {
+        initSupabase();
+      }
+      if (!supabaseClient || !supabaseClient.auth) {
         alert('Authentication service not loaded. Please refresh and try again.');
         return;
       }
@@ -443,6 +462,7 @@
           }
         }
       } catch (err) {
+        console.error('Auth error:', err);
         alert('Error: ' + err.message);
       }
     }
