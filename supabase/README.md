@@ -39,17 +39,18 @@ supabase secrets set GEMINI_API_KEY=your-gemini-api-key --project-ref mwmbcfcvnk
 
 Without the Gemini key, the chat function will use simulated responses that still provide helpful exoplanet analysis guidance.
 
-### 5. Set Stripe Keys (for subscriptions)
+### 5. Set Lemon Squeezy Keys (for subscriptions)
 
-1. Create a [Stripe account](https://stripe.com) if you don't have one
-2. Get your API keys from the Stripe Dashboard
-3. Create products and prices for Researcher ($9/mo) and Scientist ($29/mo) plans
+1. Log in to your [Lemon Squeezy](https://lemonsqueezy.com) dashboard
+2. Create products for Researcher ($9/mo) and Scientist ($29/mo) plans
+3. Get your Store ID and Variant IDs from the product settings
 4. Set the secrets:
 
 ```bash
-supabase secrets set STRIPE_SECRET_KEY=sk_live_... --project-ref mwmbcfcvnkwegrjlauis
-supabase secrets set STRIPE_PRICE_RESEARCHER=price_... --project-ref mwmbcfcvnkwegrjlauis
-supabase secrets set STRIPE_PRICE_SCIENTIST=price_... --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set LEMONSQUEEZY_API_KEY=your-api-key --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set LEMONSQUEEZY_STORE_ID=your-store-id --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set LEMONSQUEEZY_VARIANT_RESEARCHER=variant-id --project-ref mwmbcfcvnkwegrjlauis
+supabase secrets set LEMONSQUEEZY_VARIANT_SCIENTIST=variant-id --project-ref mwmbcfcvnkwegrjlauis
 ```
 
 ### 6. Deploy the Edge Functions

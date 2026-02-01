@@ -5,10 +5,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Stripe Price IDs - set these in Supabase secrets
-const STRIPE_PRICES: Record<string, string> = {
-  researcher: Deno.env.get("STRIPE_PRICE_RESEARCHER") || "",
-  scientist: Deno.env.get("STRIPE_PRICE_SCIENTIST") || "",
+// Lemon Squeezy Variant IDs - set these in Supabase secrets
+// These are the product variant IDs from your Lemon Squeezy store
+const LEMONSQUEEZY_VARIANTS: Record<string, string> = {
+  researcher: Deno.env.get("LEMONSQUEEZY_VARIANT_RESEARCHER") || "",
+  scientist: Deno.env.get("LEMONSQUEEZY_VARIANT_SCIENTIST") || "",
 };
 
 serve(async (req) => {
@@ -18,13 +19,13 @@ serve(async (req) => {
   }
 
   try {
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const apiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+    const storeId = Deno.env.get("LEMONSQUEEZY_STORE_ID");
 
-    if (!stripeKey) {
-      // Stripe not configured - return helpful message
+    if (!apiKey) {
       return new Response(
         JSON.stringify({
-          error: "Stripe not configured",
+          error: "Payment system not configured",
           message: "Payment processing is being set up. Please try again later or contact support@larun.space"
         }),
         { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -33,58 +34,93 @@ serve(async (req) => {
 
     const { tier, user_id, user_email, success_url, cancel_url } = await req.json();
 
-    if (!tier || !STRIPE_PRICES[tier]) {
+    if (!tier || !LEMONSQUEEZY_VARIANTS[tier]) {
       return new Response(
         JSON.stringify({ error: "Invalid subscription tier" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const priceId = STRIPE_PRICES[tier];
+    const variantId = LEMONSQUEEZY_VARIANTS[tier];
 
-    if (!priceId) {
+    if (!variantId) {
       return new Response(
-        JSON.stringify({ error: "Price not configured for this tier" }),
+        JSON.stringify({ error: "Product variant not configured for this tier" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Create Stripe Checkout Session
-    const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    // Create Lemon Squeezy Checkout
+    const lsResponse = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${stripeKey}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/vnd.api+json",
+        "Accept": "application/vnd.api+json",
       },
-      body: new URLSearchParams({
-        "mode": "subscription",
-        "payment_method_types[0]": "card",
-        "line_items[0][price]": priceId,
-        "line_items[0][quantity]": "1",
-        "success_url": success_url || "https://larun.space/app.html?subscription=success",
-        "cancel_url": cancel_url || "https://larun.space/pricing.html?subscription=cancelled",
-        "customer_email": user_email || "",
-        "client_reference_id": user_id || "",
-        "metadata[user_id]": user_id || "",
-        "metadata[tier]": tier,
+      body: JSON.stringify({
+        data: {
+          type: "checkouts",
+          attributes: {
+            checkout_data: {
+              email: user_email || "",
+              custom: {
+                user_id: user_id || "",
+                tier: tier
+              }
+            },
+            checkout_options: {
+              embed: false,
+              media: true,
+              button_color: "#7c3aed"
+            },
+            product_options: {
+              redirect_url: success_url || "https://larun.space/app.html?subscription=success",
+              receipt_button_text: "Go to Dashboard",
+              receipt_link_url: "https://larun.space/app.html"
+            }
+          },
+          relationships: {
+            store: {
+              data: {
+                type: "stores",
+                id: storeId || ""
+              }
+            },
+            variant: {
+              data: {
+                type: "variants",
+                id: variantId
+              }
+            }
+          }
+        }
       }),
     });
 
-    if (!stripeResponse.ok) {
-      const error = await stripeResponse.text();
-      console.error("Stripe API error:", error);
+    if (!lsResponse.ok) {
+      const error = await lsResponse.text();
+      console.error("Lemon Squeezy API error:", error);
       return new Response(
         JSON.stringify({ error: "Failed to create checkout session" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const session = await stripeResponse.json();
+    const checkoutData = await lsResponse.json();
+    const checkoutUrl = checkoutData.data?.attributes?.url;
+
+    if (!checkoutUrl) {
+      return new Response(
+        JSON.stringify({ error: "No checkout URL returned" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     return new Response(
       JSON.stringify({
-        url: session.url,
-        session_id: session.id
+        url: checkoutUrl,
+        checkout_id: checkoutData.data?.id
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
