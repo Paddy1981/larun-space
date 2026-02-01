@@ -427,10 +427,18 @@ function updateAuthModal() {
 async function handleAuth(event) {
   event.preventDefault();
 
+  if (!supabase) {
+    alert('Authentication service not loaded. Please refresh the page and try again.');
+    return;
+  }
+
   const email = document.getElementById('auth-email')?.value;
   const password = document.getElementById('auth-password')?.value;
 
-  if (!email || !password) return;
+  if (!email || !password) {
+    alert('Please enter both email and password.');
+    return;
+  }
 
   const submitBtn = event.target.querySelector('button[type="submit"]');
   if (submitBtn) {
@@ -467,9 +475,18 @@ async function handleAuth(event) {
 }
 
 async function handleGitHubLogin() {
-  const result = await Auth.loginWithGitHub();
-  if (!result.success) {
-    alert(result.error || 'GitHub login failed. Please try again.');
+  if (!supabase) {
+    alert('Authentication service not loaded. Please refresh the page and try again.');
+    return;
+  }
+  try {
+    const result = await Auth.loginWithGitHub();
+    if (!result.success) {
+      alert(result.error || 'GitHub login failed. Please try again.');
+    }
+  } catch (error) {
+    console.error('GitHub login error:', error);
+    alert('Error: ' + error.message);
   }
 }
 
