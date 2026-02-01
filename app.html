@@ -295,5 +295,99 @@
   <script src="js/auth.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    // Essential auth modal functions (inline fallback)
+    if (typeof openAuthModal === 'undefined') {
+      let authMode = 'login';
+
+      window.openAuthModal = function(mode) {
+        authMode = mode || 'login';
+        updateAuthModal();
+        document.getElementById('auth-modal')?.classList.add('active');
+      };
+
+      window.closeAuthModal = function() {
+        document.getElementById('auth-modal')?.classList.remove('active');
+      };
+
+      window.toggleAuthMode = function() {
+        authMode = authMode === 'login' ? 'signup' : 'login';
+        updateAuthModal();
+      };
+
+      window.updateAuthModal = function() {
+        const title = document.getElementById('auth-modal-title');
+        const submitText = document.getElementById('auth-submit-text');
+        const toggleText = document.getElementById('auth-toggle-text');
+        const toggleLink = document.getElementById('auth-toggle-link');
+
+        if (authMode === 'login') {
+          if (title) title.textContent = 'Sign In';
+          if (submitText) submitText.textContent = 'Sign In';
+          if (toggleText) toggleText.textContent = "Don't have an account?";
+          if (toggleLink) toggleLink.textContent = 'Sign Up';
+        } else {
+          if (title) title.textContent = 'Create Account';
+          if (submitText) submitText.textContent = 'Create Account';
+          if (toggleText) toggleText.textContent = 'Already have an account?';
+          if (toggleLink) toggleLink.textContent = 'Sign In';
+        }
+      };
+
+      window.handleGitHubLogin = async function() {
+        if (typeof supabase === 'undefined' || !supabase) {
+          alert('Authentication service not loaded. Please refresh and try again.');
+          return;
+        }
+        try {
+          const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: { redirectTo: window.location.origin + '/app.html' }
+          });
+          if (error) {
+            alert('GitHub login error: ' + error.message);
+            return;
+          }
+          if (data?.url) {
+            window.location.href = data.url;
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      };
+
+      window.handleAuth = async function(event) {
+        event.preventDefault();
+        if (typeof supabase === 'undefined' || !supabase) {
+          alert('Authentication service not loaded. Please refresh and try again.');
+          return;
+        }
+        const email = document.getElementById('auth-email')?.value;
+        const password = document.getElementById('auth-password')?.value;
+        if (!email || !password) {
+          alert('Please enter email and password.');
+          return;
+        }
+        try {
+          let result;
+          if (authMode === 'login') {
+            result = await supabase.auth.signInWithPassword({ email, password });
+          } else {
+            result = await supabase.auth.signUp({ email, password });
+          }
+          if (result.error) {
+            alert(result.error.message);
+          } else {
+            closeAuthModal();
+            if (authMode === 'signup') {
+              alert('Check your email to confirm your account!');
+            }
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      };
+    }
+  </script>
 </body>
 </html>
