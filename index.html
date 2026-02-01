@@ -68,14 +68,29 @@
           <a href="app.html" class="btn btn-primary">Get Started</a>
         </div>
 
-        <button class="menu-toggle" aria-label="Toggle menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+          <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+          <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
         </button>
       </nav>
     </div>
   </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#features" class="nav-link" onclick="toggleMobileMenu()">Features</a>
+    <a href="pricing.html" class="nav-link">Pricing</a>
+    <a href="docs.html" class="nav-link">Docs</a>
+    <a href="download.html" class="nav-link">Download</a>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-lg" onclick="toggleMobileMenu(); openAuthModal('login')">Sign In</button>
+      <a href="app.html" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -333,6 +348,25 @@
     // Initialize star animation
     if (typeof initStars === 'function') {
       initStars('star-canvas');
+    }
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const menuIcon = document.querySelector('.menu-icon');
+      const closeIcon = document.querySelector('.close-icon');
+
+      menu.classList.toggle('active');
+
+      if (menu.classList.contains('active')) {
+        menuIcon.style.display = 'none';
+        closeIcon.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      } else {
+        menuIcon.style.display = 'block';
+        closeIcon.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     }
   </script>
 </body>
