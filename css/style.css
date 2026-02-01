@@ -415,6 +415,7 @@ p {
 }
 
 .mobile-menu .nav-actions {
+  display: flex;
   flex-direction: column;
   gap: var(--space-md);
   margin-top: var(--space-xl);
@@ -425,8 +426,8 @@ p {
 }
 
 @media (max-width: 768px) {
-  .nav-links,
-  .nav-actions {
+  .nav .nav-links,
+  .nav .nav-actions {
     display: none;
   }
 
