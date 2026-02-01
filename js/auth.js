@@ -27,9 +27,6 @@ function initSupabaseClient() {
 // Try to initialize immediately
 initSupabaseClient();
 
-// Alias for backward compatibility
-let supabase = supabaseClient;
-
 const Auth = {
   // State
   user: null,
@@ -467,7 +464,8 @@ function updateAuthModal() {
 async function handleAuth(event) {
   event.preventDefault();
 
-  if (!supabase) {
+  const client = initSupabaseClient();
+  if (!client || !client.auth) {
     alert('Authentication service not loaded. Please refresh the page and try again.');
     return;
   }
