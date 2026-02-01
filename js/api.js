@@ -5,7 +5,7 @@
 
 const LarunAPI = {
   // Configuration
-  baseURL: 'http://localhost:8000', // Update for production
+  baseURL: 'https://api.larun.space',
   version: 'v1',
 
   // Get full API URL

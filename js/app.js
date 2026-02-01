@@ -6,7 +6,7 @@
 const App = {
   // Configuration
   config: {
-    apiBaseURL: 'http://localhost:8000',
+    apiBaseURL: 'https://api.larun.space',
     version: '1.0.0'
   },
 
