@@ -41,10 +41,10 @@ serve(async (req) => {
       );
     }
 
-    // Get OpenAI API key from environment
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    // Get Gemini API key from environment
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
 
-    if (!openaiKey) {
+    if (!geminiKey) {
       // Fallback to simulated response if no API key
       const response = getSimulatedResponse(message);
       return new Response(
@@ -53,27 +53,33 @@ serve(async (req) => {
       );
     }
 
-    // Call OpenAI API
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: message }
-        ],
-        temperature: 0.7,
-        max_tokens: 1500,
-      }),
-    });
+    // Call Gemini API
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: SYSTEM_PROMPT + "\n\nUser: " + message }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1500,
+          }
+        }),
+      }
+    );
 
-    if (!openaiResponse.ok) {
-      const error = await openaiResponse.text();
-      console.error("OpenAI API error:", error);
+    if (!geminiResponse.ok) {
+      const error = await geminiResponse.text();
+      console.error("Gemini API error:", error);
       // Fallback to simulated response
       const response = getSimulatedResponse(message);
       return new Response(
@@ -82,8 +88,8 @@ serve(async (req) => {
       );
     }
 
-    const data = await openaiResponse.json();
-    const aiResponse = data.choices[0]?.message?.content || getSimulatedResponse(message);
+    const data = await geminiResponse.json();
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || getSimulatedResponse(message);
 
     return new Response(
       JSON.stringify({ response: aiResponse, conversation_id }),
