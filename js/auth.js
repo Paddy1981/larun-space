@@ -475,14 +475,32 @@ async function handleAuth(event) {
 }
 
 async function handleGitHubLogin() {
+  alert('Starting GitHub login...');
+
   if (!supabase) {
     alert('Authentication service not loaded. Please refresh the page and try again.');
     return;
   }
+
   try {
-    const result = await Auth.loginWithGitHub();
-    if (!result.success) {
-      alert(result.error || 'GitHub login failed. Please try again.');
+    alert('Calling Supabase OAuth...');
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: window.location.origin + '/app.html'
+      }
+    });
+
+    if (error) {
+      alert('OAuth error: ' + error.message);
+      return;
+    }
+
+    alert('OAuth initiated. URL: ' + (data?.url || 'No URL returned'));
+
+    // If we have a URL, redirect manually
+    if (data?.url) {
+      window.location.href = data.url;
     }
   } catch (error) {
     console.error('GitHub login error:', error);

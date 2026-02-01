@@ -334,7 +334,7 @@
         </div>
         <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
           <span id="auth-toggle-text">Don't have an account?</span>
-          <a href="#" onclick="toggleAuthMode()" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
+          <a href="#" onclick="event.preventDefault(); toggleAuthMode();" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
         </p>
       </form>
     </div>
