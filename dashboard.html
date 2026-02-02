@@ -627,14 +627,12 @@
             </a>
         </div>
 
-        <div class="search-bar">
-            <div class="search-input-wrapper">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                </svg>
-                <input type="text" class="search-input" placeholder="Search in AstroTinyML">
-            </div>
+        <div class="nav-center" style="flex: 1; display: flex; justify-content: center; gap: 8px;">
+            <a href="index.html" class="nav-link" style="padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px;">Home</a>
+            <a href="dashboard.html" class="nav-link active" style="padding: 8px 16px; color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px;">Dashboard</a>
+            <a href="pricing.html" class="nav-link" style="padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px;">Pricing</a>
+            <a href="docs.html" class="nav-link" style="padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px;">Docs</a>
+            <a href="download.html" class="nav-link" style="padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px;">Download</a>
         </div>
 
         <div class="nav-right">
@@ -1114,11 +1112,17 @@
         </div>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-brand">Larun. × Astrodata</div>
-            <p>AstroTinyML v1.0 • TinyML for Space Science</p>
-            <p>Both Dashboard and CLI run on-device • No cloud required</p>
-            <p>© 2026 Larun. All rights reserved.</p>
+        <footer class="footer" style="text-align: center; padding: 32px; background: var(--white); border-top: 1px solid var(--light-gray);">
+            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; margin-bottom: 16px;">
+                <a href="https://laruneng.com" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;" target="_blank">laruneng.com</a>
+                <a href="https://github.com/Paddy1981/larun" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;" target="_blank">GitHub</a>
+                <a href="docs.html" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;">API Docs</a>
+                <a href="guide.html" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;">User Guide</a>
+                <a href="models.html" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;">Models</a>
+                <a href="workflow.html" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;">How It Works</a>
+                <a href="faq.html" style="color: var(--medium-gray); text-decoration: none; font-size: 14px;">FAQ</a>
+            </div>
+            <p style="font-size: 12px; color: var(--medium-gray);">&copy; 2026 Larun. AstroTinyML. All rights reserved.</p>
         </footer>
     </main>
 
