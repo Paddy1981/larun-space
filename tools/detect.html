@@ -352,10 +352,21 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/model-service.js"></script>
+    <script src="../js/mast-service.js"></script>
+    <script src="../js/stats-service.js"></script>
     <script>
-        // Simple light curve visualization
-        function drawLightCurve() {
+        // Current light curve data
+        let currentLightCurve = null;
+        let analysisCount = 0;
+        let totalCandidates = 0;
+        let highConfidenceCount = 0;
+        let snrValues = [];
+
+        // Light curve visualization
+        function drawLightCurve(fluxData = null, transitPosition = null) {
             const canvas = document.getElementById('plot-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = canvas.offsetWidth;
@@ -382,49 +393,55 @@
                 ctx.stroke();
             }
 
-            // Generate light curve with transit
-            const points = [];
-            const numPoints = 200;
-            const transitPhase = 0.5;
-            const transitWidth = 0.05;
+            // Use provided flux data or generate sample
+            let points = [];
+            if (fluxData && fluxData.length > 0) {
+                // Use real data
+                const minFlux = Math.min(...fluxData);
+                const maxFlux = Math.max(...fluxData);
+                const range = maxFlux - minFlux || 0.02;
 
-            for (let i = 0; i < numPoints; i++) {
-                const phase = i / numPoints;
-                let flux = 1 + (Math.random() - 0.5) * 0.01;
+                points = fluxData.map((f, i) => ({
+                    x: i / fluxData.length,
+                    y: f
+                }));
 
-                // Add transit dip
-                const distFromTransit = Math.abs(phase - transitPhase);
-                if (distFromTransit < transitWidth) {
-                    const depth = 0.02 * (1 - distFromTransit / transitWidth);
-                    flux -= depth;
-                }
+                // Normalize for display
+                const displayMin = minFlux - range * 0.1;
+                const displayRange = range * 1.2;
 
-                points.push({ x: phase, y: flux });
+                ctx.fillStyle = '#4fc3f7';
+                points.forEach(p => {
+                    const x = p.x * w;
+                    const y = h - ((p.y - displayMin) / displayRange) * h;
+                    ctx.beginPath();
+                    ctx.arc(x, Math.max(5, Math.min(h - 5, y)), 2, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else {
+                // No data - show placeholder message
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Google Sans';
+                ctx.textAlign = 'center';
+                ctx.fillText('Enter a target ID and run detection to see light curve', w / 2, h / 2);
             }
 
-            // Draw points
-            ctx.fillStyle = '#4fc3f7';
-            points.forEach(p => {
-                const x = p.x * w;
-                const y = h - (p.y - 0.97) / 0.06 * h;
+            // Draw transit marker if detected
+            if (transitPosition !== null) {
+                ctx.strokeStyle = '#ff5722';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
                 ctx.beginPath();
-                ctx.arc(x, y, 2, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Draw transit marker
-            ctx.strokeStyle = '#ff5722';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            ctx.moveTo(transitPhase * w, 0);
-            ctx.lineTo(transitPhase * w, h);
-            ctx.stroke();
-            ctx.setLineDash([]);
+                ctx.moveTo(transitPosition * w, 0);
+                ctx.lineTo(transitPosition * w, h);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
 
             // Labels
             ctx.fillStyle = '#888';
             ctx.font = '12px Google Sans';
+            ctx.textAlign = 'left';
             ctx.fillText('Phase', w - 40, h - 10);
             ctx.save();
             ctx.translate(15, h / 2);
@@ -433,72 +450,154 @@
             ctx.restore();
         }
 
-        function runDetection() {
+        async function runDetection() {
             const targetId = document.getElementById('target-id').value || 'TIC 307210830';
             const method = document.getElementById('method').value;
-            const snrThreshold = document.getElementById('snr-threshold').value;
+            const snrThreshold = parseFloat(document.getElementById('snr-threshold').value);
 
-            // Update stats
-            document.getElementById('stat-analyzed').textContent = '1';
-
-            // Show results
             const resultsSection = document.getElementById('results-section');
             const resultsContainer = document.getElementById('results-container');
 
+            // Show loading state
             resultsSection.style.display = 'block';
+            resultsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--medium-gray);">Fetching light curve data...</div>';
 
-            // Simulate detection results
-            const results = [
-                {
-                    name: `${targetId} b`,
-                    type: 'planet',
-                    period: '4.23',
-                    depth: '0.85%',
-                    snr: '12.4',
-                    classification: 'Hot Jupiter',
-                    score: 'high'
-                },
-                {
-                    name: `${targetId} c`,
-                    type: 'candidate',
-                    period: '12.7',
-                    depth: '0.12%',
-                    snr: '7.8',
-                    classification: 'Super-Earth',
-                    score: 'medium'
+            try {
+                // Initialize services if needed
+                await ModelService.init();
+
+                // Fetch real light curve from MAST
+                resultsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--medium-gray);">Running TinyML inference...</div>';
+                const lightCurve = await MASTService.getLightCurve(targetId);
+                currentLightCurve = lightCurve;
+
+                // Draw the light curve
+                drawLightCurve(lightCurve.flux);
+
+                // Run real model inference
+                const prediction = await ModelService.predict(lightCurve.flux);
+
+                // Update stats
+                analysisCount++;
+                document.getElementById('stat-analyzed').textContent = analysisCount;
+
+                // Build results based on real inference
+                const results = [];
+
+                if (prediction.transitDetected.detected || prediction.snr >= snrThreshold) {
+                    totalCandidates++;
+                    snrValues.push(prediction.snr);
+
+                    const isHighConfidence = prediction.topProbability > 0.5;
+                    if (isHighConfidence) highConfidenceCount++;
+
+                    results.push({
+                        name: `${targetId} b`,
+                        type: isHighConfidence ? 'planet' : 'candidate',
+                        period: lightCurve.metadata?.period ? lightCurve.metadata.period.toFixed(2) : 'Unknown',
+                        depth: lightCurve.metadata?.depth ? (lightCurve.metadata.depth * 100).toFixed(3) + '%' : 'Unknown',
+                        snr: prediction.snr.toFixed(1),
+                        classification: prediction.topClass,
+                        confidence: (prediction.topProbability * 100).toFixed(1) + '%',
+                        score: isHighConfidence ? 'high' : 'medium',
+                        inferenceTime: prediction.inferenceTime.toFixed(1) + 'ms',
+                        dataSource: lightCurve.metadata?.source || 'MAST'
+                    });
+
+                    // Mark transit position on plot
+                    if (prediction.transitDetected.position) {
+                        drawLightCurve(lightCurve.flux, prediction.transitDetected.position);
+                    }
                 }
-            ];
 
-            resultsContainer.innerHTML = results.map(r => `
-                <div class="result-card ${r.type === 'candidate' ? 'candidate' : ''}">
-                    <div class="result-header">
-                        <span class="result-name">${r.name}</span>
-                        <span class="result-score ${r.score === 'high' ? 'score-high' : 'score-medium'}">
-                            ${r.score === 'high' ? 'Planet Confirmed' : 'Candidate'}
-                        </span>
+                // Display results
+                if (results.length > 0) {
+                    resultsContainer.innerHTML = results.map(r => `
+                        <div class="result-card ${r.type === 'candidate' ? 'candidate' : ''}">
+                            <div class="result-header">
+                                <span class="result-name">${r.name}</span>
+                                <span class="result-score ${r.score === 'high' ? 'score-high' : 'score-medium'}">
+                                    ${r.score === 'high' ? 'High Confidence' : 'Candidate'}
+                                </span>
+                            </div>
+                            <div class="result-details">
+                                <div><strong>Period:</strong> ${r.period} days</div>
+                                <div><strong>Depth:</strong> ${r.depth}</div>
+                                <div><strong>SNR:</strong> ${r.snr}</div>
+                                <div><strong>Classification:</strong> ${r.classification}</div>
+                                <div><strong>Confidence:</strong> ${r.confidence}</div>
+                                <div><strong>Method:</strong> ${method.toUpperCase()}</div>
+                                <div><strong>Inference:</strong> ${r.inferenceTime}</div>
+                                <div><strong>Data:</strong> ${r.dataSource}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="result-card" style="border-left-color: var(--medium-gray);">
+                            <div class="result-header">
+                                <span class="result-name">${targetId}</span>
+                                <span class="result-score" style="background: var(--lighter-gray); color: var(--medium-gray);">No Detection</span>
+                            </div>
+                            <div class="result-details">
+                                <div><strong>SNR:</strong> ${prediction.snr.toFixed(1)} (below ${snrThreshold} threshold)</div>
+                                <div><strong>Transit:</strong> ${prediction.transitDetected.detected ? 'Weak signal' : 'Not detected'}</div>
+                                <div><strong>Method:</strong> ${method.toUpperCase()}</div>
+                                <div><strong>Inference:</strong> ${prediction.inferenceTime.toFixed(1)}ms</div>
+                                <div><strong>Data Points:</strong> ${lightCurve.flux.length}</div>
+                                <div><strong>Source:</strong> ${lightCurve.metadata?.source || 'MAST'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Update sidebar stats
+                document.getElementById('stat-candidates').textContent = totalCandidates;
+                document.getElementById('stat-high').textContent = highConfidenceCount;
+                document.getElementById('stat-snr').textContent = snrValues.length > 0
+                    ? (snrValues.reduce((a, b) => a + b, 0) / snrValues.length).toFixed(1)
+                    : '-';
+
+                // Record to stats service
+                if (typeof StatsService !== 'undefined') {
+                    await StatsService.recordAnalysis(targetId, prediction);
+                }
+
+            } catch (error) {
+                console.error('Detection error:', error);
+                resultsContainer.innerHTML = `
+                    <div class="result-card" style="border-left-color: #c5221f;">
+                        <div class="result-header">
+                            <span class="result-name">Error</span>
+                        </div>
+                        <div class="result-details">
+                            <div style="grid-column: 1 / -1;"><strong>Message:</strong> ${error.message}</div>
+                            <div style="grid-column: 1 / -1;">Try a different target ID or check your connection.</div>
+                        </div>
                     </div>
-                    <div class="result-details">
-                        <div><strong>Period:</strong> ${r.period} days</div>
-                        <div><strong>Depth:</strong> ${r.depth}</div>
-                        <div><strong>SNR:</strong> ${r.snr}</div>
-                        <div><strong>Classification:</strong> ${r.classification}</div>
-                        <div><strong>Method:</strong> ${method.toUpperCase()}</div>
-                        <div><strong>Threshold:</strong> SNR > ${snrThreshold}</div>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('stat-candidates').textContent = results.length;
-            document.getElementById('stat-high').textContent = results.filter(r => r.score === 'high').length;
-            document.getElementById('stat-snr').textContent = '10.1';
-
-            // Redraw plot with detected transit
-            drawLightCurve();
+                `;
+            }
         }
 
         // Initialize
-        window.addEventListener('load', drawLightCurve);
-        window.addEventListener('resize', drawLightCurve);
+        window.addEventListener('load', async () => {
+            drawLightCurve();
+            // Pre-initialize services
+            try {
+                await ModelService.init();
+                await MASTService.init();
+                await StatsService.init();
+            } catch (e) {
+                console.warn('Service pre-initialization:', e.message);
+            }
+        });
+        window.addEventListener('resize', () => {
+            if (currentLightCurve) {
+                drawLightCurve(currentLightCurve.flux);
+            } else {
+                drawLightCurve();
+            }
+        });
     </script>
 </body>
 </html>
