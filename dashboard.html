@@ -809,23 +809,23 @@
         <div class="status-grid">
             <div class="status-card">
                 <h4>Objects Processed</h4>
-                <div class="status-value">2,847</div>
-                <div class="status-change positive">↑ 12% from last month</div>
+                <div class="status-value" id="stat-objects">--</div>
+                <div class="status-change" id="stat-objects-change">Loading...</div>
             </div>
             <div class="status-card">
                 <h4>Detections</h4>
-                <div class="status-value">156</div>
-                <div class="status-change positive">↑ 8 new this week</div>
+                <div class="status-value" id="stat-detections">--</div>
+                <div class="status-change" id="stat-detections-change">Loading...</div>
             </div>
             <div class="status-card">
                 <h4>Model Accuracy</h4>
-                <div class="status-value">96.2%</div>
-                <div class="status-change">Calibrated 2h ago</div>
+                <div class="status-value" id="stat-accuracy">--</div>
+                <div class="status-change" id="stat-accuracy-change">Loading...</div>
             </div>
             <div class="status-card">
                 <h4>Vetted Candidates</h4>
-                <div class="status-value">19</div>
-                <div class="status-change positive">↑ 4 confirmed planets</div>
+                <div class="status-value" id="stat-vetted">--</div>
+                <div class="status-change" id="stat-vetted-change">Loading...</div>
             </div>
         </div>
 
@@ -1082,71 +1082,19 @@
         <div class="activity-section">
             <div class="activity-header">
                 <h3>Recent Activity</h3>
-                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px;">View All</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="refreshActivity()">Refresh</button>
             </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Transit candidate vetted - 92% planet probability</div>
-                    <div class="activity-meta">Larun. Vetting • 1 hour ago</div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Calibration completed with 100% accuracy</div>
-                    <div class="activity-meta">Larun. Calibrate • 2 hours ago</div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">2 significant detections found in TESS batch</div>
-                    <div class="activity-meta">Larun. Detect • 3 hours ago</div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">NASA report generated and ready for submission</div>
-                    <div class="activity-meta">Larun. Reports • 5 hours ago</div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" />
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">247 Kepler light curves ingested</div>
-                    <div class="activity-meta">Larun. Pipeline • Yesterday</div>
+            <div id="activity-container">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Loading activity...</div>
+                        <div class="activity-meta">Please wait</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1253,6 +1201,9 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/auth.js"></script>
+    <script src="js/stats-service.js"></script>
+    <script src="js/mast-service.js"></script>
+    <script src="js/model-service.js"></script>
     <script>
         // User menu toggle
         function toggleUserMenu() {
@@ -1394,6 +1345,126 @@
                     window.location.href = `app.html?q=${encodeURIComponent(query)}`;
                 }
             }
+        });
+
+        // Load real statistics from services
+        async function loadDashboardStats() {
+            try {
+                await StatsService.init();
+                const stats = await StatsService.getDashboardStats();
+
+                // Update stat cards with real data
+                document.getElementById('stat-objects').textContent = stats.objectsProcessed.toLocaleString();
+                document.getElementById('stat-objects-change').textContent = stats.objectsProcessed > 0
+                    ? `${stats.sessionDuration} min this session`
+                    : 'Run an analysis to start';
+                document.getElementById('stat-objects-change').className = stats.objectsProcessed > 0 ? 'status-change positive' : 'status-change';
+
+                document.getElementById('stat-detections').textContent = stats.detections.toLocaleString();
+                document.getElementById('stat-detections-change').textContent = stats.detections > 0
+                    ? 'From your analyses'
+                    : 'No detections yet';
+                document.getElementById('stat-detections-change').className = stats.detections > 0 ? 'status-change positive' : 'status-change';
+
+                document.getElementById('stat-accuracy').textContent = stats.modelAccuracy.toFixed(1) + '%';
+                document.getElementById('stat-accuracy-change').textContent = `Calibrated ${stats.lastCalibration}`;
+
+                document.getElementById('stat-vetted').textContent = stats.vettedCandidates.toLocaleString();
+                document.getElementById('stat-vetted-change').textContent = stats.vettedCandidates > 0
+                    ? 'Candidates reviewed'
+                    : 'No candidates vetted';
+                document.getElementById('stat-vetted-change').className = stats.vettedCandidates > 0 ? 'status-change positive' : 'status-change';
+
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+                // Show error state
+                document.getElementById('stat-objects').textContent = '0';
+                document.getElementById('stat-objects-change').textContent = 'Start analyzing to see stats';
+            }
+        }
+
+        // Load recent activity
+        async function loadRecentActivity() {
+            try {
+                const activities = await StatsService.getRecentActivity();
+                const container = document.getElementById('activity-container');
+
+                if (!activities || activities.length === 0) {
+                    container.innerHTML = `
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">No activity yet</div>
+                                <div class="activity-meta">Run an analysis to see activity here</div>
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            ${getActivityIcon(activity.type)}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">${escapeHtml(activity.title)}</div>
+                            <div class="activity-meta">${escapeHtml(activity.source)} • ${formatTimeAgo(activity.timestamp)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load activity:', error);
+            }
+        }
+
+        // Get activity icon SVG
+        function getActivityIcon(type) {
+            const icons = {
+                detection: '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>',
+                vetting: '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>',
+                calibration: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+                report: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
+                pipeline: '<svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>',
+                info: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
+            };
+            return icons[type] || icons.info;
+        }
+
+        // Format time ago
+        function formatTimeAgo(timestamp) {
+            const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+            const diff = Date.now() - date.getTime();
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+            if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            if (minutes > 0) return `${minutes} min ago`;
+            return 'Just now';
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Refresh activity
+        async function refreshActivity() {
+            await loadRecentActivity();
+        }
+
+        // Initialize dashboard data on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load stats after a short delay to allow auth to initialize
+            setTimeout(() => {
+                loadDashboardStats();
+                loadRecentActivity();
+            }, 500);
         });
     </script>
 </body>

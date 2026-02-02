@@ -441,13 +441,15 @@
   <script src="js/auth.js"></script>
   <script>
     // Lemon Squeezy checkout URLs
+    // Lemon Squeezy checkout URLs - add your URLs from Lemon Squeezy dashboard
+    // Format: https://YOUR-STORE.lemonsqueezy.com/buy/VARIANT-ID
     const LEMONSQUEEZY_CHECKOUTS = {
-      researcher: 'https://larun.space/checkout/buy/2a358d72-53c7-488d-b26d-536caa6630ef',
-      scientist: 'https://larun.space/checkout/buy/0339ba4f-5a42-4bae-b405-92e92a2a21cc'
+      researcher: '',  // Add Researcher tier checkout URL when available
+      scientist: ''    // Add Scientist tier checkout URL when available
     };
 
-    // Set to false when payment is configured, true for demo mode
-    const DEMO_MODE = false;
+    // Demo mode enabled until Lemon Squeezy products are configured
+    const DEMO_MODE = true;
 
     async function subscribe(tier) {
       // Check if user is logged in via Supabase Auth
