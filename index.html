@@ -1,504 +1,873 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LARUN.SPACE - Discover exoplanets with AI. Federation of TinyML for Space Science.">
-  <meta name="keywords" content="exoplanet, detection, AI, machine learning, TinyML, space science, astronomy">
-  <title>LARUN.SPACE - Discover Exoplanets with AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LARUN.SPACE - Discover exoplanets with AI. Federation of TinyML for Space Science.">
+    <meta name="keywords" content="exoplanet, detection, AI, machine learning, TinyML, space science, astronomy">
+    <title>Larun. AstroTinyML - Discover Exoplanets with AI</title>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/space-theme.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #202124;
+            --dark-gray: #3c4043;
+            --medium-gray: #5f6368;
+            --light-gray: #dadce0;
+            --lighter-gray: #f1f3f4;
+            --white: #ffffff;
+            --hover-bg: #f8f9fa;
+            --border-radius: 8px;
+            --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+            --shadow-hover: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+            --accent-blue: #1a73e8;
+            --accent-green: #137333;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Roboto', -apple-system, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--black);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-dot {
+            color: var(--black);
+        }
+
+        .product-name {
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--medium-gray);
+            margin-left: 4px;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--lighter-gray);
+        }
+
+        .nav-link.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-gray);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--lighter-gray);
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--dark-gray);
+            padding: 10px 16px;
+        }
+
+        .btn-text:hover {
+            background: var(--lighter-gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: var(--white);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--lighter-gray);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--medium-gray);
+            margin-bottom: 24px;
+        }
+
+        .hero-logo {
+            font-size: 56px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .hero-logo .larun {
+            color: var(--black);
+        }
+
+        .hero-logo .dot {
+            color: var(--black);
+        }
+
+        .hero-product {
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--medium-gray);
+            margin-bottom: 24px;
+        }
+
+        .hero-tagline {
+            font-size: 18px;
+            color: var(--medium-gray);
+            max-width: 600px;
+            margin: 0 auto 16px;
+            line-height: 1.6;
+        }
+
+        .hero-quote {
+            font-size: 14px;
+            color: var(--medium-gray);
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Features Grid */
+        .section {
+            padding: 60px 24px;
+            background: var(--lighter-gray);
+        }
+
+        .section.white {
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--medium-gray);
+        }
+
+        /* Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            background: var(--white);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .step:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0 auto 16px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 14px;
+            color: var(--medium-gray);
+            line-height: 1.5;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .feature:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--black);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .feature-icon.outline {
+            background: var(--white);
+            border: 2px solid var(--black);
+        }
+
+        .feature-icon.outline svg {
+            fill: var(--black);
+        }
+
+        .feature-content h4 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 4px;
+        }
+
+        .feature-content p {
+            font-size: 14px;
+            color: var(--medium-gray);
+            line-height: 1.5;
+        }
+
+        /* Audience Section */
+        .audience-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .audience-tag {
+            background: var(--white);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-gray);
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .audience-tag:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .cta-section .section-title {
+            color: var(--white);
+        }
+
+        .cta-section .section-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+        }
+
+        .cta-section .btn-primary {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .cta-section .btn-primary:hover {
+            background: var(--lighter-gray);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px;
+            background: var(--white);
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-link {
+            color: var(--medium-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--black);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+
+        /* Auth Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--medium-gray);
+        }
+
+        .modal h2 {
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 16px;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            .hero-logo {
+                font-size: 42px;
+            }
+
+            .hero-product {
+                font-size: 28px;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
+            }
+        }
+
+        /* Mobile Menu */
+        .menu-btn {
+            display: none;
+            width: 48px;
+            height: 48px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--medium-gray);
+        }
+
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: flex;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Star Field Background -->
-  <div class="star-field">
-    <canvas id="star-canvas"></canvas>
-    <div class="stars-layer stars-layer-1"></div>
-    <div class="stars-layer stars-layer-2"></div>
-    <div class="stars-layer stars-layer-3"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-  </div>
-
-  <!-- Nebula Overlay -->
-  <div class="nebula-overlay"></div>
-
-  <!-- Floating Particles -->
-  <div class="particles">
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-  </div>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-content">
-      <a href="index.html" class="logo">
-        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
-      </a>
-
-      <nav class="nav">
-        <div class="nav-links">
-          <a href="#features" class="nav-link">Features</a>
-          <a href="pricing.html" class="nav-link">Pricing</a>
-          <a href="docs.html" class="nav-link">Docs</a>
-          <a href="download.html" class="nav-link">Download</a>
-          <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="index.html" class="logo">
+                <span class="logo-text">Larun<span class="logo-dot">.</span></span>
+                <span class="product-name">AstroTinyML</span>
+            </a>
         </div>
 
-        <div class="nav-actions">
-          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
-          <a href="app.html" class="btn btn-primary">Get Started</a>
+        <div class="nav-center">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="pricing.html" class="nav-link">Pricing</a>
+            <a href="docs.html" class="nav-link">Docs</a>
+            <a href="download.html" class="nav-link">Download</a>
         </div>
 
-        <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMobileMenu()">
-          <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12h18M3 6h18M3 18h18"/>
-          </svg>
-          <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </nav>
+        <div class="nav-right">
+            <button class="btn btn-text" onclick="openAuthModal('login')">Sign In</button>
+            <a href="app.html" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+                Federation of TinyML for Space Science
+            </div>
+
+            <div class="hero-logo">
+                <span class="larun">Larun</span><span class="dot">.</span>
+            </div>
+            <div class="hero-product">AstroTinyML</div>
+
+            <p class="hero-tagline">
+                Discover exoplanets with AI. Analyze NASA TESS and Kepler data using TinyML-powered transit detection.
+            </p>
+
+            <p class="hero-quote">"No PhD required."</p>
+
+            <div class="hero-actions">
+                <a href="app.html" class="btn btn-primary">Start Exploring - Free</a>
+                <a href="docs.html" class="btn btn-secondary">View Documentation</a>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">From conversation to discovery in four simple steps</p>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Chat with AI</h3>
+                        <p class="step-desc">Describe what you want to find using natural language</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Fetch NASA Data</h3>
+                        <p class="step-desc">Automatically retrieve light curves from TESS and Kepler</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Detect Transits</h3>
+                        <p class="step-desc">TinyML algorithms find periodic dips in brightness</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Report Discovery</h3>
+                        <p class="step-desc">Generate publication-ready analysis reports</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="section white">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Powerful Features</h2>
+                    <p class="section-subtitle">Professional-grade exoplanet detection tools accessible to everyone</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>TinyML Detection</h4>
+                            <p>81.8% accuracy using edge-optimized neural networks</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon outline">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>NASA TESS/Kepler Data</h4>
+                            <p>Direct access to official NASA mission archives</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 3v18h18"/>
+                                <path d="M18 17l-5-10-4 8-3-4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>BLS Periodogram</h4>
+                            <p>Box Least Squares analysis for transit period detection</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon outline">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Publication-Ready Reports</h4>
+                            <p>Generate professional analysis documents automatically</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Habitable Zone Analysis</h4>
+                            <p>Evaluate if planets could support liquid water</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon outline">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <path d="M8 21h8M12 17v4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Conversational Interface</h4>
+                            <p>Chat naturally - no command line or coding required</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audience Section -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Who Is This For?</h2>
+                    <p class="section-subtitle">Space science should be accessible to everyone</p>
+                </div>
+
+                <div class="audience-tags">
+                    <span class="audience-tag">Researchers</span>
+                    <span class="audience-tag">Students</span>
+                    <span class="audience-tag">Amateur Astronomers</span>
+                    <span class="audience-tag">Educators</span>
+                    <span class="audience-tag">Space Enthusiasts</span>
+                    <span class="audience-tag">Everyone</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2 class="section-title">Ready to Discover Your First Exoplanet?</h2>
+                <p class="section-subtitle">Join researchers worldwide using LARUN.SPACE for exoplanet detection</p>
+                <a href="app.html" class="btn btn-primary">Start Exploring - Free</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
+                <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+                <a href="docs.html" class="footer-link">API Docs</a>
+                <a href="guide.html" class="footer-link">User Guide</a>
+                <a href="models.html" class="footer-link">Models</a>
+                <a href="workflow.html" class="footer-link">How It Works</a>
+                <a href="tips.html" class="footer-link">Tips</a>
+                <a href="faq.html" class="footer-link">FAQ</a>
+            </div>
+            <p class="footer-copy">&copy; 2026 Larun. AstroTinyML. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            <h2 id="auth-modal-title">Sign In</h2>
+            <form onsubmit="handleAuth(event)">
+                <div>
+                    <!-- GitHub OAuth Button -->
+                    <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="handleGitHubLogin()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        Continue with GitHub
+                    </button>
+
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0;">
+                        <div style="flex: 1; height: 1px; background: var(--light-gray);"></div>
+                        <span style="font-size: 12px; color: var(--medium-gray);">OR</span>
+                        <div style="flex: 1; height: 1px; background: var(--light-gray);"></div>
+                    </div>
+
+                    <input type="email" id="auth-email" class="input" placeholder="Email" required>
+                    <input type="password" id="auth-password" class="input" placeholder="Password" required>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <span id="auth-submit-text">Sign In</span>
+                    </button>
+                </div>
+                <p style="text-align: center; margin-top: 16px; color: var(--medium-gray); font-size: 14px;">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <a href="#" onclick="toggleAuthMode(); return false;" id="auth-toggle-link" style="color: var(--accent-blue); font-weight: 500;">Sign Up</a>
+                </p>
+            </form>
+        </div>
     </div>
-  </header>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="#features" class="nav-link" onclick="toggleMobileMenu()">Features</a>
-    <a href="pricing.html" class="nav-link">Pricing</a>
-    <a href="docs.html" class="nav-link">Docs</a>
-    <a href="download.html" class="nav-link">Download</a>
-    <div class="nav-actions">
-      <button class="btn btn-ghost btn-lg" onclick="event.stopPropagation(); mobileSignIn();">Sign In</button>
-      <a href="app.html" class="btn btn-primary btn-lg">Get Started</a>
-    </div>
-  </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Update UI based on auth state
+        function updateNavUI() {
+            const signInBtn = document.querySelector('.btn-text[onclick*="login"]');
+            if (Auth.isAuthenticated && Auth.user) {
+                const displayName = Auth.user.user_metadata?.name || Auth.user.email?.split('@')[0] || 'User';
+                if (signInBtn) {
+                    signInBtn.textContent = displayName;
+                    signInBtn.onclick = () => window.location.href = 'dashboard.html';
+                }
+            }
+        }
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-        </svg>
-        Federation of TinyML for Space Science
-      </div>
+        // Override Auth.updateUI to also update nav
+        const originalUpdateUI = Auth.updateUI.bind(Auth);
+        Auth.updateUI = function() {
+            originalUpdateUI();
+            updateNavUI();
+        };
 
-      <h1 class="hero-title">LARUN.SPACE</h1>
-
-      <p class="hero-subtitle">
-        Discover exoplanets with AI. Analyze NASA TESS and Kepler data using TinyML-powered transit detection.
-      </p>
-
-      <p class="hero-tagline">"No PhD required."</p>
-
-      <div class="hero-actions">
-        <a href="app.html" class="btn btn-primary btn-lg">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-          Start Exploring - Free
-        </a>
-        <a href="docs.html" class="btn btn-secondary btn-lg">
-          View Documentation
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Section -->
-  <section class="section" id="how-it-works">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">How It Works</h2>
-        <p class="section-subtitle">From conversation to discovery in four simple steps</p>
-      </div>
-
-      <div class="steps-grid">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3 class="step-title">Chat with AI</h3>
-          <p class="step-desc">Describe what you want to find using natural language</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3 class="step-title">Fetch NASA Data</h3>
-          <p class="step-desc">Automatically retrieve light curves from TESS and Kepler</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3 class="step-title">Detect Transits</h3>
-          <p class="step-desc">TinyML algorithms find periodic dips in brightness</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">4</div>
-          <h3 class="step-title">Report Discovery</h3>
-          <p class="step-desc">Generate publication-ready analysis reports</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="section" id="features">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Powerful Features</h2>
-        <p class="section-subtitle">Professional-grade exoplanet detection tools accessible to everyone</p>
-      </div>
-
-      <div class="features-grid">
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>TinyML Detection</h4>
-            <p>81.8% accuracy using edge-optimized neural networks</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>NASA TESS/Kepler Data</h4>
-            <p>Direct access to official NASA mission archives</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 3v18h18"/>
-              <path d="M18 17l-5-10-4 8-3-4"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>BLS Periodogram</h4>
-            <p>Box Least Squares analysis for transit period detection</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>Publication-Ready Reports</h4>
-            <p>Generate professional analysis documents automatically</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>Habitable Zone Analysis</h4>
-            <p>Evaluate if planets could support liquid water</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="feature-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <path d="M8 21h8M12 17v4"/>
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h4>Conversational Interface</h4>
-            <p>Chat naturally - no command line or coding required</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Audience Section -->
-  <section class="section" id="audience">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Who Is This For?</h2>
-        <p class="section-subtitle">Space science should be accessible to everyone</p>
-      </div>
-
-      <div class="audience-tags">
-        <span class="audience-tag">Researchers</span>
-        <span class="audience-tag">Students</span>
-        <span class="audience-tag">Amateur Astronomers</span>
-        <span class="audience-tag">Educators</span>
-        <span class="audience-tag">Space Enthusiasts</span>
-        <span class="audience-tag">Everyone</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="section" style="text-align: center;">
-    <div class="container">
-      <h2 class="section-title">Ready to Discover Your First Exoplanet?</h2>
-      <p class="section-subtitle" style="margin-bottom: var(--space-xl);">
-        Join researchers worldwide using LARUN.SPACE for exoplanet detection
-      </p>
-      <a href="app.html" class="btn btn-accent btn-lg">
-        Start Exploring - Free
-      </a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-links">
-        <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
-        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
-        <a href="docs.html" class="footer-link">API Docs</a>
-        <a href="guide.html" class="footer-link">User Guide</a>
-        <a href="models.html" class="footer-link">Models</a>
-        <a href="workflow.html" class="footer-link">How It Works</a>
-        <a href="tips.html" class="footer-link">Tips</a>
-        <a href="faq.html" class="footer-link">FAQ</a>
-      </div>
-      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Auth Modal -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="auth-modal-title">Sign In</h3>
-        <button class="modal-close" onclick="closeAuthModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <form id="auth-form" onsubmit="handleAuth(event)">
-        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-          <!-- GitHub OAuth Button -->
-          <button type="button" class="btn btn-secondary btn-lg" style="width: 100%;" onclick="handleGitHubLogin()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            Continue with GitHub
-          </button>
-
-          <div style="display: flex; align-items: center; gap: var(--space-md); margin: var(--space-sm) 0;">
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-            <span style="font-size: 0.75rem; color: var(--medium-gray);">OR</span>
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-          </div>
-
-          <input type="email" class="input" placeholder="Email" required id="auth-email">
-          <input type="password" class="input" placeholder="Password" required id="auth-password">
-          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-            <span id="auth-submit-text">Sign In</span>
-          </button>
-        </div>
-        <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
-          <span id="auth-toggle-text">Don't have an account?</span>
-          <a href="#" onclick="event.preventDefault(); toggleAuthMode();" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
-        </p>
-      </form>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/stars.js"></script>
-  <script>
-    // Supabase configuration
-    const SUPABASE_URL = 'https://mwmbcfcvnkwegrjlauis.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13bWJjZmN2bmt3ZWdyamxhdWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjE5OTEsImV4cCI6MjA4NTQzNzk5MX0.3g5VZ4aL_tvkztXlHxiY0-rec5D9QwnST-m9l54NVPk';
-
-    // Initialize Supabase client - the CDN exposes supabase.createClient globally
-    let supabaseClient = null;
-
-    function initSupabase() {
-      if (typeof supabase !== 'undefined' && supabase.createClient) {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('Supabase initialized successfully');
-        return true;
-      }
-      console.warn('Supabase not available yet');
-      return false;
-    }
-
-    // Try to initialize immediately
-    initSupabase();
-
-    // Essential auth modal functions
-    let authMode = 'login';
-
-    function openAuthModal(mode) {
-      authMode = mode || 'login';
-      updateAuthModal();
-      document.getElementById('auth-modal')?.classList.add('active');
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal')?.classList.remove('active');
-    }
-
-    function toggleAuthMode() {
-      authMode = authMode === 'login' ? 'signup' : 'login';
-      updateAuthModal();
-    }
-
-    function updateAuthModal() {
-      const title = document.getElementById('auth-modal-title');
-      const submitText = document.getElementById('auth-submit-text');
-      const toggleText = document.getElementById('auth-toggle-text');
-      const toggleLink = document.getElementById('auth-toggle-link');
-
-      if (authMode === 'login') {
-        if (title) title.textContent = 'Sign In';
-        if (submitText) submitText.textContent = 'Sign In';
-        if (toggleText) toggleText.textContent = "Don't have an account?";
-        if (toggleLink) toggleLink.textContent = 'Sign Up';
-      } else {
-        if (title) title.textContent = 'Create Account';
-        if (submitText) submitText.textContent = 'Create Account';
-        if (toggleText) toggleText.textContent = 'Already have an account?';
-        if (toggleLink) toggleLink.textContent = 'Sign In';
-      }
-    }
-
-    async function handleGitHubLogin() {
-      // Try to initialize if not ready
-      if (!supabaseClient) {
-        initSupabase();
-      }
-      if (!supabaseClient || !supabaseClient.auth) {
-        alert('Authentication service not loaded. Please refresh and try again.');
-        return;
-      }
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'github',
-          options: { redirectTo: window.location.origin + '/app.html' }
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateNavUI, 100);
         });
-        if (error) {
-          alert('GitHub login error: ' + error.message);
-          return;
-        }
-        if (data?.url) {
-          window.location.href = data.url;
-        }
-      } catch (err) {
-        console.error('GitHub login error:', err);
-        alert('Error: ' + err.message);
-      }
-    }
-
-    async function handleAuth(event) {
-      event.preventDefault();
-      // Try to initialize if not ready
-      if (!supabaseClient) {
-        initSupabase();
-      }
-      if (!supabaseClient || !supabaseClient.auth) {
-        alert('Authentication service not loaded. Please refresh and try again.');
-        return;
-      }
-      const email = document.getElementById('auth-email')?.value;
-      const password = document.getElementById('auth-password')?.value;
-      if (!email || !password) {
-        alert('Please enter email and password.');
-        return;
-      }
-      try {
-        let result;
-        if (authMode === 'login') {
-          result = await supabaseClient.auth.signInWithPassword({ email, password });
-        } else {
-          result = await supabaseClient.auth.signUp({ email, password });
-        }
-        if (result.error) {
-          alert(result.error.message);
-        } else {
-          closeAuthModal();
-          if (authMode === 'signup') {
-            alert('Check your email to confirm your account!');
-          } else {
-            window.location.href = 'app.html';
-          }
-        }
-      } catch (err) {
-        console.error('Auth error:', err);
-        alert('Error: ' + err.message);
-      }
-    }
-
-    // Initialize star animation
-    if (typeof initStars === 'function') {
-      initStars('star-canvas');
-    }
-
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-menu');
-      const menuIcon = document.querySelector('.menu-icon');
-      const closeIcon = document.querySelector('.close-icon');
-
-      menu.classList.toggle('active');
-
-      if (menu.classList.contains('active')) {
-        menuIcon.style.display = 'none';
-        closeIcon.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      } else {
-        menuIcon.style.display = 'block';
-        closeIcon.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    }
-
-    // Mobile sign in - close menu first, then open auth modal
-    function mobileSignIn() {
-      toggleMobileMenu();
-      setTimeout(function() {
-        openAuthModal('login');
-      }, 300);
-    }
-  </script>
+    </script>
 </body>
 </html>
