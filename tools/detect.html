@@ -365,6 +365,22 @@
         let highConfidenceCount = 0;
         let snrValues = [];
 
+        // Pre-fill target from URL parameter (from dashboard)
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const target = params.get('target');
+            if (target) {
+                // Wait for DOM to be ready
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        document.getElementById('target-id').value = target;
+                    });
+                } else {
+                    document.getElementById('target-id').value = target;
+                }
+            }
+        })();
+
         // Light curve visualization
         function drawLightCurve(fluxData = null, transitPosition = null) {
             const canvas = document.getElementById('plot-canvas');
