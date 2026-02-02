@@ -421,8 +421,14 @@ const Auth = {
 let authMode = 'login';
 let modalJustOpened = false;
 
-function openAuthModal(mode = 'login') {
+function openAuthModal(mode = 'login', returnUrl = null) {
   authMode = mode;
+  // Store return URL if provided, otherwise use current page (unless it's index)
+  if (returnUrl) {
+    sessionStorage.setItem('auth_return_url', returnUrl);
+  } else if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+    sessionStorage.setItem('auth_return_url', window.location.href);
+  }
   updateAuthModal();
   modalJustOpened = true;
   document.getElementById('auth-modal')?.classList.add('active');
@@ -495,9 +501,15 @@ async function handleAuth(event) {
       }
       closeAuthModal();
       if (authMode === 'login') {
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        // Check for stored return URL
+        const returnUrl = sessionStorage.getItem('auth_return_url');
+        if (returnUrl) {
+          sessionStorage.removeItem('auth_return_url');
+          window.location.href = returnUrl;
+        } else if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
           window.location.href = 'app.html';
         }
+        // Otherwise stay on current page
       }
     } else {
       alert(result.error || 'Authentication failed. Please try again.');
@@ -520,10 +532,14 @@ async function handleGitHubLogin() {
   }
 
   try {
+    // Use stored return URL or default to app.html
+    const returnUrl = sessionStorage.getItem('auth_return_url') || '/app.html';
+    const redirectTo = returnUrl.startsWith('http') ? returnUrl : window.location.origin + returnUrl;
+
     const { data, error } = await client.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin + '/app.html'
+        redirectTo: redirectTo
       }
     });
 
