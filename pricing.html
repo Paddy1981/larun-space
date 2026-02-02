@@ -122,7 +122,7 @@
           <div class="pricing-card featured">
             <div class="pricing-tier">RESEARCHER</div>
             <div class="pricing-price">
-              <span class="pricing-amount">$9</span>
+              <span class="pricing-amount">$20</span>
               <span class="pricing-period">/month</span>
             </div>
             <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
@@ -175,7 +175,7 @@
           <div class="pricing-card">
             <div class="pricing-tier">SCIENTIST</div>
             <div class="pricing-price">
-              <span class="pricing-amount">$29</span>
+              <span class="pricing-amount">$50</span>
               <span class="pricing-period">/month</span>
             </div>
             <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
@@ -468,7 +468,7 @@
       } catch (error) {
         console.error('Subscription error:', error);
         // Fallback: show info message
-        alert(`To subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month), please contact us at support@larun.space or complete the checkout when Stripe is configured.`);
+        alert(`To subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '20' : '50'}/month), please contact us at support@larun.space or complete the checkout when configured.`);
       } finally {
         if (btn) {
           btn.disabled = false;
