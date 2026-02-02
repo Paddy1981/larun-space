@@ -609,6 +609,134 @@
                 font-size: 24px;
             }
         }
+
+        /* Target Discovery Section */
+        .targets-section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .targets-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .targets-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .targets-header h2 svg {
+            fill: var(--medium-gray);
+        }
+
+        .refresh-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: var(--lighter-gray);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--dark-gray);
+            font-family: inherit;
+        }
+
+        .refresh-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .targets-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .targets-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: var(--lighter-gray);
+            color: var(--dark-gray);
+            font-weight: 500;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .targets-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--lighter-gray);
+            color: var(--dark-gray);
+        }
+
+        .targets-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .target-id {
+            font-family: 'Roboto Mono', monospace;
+            color: var(--black);
+            font-weight: 500;
+        }
+
+        .target-action {
+            padding: 4px 12px;
+            font-size: 12px;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .target-action:hover {
+            opacity: 0.9;
+        }
+
+        .priority-high {
+            color: #137333;
+            font-weight: 500;
+        }
+
+        .priority-medium {
+            color: #b06000;
+        }
+
+        .priority-low {
+            color: var(--medium-gray);
+        }
+
+        .targets-loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--medium-gray);
+        }
+
+        @media (max-width: 768px) {
+            .targets-table {
+                font-size: 11px;
+            }
+
+            .targets-table th,
+            .targets-table td {
+                padding: 8px 6px;
+            }
+
+            .targets-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 
@@ -826,6 +954,25 @@
                 <div class="status-change" id="stat-vetted-change">Loading...</div>
             </div>
         </div>
+
+        <!-- Target Discovery Section -->
+        <section class="targets-section">
+            <div class="targets-header">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    Discover Targets
+                </h2>
+                <button class="refresh-btn" onclick="loadDiscoverableTargets()">Refresh List</button>
+            </div>
+            <p style="color: var(--medium-gray); font-size: 13px; margin-bottom: 16px;">
+                TESS Objects of Interest (TOI) available for analysis. Higher priority targets are easier to analyze.
+            </p>
+            <div id="targets-container">
+                <div class="targets-loading">Loading available targets...</div>
+            </div>
+        </section>
 
         <!-- Products Grid -->
         <h2 class="section-title">
@@ -1462,12 +1609,62 @@
             await loadRecentActivity();
         }
 
+        // Load discoverable targets
+        async function loadDiscoverableTargets() {
+            const container = document.getElementById('targets-container');
+            container.innerHTML = '<div class="targets-loading">Loading available targets...</div>';
+
+            try {
+                const targets = await MASTService.getDiscoverableTargets(10);
+
+                if (!targets || targets.length === 0) {
+                    container.innerHTML = '<div class="targets-loading">No targets available. Try again later.</div>';
+                    return;
+                }
+
+                const tableHTML = `
+                    <table class="targets-table">
+                        <thead>
+                            <tr>
+                                <th>Target ID</th>
+                                <th>TOI</th>
+                                <th>Period</th>
+                                <th>Depth</th>
+                                <th>Mag</th>
+                                <th>Priority</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${targets.map(t => `
+                                <tr>
+                                    <td class="target-id">${t.id}</td>
+                                    <td>${t.name}</td>
+                                    <td>${t.period}</td>
+                                    <td>${t.depth}</td>
+                                    <td>${t.magnitude || 'N/A'}</td>
+                                    <td class="${t.priority >= 80 ? 'priority-high' : t.priority >= 60 ? 'priority-medium' : 'priority-low'}">${t.priority}%</td>
+                                    <td><a href="tools/detect.html?target=${encodeURIComponent(t.id)}" class="target-action">Analyze</a></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                container.innerHTML = tableHTML;
+
+            } catch (error) {
+                console.error('Failed to load targets:', error);
+                container.innerHTML = '<div class="targets-loading">Failed to load targets. <button class="refresh-btn" onclick="loadDiscoverableTargets()">Retry</button></div>';
+            }
+        }
+
         // Initialize dashboard data on load
         document.addEventListener('DOMContentLoaded', () => {
             // Load stats after a short delay to allow auth to initialize
             setTimeout(() => {
                 loadDashboardStats();
                 loadRecentActivity();
+                loadDiscoverableTargets();
             }, 500);
         });
     </script>
