@@ -17,6 +17,29 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+
+  <style>
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .current-plan-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success, #137333);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pricing-card {
+      position: relative;
+    }
+  </style>
 </head>
 <body>
   <!-- Star Field Background -->
@@ -417,13 +440,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Lemon Squeezy variant IDs are configured on the server side
+    // Lemon Squeezy configuration
+    // Replace these with your actual Lemon Squeezy checkout URLs when ready
+    const LEMONSQUEEZY_CHECKOUTS = {
+      researcher: '', // e.g., 'https://larun.lemonsqueezy.com/checkout/buy/abc123'
+      scientist: ''   // e.g., 'https://larun.lemonsqueezy.com/checkout/buy/xyz789'
+    };
+
+    // For development: enable demo mode (simulates subscription locally)
+    const DEMO_MODE = true;
 
     async function subscribe(tier) {
       // Check if user is logged in via Supabase Auth
       if (!Auth.isAuthenticated || !Auth.user) {
-        // User not logged in, show signup modal
-        openAuthModal('signup');
+        // User not logged in, show signup modal with return URL
+        openAuthModal('signup', window.location.href);
         // Store intended tier for after signup
         sessionStorage.setItem('pending_subscription', tier);
         return;
@@ -438,7 +469,16 @@
       }
 
       try {
-        // Call Supabase Edge Function to create Stripe checkout session
+        // Option 1: Direct Lemon Squeezy checkout links (simplest for static sites)
+        if (LEMONSQUEEZY_CHECKOUTS[tier]) {
+          const checkoutUrl = new URL(LEMONSQUEEZY_CHECKOUTS[tier]);
+          checkoutUrl.searchParams.set('checkout[email]', Auth.user.email || '');
+          checkoutUrl.searchParams.set('checkout[custom][user_id]', Auth.user.id || '');
+          window.location.href = checkoutUrl.toString();
+          return;
+        }
+
+        // Option 2: Try Supabase Edge Function for dynamic checkout
         const response = await fetch('https://mwmbcfcvnkwegrjlauis.supabase.co/functions/v1/create-checkout', {
           method: 'POST',
           headers: {
@@ -449,27 +489,38 @@
             tier: tier,
             user_id: Auth.user.id,
             user_email: Auth.user.email,
-            success_url: window.location.origin + '/app.html?subscription=success',
+            success_url: window.location.origin + '/dashboard.html?subscription=success&tier=' + tier,
             cancel_url: window.location.origin + '/pricing.html?subscription=cancelled'
           })
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to create checkout session');
-        }
-
         const data = await response.json();
 
-        if (data.url) {
-          // Redirect to Stripe Checkout
+        if (response.ok && data.url) {
           window.location.href = data.url;
+          return;
+        }
+
+        // If payment backend not configured, check for demo mode
+        if (DEMO_MODE || data.error === 'Payment system not configured') {
+          // Demo mode: simulate subscription locally
+          if (confirm(`Demo Mode: Subscribe to ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month)?\n\nNote: This is a demo. In production, you will be redirected to Lemon Squeezy checkout.`)) {
+            activateSubscription(tier);
+          }
         } else {
-          throw new Error('No checkout URL returned');
+          throw new Error(data.error || 'Checkout failed');
         }
       } catch (error) {
         console.error('Subscription error:', error);
-        // Fallback: show info message
-        alert(`To subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month), please contact us at support@larun.space or complete the checkout when configured.`);
+
+        // Fallback to demo mode
+        if (DEMO_MODE) {
+          if (confirm(`Activate ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan in demo mode?`)) {
+            activateSubscription(tier);
+          }
+        } else {
+          alert(`Payment processing unavailable. Please contact support@larun.space to subscribe.`);
+        }
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -478,8 +529,53 @@
       }
     }
 
+    // Activate subscription (called after successful payment or in demo mode)
+    function activateSubscription(tier) {
+      // Store subscription tier locally
+      localStorage.setItem('user_tier', tier);
+
+      // Update the user cache with new tier
+      try {
+        const cached = localStorage.getItem('larun-user-cache');
+        if (cached) {
+          const data = JSON.parse(cached);
+          data.tier = tier;
+          localStorage.setItem('larun-user-cache', JSON.stringify(data));
+        }
+      } catch (e) {
+        console.warn('Failed to update cache:', e);
+      }
+
+      // Show success message
+      const tierNames = { researcher: 'Researcher', scientist: 'Scientist' };
+      alert(`Welcome to the ${tierNames[tier]} plan! Your subscription is now active.`);
+
+      // Redirect to dashboard
+      window.location.href = 'dashboard.html?subscription=success&tier=' + tier;
+    }
+
+    // Handle subscription success callback from Lemon Squeezy
+    function handleSubscriptionCallback() {
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('subscription');
+      const tier = params.get('tier');
+
+      if (status === 'success' && tier) {
+        activateSubscription(tier);
+      } else if (status === 'cancelled') {
+        // User cancelled checkout
+        console.log('Subscription cancelled by user');
+      }
+    }
+
     // Check for pending subscription after login
     document.addEventListener('DOMContentLoaded', () => {
+      // Handle subscription callback
+      handleSubscriptionCallback();
+
+      // Update UI based on current subscription
+      updateSubscriptionUI();
+
       // Listen for auth state changes
       const checkPendingSubscription = setInterval(() => {
         if (Auth.isAuthenticated) {
@@ -489,12 +585,30 @@
             setTimeout(() => subscribe(pendingTier), 500);
           }
           clearInterval(checkPendingSubscription);
+          updateSubscriptionUI();
         }
       }, 500);
 
       // Stop checking after 10 seconds
       setTimeout(() => clearInterval(checkPendingSubscription), 10000);
     });
+
+    // Update UI to show current subscription status
+    function updateSubscriptionUI() {
+      const currentTier = localStorage.getItem('user_tier') || 'free';
+
+      // Update button text for current plan
+      document.querySelectorAll('.pricing-cta').forEach(btn => {
+        const card = btn.closest('.pricing-card');
+        const tierName = card?.querySelector('.pricing-tier')?.textContent?.toLowerCase();
+
+        if (tierName === currentTier || (currentTier === 'free' && tierName === 'explorer')) {
+          btn.textContent = 'Current Plan';
+          btn.disabled = true;
+          btn.classList.add('btn-disabled');
+        }
+      });
+    }
   </script>
 </body>
 </html>
