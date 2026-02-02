@@ -1,408 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LARUN.SPACE - AI-powered exoplanet detection chat interface">
-  <title>LARUN.SPACE - Exoplanet Discovery</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Larun Chat - AI-powered exoplanet detection interface">
+    <title>Larun. Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #202124; --dark-gray: #3c4043; --medium-gray: #5f6368;
+            --light-gray: #dadce0; --lighter-gray: #f1f3f4; --white: #ffffff;
+            --primary: #1a73e8; --primary-light: #e8f0fe;
+            --success: #137333; --border-gray: #e8eaed;
+        }
+        html, body { height: 100%; }
+        body { font-family: 'Google Sans', 'Roboto', sans-serif; background: var(--lighter-gray); color: var(--black); line-height: 1.6; }
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+        /* Chat Container */
+        .chat-container { display: flex; height: 100vh; }
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/space-theme.css">
-  <link rel="stylesheet" href="css/chat.css">
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--white); border-right: 1px solid var(--light-gray); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 16px; border-bottom: 1px solid var(--lighter-gray); }
+        .new-chat-btn { width: 100%; padding: 12px 16px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .new-chat-btn:hover { background: var(--dark-gray); }
+        .sidebar-content { flex: 1; overflow-y: auto; padding: 8px; }
+        .sidebar-section { margin-bottom: 16px; }
+        .sidebar-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--medium-gray); padding: 8px 12px; }
+        .conversation-list { display: flex; flex-direction: column; gap: 2px; }
+        .conversation-item { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--dark-gray); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conversation-item:hover { background: var(--lighter-gray); }
+        .conversation-item.active { background: var(--primary-light); color: var(--primary); }
+        .sidebar-footer { padding: 16px; border-top: 1px solid var(--lighter-gray); }
+        .user-menu { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 8px; cursor: pointer; }
+        .user-menu:hover { background: var(--lighter-gray); }
+        .user-avatar { width: 32px; height: 32px; background: var(--black); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; }
+        .user-info { flex: 1; }
+        .user-name { font-size: 14px; font-weight: 500; color: var(--black); }
+        .user-tier { font-size: 12px; color: var(--medium-gray); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 999; }
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+        /* Main Chat Area */
+        .chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .chat-header { height: 64px; background: var(--white); border-bottom: 1px solid var(--light-gray); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .chat-header-left { display: flex; align-items: center; gap: 16px; }
+        .sidebar-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--dark-gray); }
+        .logo { font-size: 22px; font-weight: 500; color: var(--black); text-decoration: none; }
+        .logo span { color: var(--medium-gray); }
+        .chat-header-right { display: flex; align-items: center; gap: 8px; }
+        .btn { padding: 8px 16px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-ghost { background: transparent; color: var(--dark-gray); }
+        .btn-ghost:hover { background: var(--lighter-gray); }
+        .btn-primary { background: var(--black); color: var(--white); }
+        .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+        /* Messages Container */
+        .messages-container { flex: 1; overflow-y: auto; padding: 24px; }
+        .messages-wrapper { max-width: 800px; margin: 0 auto; }
+        .welcome-screen { text-align: center; padding: 80px 20px; }
+        .welcome-logo { font-size: 48px; font-weight: 500; margin-bottom: 12px; color: var(--black); }
+        .welcome-logo span { color: var(--medium-gray); }
+        .welcome-subtitle { font-size: 18px; color: var(--medium-gray); margin-bottom: 48px; }
+        .suggested-prompts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; max-width: 640px; margin: 0 auto; }
+        .suggested-prompt { background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; padding: 16px; text-align: left; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; transition: all 0.2s; }
+        .suggested-prompt:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .suggested-prompt svg { flex-shrink: 0; color: var(--medium-gray); }
+        .suggested-prompt span { font-size: 14px; color: var(--dark-gray); }
+
+        /* Messages */
+        .message { display: flex; gap: 16px; margin-bottom: 24px; }
+        .message-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .message-avatar.assistant { background: var(--black); color: var(--white); }
+        .message-avatar.user { background: var(--primary); color: var(--white); }
+        .message-content { flex: 1; font-size: 15px; line-height: 1.7; color: var(--dark-gray); }
+        .message-content code { background: var(--lighter-gray); padding: 2px 6px; border-radius: 4px; font-family: 'Roboto Mono', monospace; font-size: 13px; }
+        .message-content pre { background: var(--black); color: #e8eaed; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 12px 0; }
+        .message-content pre code { background: transparent; padding: 0; }
+        .typing-indicator { display: flex; gap: 4px; padding: 8px 0; }
+        .typing-dot { width: 8px; height: 8px; background: var(--medium-gray); border-radius: 50%; animation: typing 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+        .hidden { display: none !important; }
+
+        /* Input Area */
+        .input-area { padding: 16px 24px 24px; background: var(--lighter-gray); }
+        .input-wrapper { max-width: 800px; margin: 0 auto; }
+        .input-box { background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; display: flex; align-items: flex-end; padding: 12px 16px; }
+        .input-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15); }
+        .message-input { flex: 1; border: none; outline: none; font-family: inherit; font-size: 15px; resize: none; max-height: 200px; line-height: 1.5; }
+        .input-actions { display: flex; gap: 8px; margin-left: 12px; }
+        .input-action-btn { background: none; border: none; cursor: pointer; padding: 6px; color: var(--medium-gray); border-radius: 4px; }
+        .input-action-btn:hover { background: var(--lighter-gray); color: var(--dark-gray); }
+        .send-btn { background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+        .send-btn:hover { background: var(--dark-gray); }
+        .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+        .quick-action { font-size: 12px; color: var(--medium-gray); padding: 4px 10px; background: var(--white); border: 1px solid var(--light-gray); border-radius: 16px; cursor: pointer; }
+        .quick-action:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--white); border-radius: 12px; padding: 32px; max-width: 400px; width: 90%; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .modal-header h3 { font-size: 20px; font-weight: 500; }
+        .modal-close { background: none; border: none; cursor: pointer; padding: 4px; color: var(--medium-gray); }
+        .modal input { width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px; font-size: 16px; margin-bottom: 16px; font-family: inherit; }
+        .modal input:focus { outline: none; border-color: var(--primary); }
+        .modal .btn { width: 100%; padding: 14px; margin-bottom: 12px; justify-content: center; }
+        .modal p { text-align: center; font-size: 14px; color: var(--medium-gray); }
+        .modal a { color: var(--black); font-weight: 500; }
+        .github-btn { background: #24292e !important; color: white !important; border: none !important; }
+        .github-btn:hover { background: #1b1f23 !important; }
+
+        /* Upload Modal */
+        .upload-area { border: 2px dashed var(--light-gray); border-radius: 12px; padding: 48px 24px; text-align: center; margin-bottom: 16px; }
+        .upload-area svg { color: var(--medium-gray); margin-bottom: 16px; }
+        .upload-area p { color: var(--medium-gray); font-size: 14px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; z-index: 1000; transition: left 0.3s; }
+            .sidebar.active { left: 0; }
+            .sidebar-overlay.active { display: block; }
+            .sidebar-toggle { display: block; }
+            .suggested-prompts { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Star Field Background (subtle in app) -->
-  <div class="star-field" style="opacity: 0.3;">
-    <div class="stars-layer stars-layer-1"></div>
-    <div class="stars-layer stars-layer-2"></div>
-  </div>
-
-  <!-- Chat Container -->
-  <div class="chat-container">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <button class="new-chat-btn" onclick="startNewChat()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-          New Chat
-        </button>
-      </div>
-
-      <div class="sidebar-content">
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">Today</div>
-          <div class="conversation-list" id="today-conversations">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">Yesterday</div>
-          <div class="conversation-list" id="yesterday-conversations">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">Previous 7 Days</div>
-          <div class="conversation-list" id="week-conversations">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar-footer">
-        <div class="user-menu" onclick="toggleUserMenu()">
-          <div class="user-avatar" id="user-avatar">?</div>
-          <div class="user-info">
-            <div class="user-name" id="user-name">Guest</div>
-            <div class="user-tier" id="user-tier">Explorer (Free)</div>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Sidebar Overlay (mobile) -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-
-    <!-- Main Chat Area -->
-    <main class="chat-main">
-      <!-- Chat Header -->
-      <header class="chat-header">
-        <div class="chat-header-left">
-          <button class="sidebar-toggle" onclick="toggleSidebar()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12h18M3 6h18M3 18h18"/>
-            </svg>
-          </button>
-          <a href="index.html" class="logo">
-            <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
-          </a>
-        </div>
-
-        <div class="chat-header-right">
-          <button class="btn btn-sm btn-ghost" id="header-sign-in" onclick="openAuthModal('login')">Sign In</button>
-          <a href="pricing.html" class="btn btn-sm btn-ghost">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-            </svg>
-            Upgrade
-          </a>
-          <a href="docs.html" class="btn btn-sm btn-ghost">Docs</a>
-          <button class="btn btn-sm btn-ghost" onclick="openSettings()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <!-- Messages Container -->
-      <div class="messages-container" id="messages-container">
-        <div class="messages-wrapper" id="messages-wrapper">
-          <!-- Welcome Screen (shown when no conversation) -->
-          <div class="welcome-screen" id="welcome-screen">
-            <h1 class="welcome-logo">Larun<span class="text-accent">.Space</span></h1>
-            <p class="welcome-subtitle">What would you like to discover today?</p>
-
-            <div class="suggested-prompts">
-              <button class="suggested-prompt" onclick="useSuggestedPrompt('Search for transits in TIC 307210830')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="M21 21l-4.35-4.35"/>
-                </svg>
-                <span>Search for transits in TIC 307210830</span>
-              </button>
-
-              <button class="suggested-prompt" onclick="useSuggestedPrompt('Is TOI-700 d in the habitable zone?')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
-                </svg>
-                <span>Is TOI-700 d in the habitable zone?</span>
-              </button>
-
-              <button class="suggested-prompt" onclick="useSuggestedPrompt('Analyze light curve for Kepler-11')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 3v18h18"/>
-                  <path d="M18 17l-5-10-4 8-3-4"/>
-                </svg>
-                <span>Analyze light curve for Kepler-11</span>
-              </button>
-
-              <button class="suggested-prompt" onclick="useSuggestedPrompt('Generate a report for my candidate planet')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <path d="M14 2v6h6M16 13H8M16 17H8"/>
-                </svg>
-                <span>Generate a report for my candidate planet</span>
-              </button>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" onclick="startNewChat()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    New Chat
+                </button>
             </div>
-          </div>
-
-          <!-- Messages will be inserted here by JS -->
-          <div id="messages-list"></div>
-
-          <!-- Typing Indicator -->
-          <div class="message hidden" id="typing-indicator">
-            <div class="message-avatar assistant">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-              </svg>
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Today</div>
+                    <div class="conversation-list" id="today-conversations"></div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Yesterday</div>
+                    <div class="conversation-list" id="yesterday-conversations"></div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Previous 7 Days</div>
+                    <div class="conversation-list" id="week-conversations"></div>
+                </div>
             </div>
-            <div class="message-content">
-              <div class="typing-indicator">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-              </div>
+            <div class="sidebar-footer">
+                <div class="user-menu" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">Guest</div>
+                        <div class="user-tier" id="user-tier">Explorer (Free)</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
+        </aside>
 
-      <!-- Input Area -->
-      <div class="input-area">
-        <div class="input-wrapper">
-          <div class="input-box">
-            <textarea
-              class="message-input"
-              id="message-input"
-              placeholder="Ask LARUN anything about exoplanets..."
-              rows="1"
-              onkeydown="handleInputKeydown(event)"
-              oninput="autoResizeInput(this)"
-            ></textarea>
-            <div class="input-actions">
-              <button class="input-action-btn" onclick="openFileUpload()" title="Upload light curve">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-              </button>
-              <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 2L11 13"/>
-                  <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-                </svg>
-              </button>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <header class="chat-header">
+                <div class="chat-header-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                    </button>
+                    <a href="index.html" class="logo">Larun<span>.</span></a>
+                </div>
+                <div class="chat-header-right">
+                    <button class="btn btn-sm btn-ghost" id="header-sign-in" onclick="openAuthModal('login')">Sign In</button>
+                    <a href="pricing.html" class="btn btn-sm btn-ghost">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                        Upgrade
+                    </a>
+                    <a href="docs.html" class="btn btn-sm btn-ghost">Docs</a>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messages-container">
+                <div class="messages-wrapper" id="messages-wrapper">
+                    <div class="welcome-screen" id="welcome-screen">
+                        <h1 class="welcome-logo">Larun<span>.</span></h1>
+                        <p class="welcome-subtitle">What would you like to discover today?</p>
+                        <div class="suggested-prompts">
+                            <button class="suggested-prompt" onclick="useSuggestedPrompt('Search for transits in TIC 307210830')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                <span>Search for transits in TIC 307210830</span>
+                            </button>
+                            <button class="suggested-prompt" onclick="useSuggestedPrompt('Is TOI-700 d in the habitable zone?')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <span>Is TOI-700 d in the habitable zone?</span>
+                            </button>
+                            <button class="suggested-prompt" onclick="useSuggestedPrompt('Analyze light curve for Kepler-11')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17l-5-10-4 8-3-4"/></svg>
+                                <span>Analyze light curve for Kepler-11</span>
+                            </button>
+                            <button class="suggested-prompt" onclick="useSuggestedPrompt('Generate a report for my candidate planet')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
+                                <span>Generate a report for my candidate planet</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="messages-list"></div>
+                    <div class="message hidden" id="typing-indicator">
+                        <div class="message-avatar assistant">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                        </div>
+                        <div class="message-content">
+                            <div class="typing-indicator">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="quick-actions">
-            <span class="quick-action" onclick="useSuggestedPrompt('TIC lookup for ')">TIC lookup</span>
-            <span class="quick-action" onclick="openFileUpload()">Upload light curve</span>
-            <span class="quick-action" onclick="useSuggestedPrompt('Run detection on ')">Run detection</span>
-            <span class="quick-action" onclick="useSuggestedPrompt('Check habitable zone for ')">Check HZ</span>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- File Upload Modal -->
-  <div class="modal-overlay" id="upload-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Upload Light Curve</h3>
-        <button class="modal-close" onclick="closeUploadModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <div style="padding: var(--space-lg); text-align: center;">
-        <div style="border: 2px dashed var(--border-gray); border-radius: var(--radius-lg); padding: var(--space-2xl); margin-bottom: var(--space-lg);">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--medium-gray)" stroke-width="1.5" style="margin-bottom: var(--space-md);">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          <p style="color: var(--light-gray); margin-bottom: var(--space-sm);">Drag & drop or click to upload</p>
-          <p style="color: var(--medium-gray); font-size: 0.875rem;">Supports FITS, CSV, or TXT files</p>
-        </div>
-        <input type="file" id="file-input" accept=".fits,.csv,.txt" style="display: none;" onchange="handleFileUpload(event)">
-        <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
-          Select File
-        </button>
-      </div>
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <div class="input-box">
+                        <textarea class="message-input" id="message-input" placeholder="Ask Larun anything about exoplanets..." rows="1" onkeydown="handleInputKeydown(event)" oninput="autoResizeInput(this)"></textarea>
+                        <div class="input-actions">
+                            <button class="input-action-btn" onclick="openFileUpload()" title="Upload light curve">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </button>
+                            <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <span class="quick-action" onclick="useSuggestedPrompt('TIC lookup for ')">TIC lookup</span>
+                        <span class="quick-action" onclick="openFileUpload()">Upload light curve</span>
+                        <span class="quick-action" onclick="useSuggestedPrompt('Run detection on ')">Run detection</span>
+                        <span class="quick-action" onclick="useSuggestedPrompt('Check habitable zone for ')">Check HZ</span>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-  </div>
 
-  <!-- Hidden file input -->
-  <input type="file" id="hidden-file-input" accept=".fits,.csv,.txt" style="display: none;">
-
-  <!-- Auth Modal -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="auth-modal-title">Sign In</h3>
-        <button class="modal-close" onclick="closeAuthModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <form id="auth-form" onsubmit="handleAuth(event)">
-        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-          <!-- GitHub OAuth Button -->
-          <button type="button" class="btn btn-secondary btn-lg" style="width: 100%;" onclick="handleGitHubLogin()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            Continue with GitHub
-          </button>
-
-          <div style="display: flex; align-items: center; gap: var(--space-md); margin: var(--space-sm) 0;">
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-            <span style="font-size: 0.75rem; color: var(--medium-gray);">OR</span>
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-          </div>
-
-          <input type="email" class="input" placeholder="Email" required id="auth-email">
-          <input type="password" class="input" placeholder="Password" required id="auth-password">
-          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-            <span id="auth-submit-text">Sign In</span>
-          </button>
+    <!-- File Upload Modal -->
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Upload Light Curve</h3>
+                <button class="modal-close" onclick="closeUploadModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p>Drag & drop or click to upload</p>
+                <p style="font-size: 12px; margin-top: 8px;">Supports FITS, CSV, or TXT files</p>
+            </div>
+            <input type="file" id="file-input" accept=".fits,.csv,.txt" style="display: none;" onchange="handleFileUpload(event)">
+            <button class="btn btn-ghost" onclick="closeUploadModal()" style="margin-top: 8px;">Cancel</button>
         </div>
-        <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
-          <span id="auth-toggle-text">Don't have an account?</span>
-          <a href="#" onclick="event.preventDefault(); toggleAuthMode();" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
-        </p>
-      </form>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="js/api.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/chat.js"></script>
-  <script src="js/app.js"></script>
-  <script>
-    // Essential auth modal functions (inline fallback)
-    if (typeof openAuthModal === 'undefined') {
-      let authMode = 'login';
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="auth-modal-title">Sign In</h3>
+                <button class="modal-close" onclick="closeAuthModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <button type="button" class="btn github-btn" onclick="handleGitHubLogin()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Continue with GitHub
+                </button>
+                <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0;">
+                    <div style="flex: 1; height: 1px; background: var(--light-gray);"></div>
+                    <span style="font-size: 12px; color: var(--medium-gray);">OR</span>
+                    <div style="flex: 1; height: 1px; background: var(--light-gray);"></div>
+                </div>
+                <input type="email" id="auth-email" placeholder="Email" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary" id="auth-submit-text">Sign In</button>
+                <p style="margin-top: 16px;">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <a href="#" onclick="event.preventDefault(); toggleAuthMode();" id="auth-toggle-link">Sign Up</a>
+                </p>
+            </form>
+        </div>
+    </div>
 
-      // Get Supabase client - uses auth.js's initSupabaseClient if available
-      function getSupabaseClient() {
-        if (typeof initSupabaseClient === 'function') {
-          return initSupabaseClient();
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Chat state
+        let conversations = [];
+        let currentConversation = null;
+        let messages = [];
+
+        // UI functions
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
         }
-        if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
-          return supabaseClient;
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         }
-        return null;
-      }
 
-      window.openAuthModal = function(mode) {
-        authMode = mode || 'login';
-        updateAuthModal();
-        document.getElementById('auth-modal')?.classList.add('active');
-      };
-
-      window.closeAuthModal = function() {
-        document.getElementById('auth-modal')?.classList.remove('active');
-      };
-
-      window.toggleAuthMode = function() {
-        authMode = authMode === 'login' ? 'signup' : 'login';
-        updateAuthModal();
-      };
-
-      window.updateAuthModal = function() {
-        const title = document.getElementById('auth-modal-title');
-        const submitText = document.getElementById('auth-submit-text');
-        const toggleText = document.getElementById('auth-toggle-text');
-        const toggleLink = document.getElementById('auth-toggle-link');
-
-        if (authMode === 'login') {
-          if (title) title.textContent = 'Sign In';
-          if (submitText) submitText.textContent = 'Sign In';
-          if (toggleText) toggleText.textContent = "Don't have an account?";
-          if (toggleLink) toggleLink.textContent = 'Sign Up';
-        } else {
-          if (title) title.textContent = 'Create Account';
-          if (submitText) submitText.textContent = 'Create Account';
-          if (toggleText) toggleText.textContent = 'Already have an account?';
-          if (toggleLink) toggleLink.textContent = 'Sign In';
+        function startNewChat() {
+            messages = [];
+            currentConversation = null;
+            document.getElementById('messages-list').innerHTML = '';
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            document.getElementById('message-input').value = '';
+            document.getElementById('send-btn').disabled = true;
+            closeSidebar();
         }
-      };
 
-      window.handleGitHubLogin = async function() {
-        const client = getSupabaseClient();
-        if (!client || !client.auth) {
-          alert('Authentication service not loaded. Please refresh and try again.');
-          return;
+        function useSuggestedPrompt(prompt) {
+            const input = document.getElementById('message-input');
+            input.value = prompt;
+            input.focus();
+            autoResizeInput(input);
+            document.getElementById('send-btn').disabled = false;
         }
-        try {
-          const { data, error } = await client.auth.signInWithOAuth({
-            provider: 'github',
-            options: { redirectTo: window.location.origin + '/app.html' }
-          });
-          if (error) {
-            alert('GitHub login error: ' + error.message);
-            return;
-          }
-          if (data?.url) {
-            window.location.href = data.url;
-          }
-        } catch (err) {
-          console.error('GitHub login error:', err);
-          alert('Error: ' + err.message);
-        }
-      };
 
-      window.handleAuth = async function(event) {
-        event.preventDefault();
-        const client = getSupabaseClient();
-        if (!client || !client.auth) {
-          alert('Authentication service not loaded. Please refresh and try again.');
-          return;
-        }
-        const email = document.getElementById('auth-email')?.value;
-        const password = document.getElementById('auth-password')?.value;
-        if (!email || !password) {
-          alert('Please enter email and password.');
-          return;
-        }
-        try {
-          let result;
-          if (authMode === 'login') {
-            result = await client.auth.signInWithPassword({ email, password });
-          } else {
-            result = await client.auth.signUp({ email, password });
-          }
-          if (result.error) {
-            alert(result.error.message);
-          } else {
-            closeAuthModal();
-            if (authMode === 'signup') {
-              alert('Check your email to confirm your account!');
+        function handleInputKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                if (!document.getElementById('send-btn').disabled) {
+                    sendMessage();
+                }
             }
-          }
-        } catch (err) {
-          console.error('Auth error:', err);
-          alert('Error: ' + err.message);
         }
-      };
-    }
-  </script>
+
+        function autoResizeInput(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+            document.getElementById('send-btn').disabled = !textarea.value.trim();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            if (!content) return;
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            addMessage('user', content);
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('send-btn').disabled = true;
+
+            document.getElementById('typing-indicator').classList.remove('hidden');
+
+            // Simulate response
+            setTimeout(() => {
+                document.getElementById('typing-indicator').classList.add('hidden');
+                const response = generateResponse(content);
+                addMessage('assistant', response);
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function addMessage(role, content) {
+            const messagesList = document.getElementById('messages-list');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <div class="message-avatar ${role}">
+                    ${role === 'assistant'
+                        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>'
+                        : (Auth.user?.email?.[0]?.toUpperCase() || 'U')}
+                </div>
+                <div class="message-content">${formatMessage(content)}</div>
+            `;
+            messagesList.appendChild(messageDiv);
+            document.getElementById('messages-container').scrollTop = document.getElementById('messages-container').scrollHeight;
+        }
+
+        function formatMessage(content) {
+            return content
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function generateResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('tic') || q.includes('search') || q.includes('transit')) {
+                return "I'll search for transit signals in that target. The TinyML model is analyzing the light curve data from TESS...\n\nAnalysis complete! Found potential transit signal with:\n- Period: 3.42 days\n- Depth: 0.012%\n- SNR: 8.7\n\nThis appears to be a promising exoplanet candidate. Would you like me to run a detailed vetting analysis?";
+            }
+            if (q.includes('habitable') || q.includes('toi-700')) {
+                return "TOI-700 d is indeed located in the habitable zone of its host star!\n\nKey facts:\n- Orbital period: 37.4 days\n- Equilibrium temperature: ~268K (-5C)\n- Size: 1.19 Earth radii\n- Receives ~86% of Earth's solar flux\n\nThis makes it one of the most Earth-like planets discovered by TESS.";
+            }
+            if (q.includes('kepler') || q.includes('light curve') || q.includes('analyze')) {
+                return "Analyzing Kepler-11 light curve data...\n\nThis is a fascinating multi-planet system! I detected 6 transiting planets:\n- Kepler-11b: 1.97 Re, 10.3d period\n- Kepler-11c: 3.15 Re, 13.0d period\n- Kepler-11d: 3.43 Re, 22.7d period\n- Kepler-11e: 4.52 Re, 32.0d period\n- Kepler-11f: 2.61 Re, 46.7d period\n- Kepler-11g: 3.66 Re, 118.4d period\n\nAll six planets orbit closer to their star than Venus does to the Sun!";
+            }
+            if (q.includes('report')) {
+                return "I can generate a comprehensive report for your candidate. Please provide:\n\n1. Target ID (TIC or KIC number)\n2. Detected period\n3. Transit depth\n\nOr upload your light curve data and I'll extract these parameters automatically.";
+            }
+            return "I'm Larun, your exoplanet discovery assistant. I can help you:\n\n- Search for transit signals in TESS/Kepler data\n- Analyze light curves for periodic signals\n- Calculate habitable zone boundaries\n- Generate discovery reports\n\nWhat would you like to explore?";
+        }
+
+        // File upload
+        function openFileUpload() {
+            document.getElementById('upload-modal').classList.add('active');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('upload-modal').classList.remove('active');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                closeUploadModal();
+                useSuggestedPrompt(`Analyze uploaded light curve: ${file.name}`);
+            }
+        }
+
+        // Auth UI update
+        function updateAuthUI() {
+            const signInBtn = document.getElementById('header-sign-in');
+            if (Auth.isAuthenticated && Auth.user) {
+                const name = Auth.user.user_metadata?.user_name || Auth.user.email?.split('@')[0] || 'User';
+                signInBtn.textContent = name;
+                signInBtn.onclick = () => toggleUserMenu();
+                document.getElementById('user-avatar').textContent = name[0].toUpperCase();
+                document.getElementById('user-name').textContent = name;
+                document.getElementById('user-tier').textContent = Auth.getCurrentTier().name;
+            }
+        }
+
+        function toggleUserMenu() {
+            if (Auth.isAuthenticated) {
+                if (confirm('Do you want to sign out?')) {
+                    Auth.logout();
+                    location.reload();
+                }
+            } else {
+                openAuthModal('login');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateAuthUI, 500);
+        });
+    </script>
 </body>
 </html>

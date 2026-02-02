@@ -576,6 +576,96 @@
             margin-bottom: 8px;
         }
 
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--medium-gray);
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--black);
+        }
+
+        .modal h2 {
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 16px;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .modal .btn-primary {
+            width: 100%;
+            padding: 14px;
+            font-size: 14px;
+        }
+
+        .modal .github-btn {
+            width: 100%;
+            background: #24292e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+
+        .modal .github-btn:hover {
+            background: #1b1f23;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
