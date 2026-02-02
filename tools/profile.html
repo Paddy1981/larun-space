@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Larun. AstroTinyML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #202124;
+            --dark-gray: #3c4043;
+            --medium-gray: #5f6368;
+            --light-gray: #dadce0;
+            --lighter-gray: #f1f3f4;
+            --white: #ffffff;
+            --primary: #1a73e8;
+            --success: #137333;
+            --warning: #b06000;
+            --danger: #c5221f;
+            --border-radius: 8px;
+            --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        }
+        body {
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            background: var(--lighter-gray);
+            color: var(--black);
+            min-height: 100vh;
+        }
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-size: 14px;
+        }
+        .back-btn:hover { color: var(--black); }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--black);
+        }
+        .logo-text span { color: var(--medium-gray); }
+        .main-content {
+            margin-top: 64px;
+            padding: 32px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .profile-header {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .profile-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: var(--black);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        .profile-info h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .profile-info .email {
+            color: var(--medium-gray);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .profile-info .member-since {
+            font-size: 13px;
+            color: var(--medium-gray);
+        }
+        .profile-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+        .profile-badge.free { background: var(--medium-gray); }
+        .profile-badge.researcher { background: var(--primary); }
+        .profile-badge.scientist { background: var(--success); }
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .tab {
+            flex: 1;
+            padding: 16px 24px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--medium-gray);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .tab:hover { background: var(--lighter-gray); }
+        .tab.active {
+            color: var(--black);
+            border-bottom: 2px solid var(--black);
+        }
+        .section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        .section h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 8px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+        .form-group input:disabled {
+            background: var(--lighter-gray);
+            color: var(--medium-gray);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+        .btn-primary:hover { background: var(--dark-gray); }
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--light-gray);
+        }
+        .btn-secondary:hover { background: var(--lighter-gray); }
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        .btn-danger:hover { opacity: 0.9; }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .setting-info p {
+            font-size: 13px;
+            color: var(--medium-gray);
+        }
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle.active { background: var(--black); }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle.active::after { transform: translateX(24px); }
+        .api-key-box {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .api-key-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--lighter-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--lighter-gray);
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
+        }
+        .data-item:last-child { margin-bottom: 0; }
+        .data-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .data-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .data-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--medium-gray);
+        }
+        .data-details h4 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .data-details p {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+        .danger-zone {
+            border: 1px solid var(--danger);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            background: #fef7f7;
+        }
+        .danger-zone h3 {
+            color: var(--danger);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .danger-zone p {
+            font-size: 13px;
+            color: var(--medium-gray);
+            margin-bottom: 16px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) {
+            .profile-header { flex-direction: column; text-align: center; }
+            .form-row { grid-template-columns: 1fr; }
+            .tabs { flex-wrap: wrap; }
+            .tab { flex: 1 1 50%; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../dashboard.html" class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Dashboard
+            </a>
+            <span class="logo-text">Larun<span>.</span> Profile</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar">?</div>
+            <div class="profile-info">
+                <h1 id="profile-name">Loading...</h1>
+                <div class="email" id="profile-email">loading@email.com</div>
+                <div class="member-since" id="profile-member-since">Member since January 2026</div>
+            </div>
+            <span class="profile-badge free" id="profile-badge">Explorer</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('account')">Account</button>
+            <button class="tab" onclick="switchTab('settings')">Settings</button>
+            <button class="tab" onclick="switchTab('data')">My Data</button>
+            <button class="tab" onclick="switchTab('api')">API Access</button>
+        </div>
+
+        <!-- Account Tab -->
+        <div class="tab-content active" id="tab-account">
+            <div class="section">
+                <h2>Profile Information</h2>
+                <form onsubmit="saveProfile(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Display Name</label>
+                            <input type="text" id="input-name" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="input-email" disabled>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Organization (Optional)</label>
+                            <input type="text" id="input-org" placeholder="University or research institution">
+                        </div>
+                        <div class="form-group">
+                            <label>Research Focus</label>
+                            <select id="input-focus">
+                                <option value="">Select area...</option>
+                                <option value="exoplanets">Exoplanet Detection</option>
+                                <option value="stellar">Stellar Classification</option>
+                                <option value="transients">Transient Detection</option>
+                                <option value="general">General Astronomy</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>Subscription</h2>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Current Plan: <span id="current-plan">Explorer (Free)</span></h4>
+                        <p id="plan-details">10 targets per month, basic features</p>
+                    </div>
+                    <a href="../pricing.html" class="btn btn-secondary">Upgrade Plan</a>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Billing Period</h4>
+                        <p id="billing-period">N/A - Free tier</p>
+                    </div>
+                    <a href="usage.html" class="btn btn-secondary">View Usage</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="tab-settings">
+            <div class="section">
+                <h2>Notifications</h2>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Detection Alerts</h4>
+                        <p>Get notified when significant detections are found</p>
+                    </div>
+                    <div class="toggle active" onclick="toggleSetting(this, 'detection_alerts')"></div>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Pipeline Updates</h4>
+                        <p>Notifications when data ingestion completes</p>
+                    </div>
+                    <div class="toggle active" onclick="toggleSetting(this, 'pipeline_updates')"></div>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Calibration Reports</h4>
+                        <p>Weekly model calibration summary</p>
+                    </div>
+                    <div class="toggle" onclick="toggleSetting(this, 'calibration_reports')"></div>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Product Updates</h4>
+                        <p>New features and improvements</p>
+                    </div>
+                    <div class="toggle active" onclick="toggleSetting(this, 'product_updates')"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Preferences</h2>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Default Output Format</h4>
+                        <p>Preferred format for reports and exports</p>
+                    </div>
+                    <select style="padding: 8px 16px; border: 1px solid var(--light-gray); border-radius: 6px;">
+                        <option>PDF</option>
+                        <option>JSON</option>
+                        <option>CSV</option>
+                        <option>FITS</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Significance Threshold</h4>
+                        <p>Minimum SNR for detection alerts</p>
+                    </div>
+                    <select style="padding: 8px 16px; border: 1px solid var(--light-gray); border-radius: 6px;">
+                        <option>7.0 (Recommended)</option>
+                        <option>6.0</option>
+                        <option>8.0</option>
+                        <option>9.0</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Auto-vet Candidates</h4>
+                        <p>Automatically run vetting tests on new detections</p>
+                    </div>
+                    <div class="toggle active" onclick="toggleSetting(this, 'auto_vet')"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Security</h2>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Two-Factor Authentication</h4>
+                        <p>Add an extra layer of security to your account</p>
+                    </div>
+                    <button class="btn btn-secondary">Enable 2FA</button>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Change Password</h4>
+                        <p>Update your account password</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="showPasswordModal()">Change</button>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Active Sessions</h4>
+                        <p>Manage devices logged into your account</p>
+                    </div>
+                    <button class="btn btn-secondary">View Sessions</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Data Tab -->
+        <div class="tab-content" id="tab-data">
+            <div class="section">
+                <h2>Your Research Data</h2>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        </div>
+                        <div class="data-details">
+                            <h4>Detection History</h4>
+                            <p>156 detections across 2,847 objects</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">Export</button>
+                </div>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                        </div>
+                        <div class="data-details">
+                            <h4>Generated Reports</h4>
+                            <p>47 reports in various formats</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">View All</button>
+                </div>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        </div>
+                        <div class="data-details">
+                            <h4>Vetted Candidates</h4>
+                            <p>19 candidates vetted, 4 confirmed planets</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">Review</button>
+                </div>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                        </div>
+                        <div class="data-details">
+                            <h4>Saved Targets</h4>
+                            <p>12 targets in watchlist</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">Manage</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Data Export</h2>
+                <p style="color: var(--medium-gray); font-size: 14px; margin-bottom: 16px;">Download all your research data in a single archive.</p>
+                <button class="btn btn-primary" onclick="requestDataExport()">Request Full Export</button>
+            </div>
+
+            <div class="section">
+                <div class="danger-zone">
+                    <h3>Danger Zone</h3>
+                    <p>Permanently delete all your data. This action cannot be undone.</p>
+                    <button class="btn btn-danger" onclick="confirmDeleteData()">Delete All My Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Access Tab -->
+        <div class="tab-content" id="tab-api">
+            <div class="section">
+                <h2>API Keys</h2>
+                <p style="color: var(--medium-gray); font-size: 14px; margin-bottom: 20px;">
+                    Use API keys to access Larun. services programmatically. Keep your keys secure.
+                </p>
+                <div id="api-key-container">
+                    <div class="api-key-box">
+                        <input type="text" class="api-key-input" id="api-key-display" value="lrn_****************************" readonly>
+                        <button class="btn btn-secondary" onclick="toggleKeyVisibility()">Show</button>
+                        <button class="btn btn-secondary" onclick="copyApiKey()">Copy</button>
+                    </div>
+                    <p style="font-size: 12px; color: var(--medium-gray); margin-top: 8px;">Created: Jan 15, 2026 | Last used: 2 hours ago</p>
+                </div>
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-primary" onclick="generateNewKey()">Generate New Key</button>
+                    <button class="btn btn-secondary" onclick="revokeKey()" style="margin-left: 8px;">Revoke Key</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>API Usage</h2>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Requests This Month</h4>
+                        <p id="api-requests">247 / 1,000 requests</p>
+                    </div>
+                    <a href="usage.html" class="btn btn-secondary">View Details</a>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Rate Limit</h4>
+                        <p>100 requests per minute</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Quick Start</h2>
+                <p style="color: var(--medium-gray); font-size: 14px; margin-bottom: 16px;">Use the API with curl or any HTTP client:</p>
+                <pre style="background: var(--black); color: #fff; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px;">
+curl -X POST https://api.larun.space/v1/detect \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"target_id": "TIC 307210830"}'</pre>
+                <p style="font-size: 13px; margin-top: 12px;"><a href="../docs.html#api" style="color: var(--primary);">View full API documentation</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Toggle settings
+        function toggleSetting(element, setting) {
+            element.classList.toggle('active');
+            const isActive = element.classList.contains('active');
+            console.log(`Setting ${setting} is now ${isActive ? 'enabled' : 'disabled'}`);
+            // Save to localStorage or backend
+            localStorage.setItem('setting_' + setting, isActive);
+        }
+
+        // Save profile
+        function saveProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('input-name').value;
+            const org = document.getElementById('input-org').value;
+            const focus = document.getElementById('input-focus').value;
+
+            // Save to user metadata
+            if (Auth.user) {
+                localStorage.setItem('user_profile', JSON.stringify({ name, org, focus }));
+            }
+
+            alert('Profile saved successfully!');
+        }
+
+        // Password modal
+        function showPasswordModal() {
+            alert('Password change feature - would open modal for password update');
+        }
+
+        // Data export
+        function requestDataExport() {
+            alert('Data export requested. You will receive an email when your archive is ready for download.');
+        }
+
+        // Delete data confirmation
+        function confirmDeleteData() {
+            if (confirm('Are you sure you want to delete ALL your data? This action cannot be undone.')) {
+                if (confirm('This is your final warning. All detection history, reports, and settings will be permanently deleted.')) {
+                    alert('Data deletion request submitted. This may take up to 24 hours to complete.');
+                }
+            }
+        }
+
+        // API key functions
+        let keyVisible = false;
+        const fullKey = 'lrn_sk_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        function toggleKeyVisibility() {
+            keyVisible = !keyVisible;
+            document.getElementById('api-key-display').value = keyVisible ? fullKey : 'lrn_****************************';
+            document.querySelector('[onclick="toggleKeyVisibility()"]').textContent = keyVisible ? 'Hide' : 'Show';
+        }
+
+        function copyApiKey() {
+            navigator.clipboard.writeText(fullKey);
+            alert('API key copied to clipboard');
+        }
+
+        function generateNewKey() {
+            if (confirm('Generate a new API key? Your current key will be invalidated.')) {
+                alert('New API key generated. Update your applications with the new key.');
+            }
+        }
+
+        function revokeKey() {
+            if (confirm('Revoke this API key? Applications using it will stop working.')) {
+                alert('API key revoked.');
+            }
+        }
+
+        // Load profile data
+        function loadProfile() {
+            if (Auth.isAuthenticated && Auth.user) {
+                const displayName = Auth.user?.user_metadata?.name || Auth.user?.email?.split('@')[0] || 'User';
+                const email = Auth.user?.email || '';
+
+                document.getElementById('profile-avatar').textContent = displayName[0]?.toUpperCase() || '?';
+                document.getElementById('profile-name').textContent = displayName;
+                document.getElementById('profile-email').textContent = email;
+                document.getElementById('input-name').value = displayName;
+                document.getElementById('input-email').value = email;
+
+                // Load saved profile data
+                const savedProfile = localStorage.getItem('user_profile');
+                if (savedProfile) {
+                    const profile = JSON.parse(savedProfile);
+                    if (profile.name) document.getElementById('input-name').value = profile.name;
+                    if (profile.org) document.getElementById('input-org').value = profile.org;
+                    if (profile.focus) document.getElementById('input-focus').value = profile.focus;
+                }
+
+                // Set subscription badge
+                const tier = localStorage.getItem('user_tier') || 'free';
+                const badge = document.getElementById('profile-badge');
+                if (tier === 'researcher') {
+                    badge.textContent = 'Researcher';
+                    badge.className = 'profile-badge researcher';
+                    document.getElementById('current-plan').textContent = 'Researcher ($9/month)';
+                    document.getElementById('plan-details').textContent = 'Unlimited targets, 1,000 API calls/month';
+                } else if (tier === 'scientist') {
+                    badge.textContent = 'Scientist';
+                    badge.className = 'profile-badge scientist';
+                    document.getElementById('current-plan').textContent = 'Scientist ($29/month)';
+                    document.getElementById('plan-details').textContent = 'Unlimited everything, priority support';
+                } else {
+                    badge.textContent = 'Explorer';
+                    badge.className = 'profile-badge free';
+                }
+            } else {
+                // Not logged in - redirect to login
+                window.location.href = '../dashboard.html';
+            }
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = ['detection_alerts', 'pipeline_updates', 'calibration_reports', 'product_updates', 'auto_vet'];
+            settings.forEach(setting => {
+                const value = localStorage.getItem('setting_' + setting);
+                const toggle = document.querySelector(`[onclick="toggleSetting(this, '${setting}')"]`);
+                if (toggle && value !== null) {
+                    if (value === 'true') {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        // Check for tab in URL hash or localStorage
+        function checkInitialTab() {
+            const hash = window.location.hash.replace('#', '');
+            const savedTab = localStorage.getItem('profile_tab');
+
+            if (hash && ['account', 'settings', 'data', 'api'].includes(hash)) {
+                switchTab(hash);
+            } else if (savedTab) {
+                switchTab(savedTab);
+                localStorage.removeItem('profile_tab');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                loadProfile();
+                loadSettings();
+                checkInitialTab();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

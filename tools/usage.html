@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage - Larun. AstroTinyML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #202124;
+            --dark-gray: #3c4043;
+            --medium-gray: #5f6368;
+            --light-gray: #dadce0;
+            --lighter-gray: #f1f3f4;
+            --white: #ffffff;
+            --primary: #1a73e8;
+            --success: #137333;
+            --warning: #b06000;
+            --danger: #c5221f;
+            --border-radius: 8px;
+            --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        }
+        body {
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            background: var(--lighter-gray);
+            color: var(--black);
+            min-height: 100vh;
+        }
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-size: 14px;
+        }
+        .back-btn:hover { color: var(--black); }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--black);
+        }
+        .logo-text span { color: var(--medium-gray); }
+        .main-content {
+            margin-top: 64px;
+            padding: 32px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .tool-header {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        .tool-header h1 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .tool-header p {
+            color: var(--medium-gray);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .tool-section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        .tool-section h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        .plan-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            color: var(--white);
+            margin-bottom: 24px;
+        }
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .plan-name {
+            font-size: 24px;
+            font-weight: 500;
+        }
+        .plan-badge {
+            background: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .plan-price {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 16px;
+        }
+        .plan-features {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .plan-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .plan-feature svg {
+            color: #4ade80;
+        }
+        .usage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .usage-card {
+            background: var(--lighter-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        .usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .usage-label {
+            font-size: 14px;
+            color: var(--medium-gray);
+        }
+        .usage-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .usage-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .usage-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .usage-fill.low { background: var(--success); }
+        .usage-fill.medium { background: var(--warning); }
+        .usage-fill.high { background: var(--danger); }
+        .usage-footer {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .history-table th, .history-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .history-table th {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+        }
+        .history-table td {
+            font-size: 14px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+        .btn-primary:hover { background: var(--dark-gray); }
+        .btn-outline {
+            background: transparent;
+            color: var(--black);
+            border: 1px solid var(--light-gray);
+        }
+        .btn-outline:hover { background: var(--lighter-gray); }
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .alert-warning {
+            background: #fef7e0;
+            border: 1px solid #f9a825;
+        }
+        .alert-success {
+            background: #e6f4ea;
+            border: 1px solid var(--success);
+        }
+        .billing-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .billing-item {
+            padding: 16px;
+            background: var(--lighter-gray);
+            border-radius: var(--border-radius);
+        }
+        .billing-label {
+            font-size: 12px;
+            color: var(--medium-gray);
+            margin-bottom: 4px;
+        }
+        .billing-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .not-logged-in {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .not-logged-in h2 {
+            margin-bottom: 16px;
+        }
+        .not-logged-in p {
+            color: var(--medium-gray);
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .usage-grid { grid-template-columns: 1fr; }
+            .billing-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../dashboard.html" class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Dashboard
+            </a>
+            <span class="logo-text">Larun<span>.</span> Usage</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="tool-header">
+            <h1>Subscription & Usage</h1>
+            <p>Monitor your model usage, subscription status, and billing information. Track your targets processed, API calls, and available quotas.</p>
+        </div>
+
+        <!-- Not Logged In State -->
+        <div class="tool-section not-logged-in" id="not-logged-in" style="display: none;">
+            <h2>Sign in to view your usage</h2>
+            <p>You need to be signed in to view your subscription and usage details.</p>
+            <button class="btn btn-primary" onclick="openAuthModal('login')">Sign In</button>
+        </div>
+
+        <!-- Logged In Content -->
+        <div id="logged-in-content">
+            <!-- Current Plan -->
+            <div class="plan-card" id="plan-card">
+                <div class="plan-header">
+                    <span class="plan-name" id="plan-name">Explorer</span>
+                    <span class="plan-badge" id="plan-badge">Free Plan</span>
+                </div>
+                <div class="plan-price" id="plan-price">Free tier with limited usage</div>
+                <div class="plan-features">
+                    <div class="plan-feature">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <span id="feature-targets">10 targets/month</span>
+                    </div>
+                    <div class="plan-feature">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <span id="feature-tools">Basic CLI access</span>
+                    </div>
+                    <div class="plan-feature">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <span id="feature-processing">On-device processing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Alert -->
+            <div class="alert alert-warning" id="usage-alert" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#f9a825">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+                <span id="alert-message">You've used 80% of your monthly target quota.</span>
+            </div>
+
+            <!-- Usage Statistics -->
+            <div class="tool-section">
+                <h2>Current Period Usage</h2>
+                <div class="usage-grid">
+                    <div class="usage-card">
+                        <div class="usage-header">
+                            <span class="usage-label">Targets Processed</span>
+                            <span class="usage-value" id="targets-used">3 / 10</span>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill low" id="targets-bar" style="width: 30%"></div>
+                        </div>
+                        <div class="usage-footer">Resets on <span id="reset-date">Feb 1, 2026</span></div>
+                    </div>
+
+                    <div class="usage-card">
+                        <div class="usage-header">
+                            <span class="usage-label">API Calls</span>
+                            <span class="usage-value" id="api-used">0 / 0</span>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill low" id="api-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="usage-footer">API access not available on free tier</div>
+                    </div>
+
+                    <div class="usage-card">
+                        <div class="usage-header">
+                            <span class="usage-label">Detections Made</span>
+                            <span class="usage-value" id="detections-count">12</span>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill low" style="width: 100%"></div>
+                        </div>
+                        <div class="usage-footer">No limit on detections</div>
+                    </div>
+
+                    <div class="usage-card">
+                        <div class="usage-header">
+                            <span class="usage-label">Reports Generated</span>
+                            <span class="usage-value" id="reports-count">5</span>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill low" style="width: 100%"></div>
+                        </div>
+                        <div class="usage-footer">No limit on reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Information -->
+            <div class="tool-section" id="billing-section">
+                <h2>Billing Information</h2>
+                <div class="billing-info">
+                    <div class="billing-item">
+                        <div class="billing-label">Current Plan</div>
+                        <div class="billing-value" id="billing-plan">Explorer (Free)</div>
+                    </div>
+                    <div class="billing-item">
+                        <div class="billing-label">Billing Period</div>
+                        <div class="billing-value" id="billing-period">N/A</div>
+                    </div>
+                    <div class="billing-item">
+                        <div class="billing-label">Next Invoice</div>
+                        <div class="billing-value" id="next-invoice">N/A</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 12px;">
+                    <a href="../pricing.html" class="btn btn-primary">Upgrade Plan</a>
+                    <button class="btn btn-outline" id="manage-billing" style="display: none;">Manage Billing</button>
+                </div>
+            </div>
+
+            <!-- Usage History -->
+            <div class="tool-section">
+                <h2>Recent Activity</h2>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>Target</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <tr>
+                            <td>Feb 2, 2026</td>
+                            <td>Transit Detection</td>
+                            <td>TIC 307210830</td>
+                            <td style="color: var(--success);">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Feb 1, 2026</td>
+                            <td>Report Generated</td>
+                            <td>TIC 441462736</td>
+                            <td style="color: var(--success);">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Jan 31, 2026</td>
+                            <td>Vetting Analysis</td>
+                            <td>TIC 307210830 b</td>
+                            <td style="color: var(--success);">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Jan 30, 2026</td>
+                            <td>Pipeline Ingestion</td>
+                            <td>TESS Sector 45</td>
+                            <td style="color: var(--success);">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Jan 29, 2026</td>
+                            <td>Calibration</td>
+                            <td>System</td>
+                            <td style="color: var(--success);">Success</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal" style="background: var(--white); border-radius: 12px; padding: 32px; max-width: 400px; width: 90%;">
+            <button class="modal-close" onclick="closeAuthModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; font-size: 24px;">&times;</button>
+            <h2 id="auth-modal-title" style="margin-bottom: 24px; font-size: 24px;">Sign In</h2>
+            <form onsubmit="handleAuth(event)">
+                <div style="margin-bottom: 16px;">
+                    <input type="email" id="auth-email" placeholder="Email" required
+                        style="width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <input type="password" id="auth-password" placeholder="Password" required
+                        style="width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px; font-size: 16px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">
+                    <span id="auth-submit-text">Sign In</span>
+                </button>
+            </form>
+            <div style="margin-top: 16px; text-align: center;">
+                <button onclick="handleGitHubLogin()" style="background: #24292e; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; width: 100%;">
+                    Continue with GitHub
+                </button>
+            </div>
+            <p style="text-align: center; margin-top: 16px; color: var(--medium-gray);">
+                <span id="auth-toggle-text">Don't have an account?</span>
+                <a href="#" onclick="toggleAuthMode(); return false;" id="auth-toggle-link" style="color: var(--black); font-weight: 500;">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Tier configurations
+        const tierConfig = {
+            free: {
+                name: 'Explorer',
+                badge: 'Free Plan',
+                price: 'Free tier with limited usage',
+                targets: '10 targets/month',
+                tools: 'Basic CLI access',
+                apiAccess: false,
+                apiLimit: 0
+            },
+            researcher: {
+                name: 'Researcher',
+                badge: 'Paid Plan - $9/mo',
+                price: '$9/month - Billed monthly',
+                targets: 'Unlimited targets',
+                tools: 'Full CLI + API access',
+                apiAccess: true,
+                apiLimit: 1000
+            },
+            scientist: {
+                name: 'Scientist',
+                badge: 'Paid Plan - $29/mo',
+                price: '$29/month - Billed monthly',
+                targets: 'Unlimited targets',
+                tools: 'Full CLI + API + Priority',
+                apiAccess: true,
+                apiLimit: -1 // Unlimited
+            }
+        };
+
+        function updateUsageUI() {
+            const notLoggedIn = document.getElementById('not-logged-in');
+            const loggedInContent = document.getElementById('logged-in-content');
+
+            if (!Auth.isAuthenticated || !Auth.user) {
+                notLoggedIn.style.display = 'block';
+                loggedInContent.style.display = 'none';
+                return;
+            }
+
+            notLoggedIn.style.display = 'none';
+            loggedInContent.style.display = 'block';
+
+            // Get user's tier
+            const tierName = Auth.user?.profile?.tier || 'free';
+            const config = tierConfig[tierName] || tierConfig.free;
+            const usage = Auth.getUsageStats();
+
+            // Update plan card
+            document.getElementById('plan-name').textContent = config.name;
+            document.getElementById('plan-badge').textContent = config.badge;
+            document.getElementById('plan-price').textContent = config.price;
+            document.getElementById('feature-targets').textContent = config.targets;
+            document.getElementById('feature-tools').textContent = config.tools;
+
+            // Update targets usage
+            if (usage.targets.limit === -1) {
+                document.getElementById('targets-used').textContent = `${usage.targets.used} (Unlimited)`;
+                document.getElementById('targets-bar').style.width = '10%';
+                document.getElementById('targets-bar').className = 'usage-fill low';
+            } else {
+                const targetsPercent = (usage.targets.used / usage.targets.limit) * 100;
+                document.getElementById('targets-used').textContent = `${usage.targets.used} / ${usage.targets.limit}`;
+                document.getElementById('targets-bar').style.width = `${Math.min(targetsPercent, 100)}%`;
+                document.getElementById('targets-bar').className = 'usage-fill ' +
+                    (targetsPercent > 90 ? 'high' : targetsPercent > 70 ? 'medium' : 'low');
+
+                // Show alert if usage is high
+                if (targetsPercent >= 80) {
+                    document.getElementById('usage-alert').style.display = 'flex';
+                    document.getElementById('alert-message').textContent =
+                        `You've used ${Math.round(targetsPercent)}% of your monthly target quota.`;
+                }
+            }
+
+            // Update API usage
+            if (!config.apiAccess) {
+                document.getElementById('api-used').textContent = '0 / 0';
+                document.getElementById('api-bar').style.width = '0%';
+            } else if (usage.api.limit === -1) {
+                document.getElementById('api-used').textContent = `${usage.api.used} (Unlimited)`;
+                document.getElementById('api-bar').style.width = '10%';
+                document.getElementById('api-bar').className = 'usage-fill low';
+            } else {
+                const apiPercent = (usage.api.used / usage.api.limit) * 100;
+                document.getElementById('api-used').textContent = `${usage.api.used} / ${usage.api.limit}`;
+                document.getElementById('api-bar').style.width = `${Math.min(apiPercent, 100)}%`;
+                document.getElementById('api-bar').className = 'usage-fill ' +
+                    (apiPercent > 90 ? 'high' : apiPercent > 70 ? 'medium' : 'low');
+            }
+
+            // Update billing info
+            document.getElementById('billing-plan').textContent = config.name +
+                (tierName === 'free' ? ' (Free)' : ` ($${tierName === 'researcher' ? '9' : '29'}/mo)`);
+
+            if (tierName !== 'free') {
+                document.getElementById('billing-period').textContent = 'Monthly';
+                document.getElementById('next-invoice').textContent = 'Mar 1, 2026';
+                document.getElementById('manage-billing').style.display = 'inline-block';
+            }
+
+            // Calculate reset date (first of next month)
+            const now = new Date();
+            const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            document.getElementById('reset-date').textContent = resetDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        // Override Auth.updateUI to also update usage page
+        const originalUpdateUI = Auth.updateUI.bind(Auth);
+        Auth.updateUI = function() {
+            originalUpdateUI();
+            updateUsageUI();
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateUsageUI, 200);
+        });
+    </script>
+</body>
+</html>

@@ -16,7 +16,14 @@ function initSupabaseClient() {
   }
   // The CDN exposes 'supabase' as a global object with createClient method
   if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        storageKey: 'larun-auth',
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
     console.log('Supabase client initialized successfully');
     return supabaseClient;
   }
@@ -26,6 +33,23 @@ function initSupabaseClient() {
 
 // Try to initialize immediately
 initSupabaseClient();
+
+// Retry initialization when Supabase CDN loads
+function waitForSupabase(callback, maxRetries = 10, interval = 100) {
+  let retries = 0;
+  const check = () => {
+    const client = initSupabaseClient();
+    if (client) {
+      callback(client);
+    } else if (retries < maxRetries) {
+      retries++;
+      setTimeout(check, interval);
+    } else {
+      console.warn('Supabase failed to load after max retries');
+    }
+  };
+  check();
+}
 
 const Auth = {
   // State
@@ -66,39 +90,109 @@ const Auth = {
 
   // Initialize auth
   async init() {
+    // First, try to restore from localStorage for immediate UI update
+    this.restoreFromCache();
+
     // Ensure Supabase client is initialized
     const client = initSupabaseClient();
     if (!client || !client.auth) {
-      console.warn('Supabase not loaded');
+      console.warn('Supabase not loaded, will retry');
+      waitForSupabase((c) => this.initWithClient(c));
       return;
     }
 
-    // Check for existing session
-    const { data: { session } } = await client.auth.getSession();
-    if (session) {
-      this.session = session;
-      this.user = session.user;
-      this.isAuthenticated = true;
-      await this.loadUserProfile();
-    }
+    await this.initWithClient(client);
+  },
 
-    // Listen for auth changes
-    client.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth event:', event);
-      if (session) {
+  // Initialize with a Supabase client
+  async initWithClient(client) {
+    try {
+      // Check for existing session
+      const { data: { session }, error } = await client.auth.getSession();
+
+      if (error) {
+        console.error('Session error:', error);
+        this.clearCache();
+      } else if (session) {
         this.session = session;
         this.user = session.user;
         this.isAuthenticated = true;
         await this.loadUserProfile();
+        this.saveToCache();
       } else {
-        this.session = null;
-        this.user = null;
-        this.isAuthenticated = false;
+        // No session found
+        this.clearCache();
       }
-      this.updateUI();
-    });
 
-    this.updateUI();
+      // Listen for auth changes
+      client.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth event:', event);
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          this.session = session;
+          this.user = session.user;
+          this.isAuthenticated = true;
+          await this.loadUserProfile();
+          this.saveToCache();
+        } else if (event === 'SIGNED_OUT') {
+          this.session = null;
+          this.user = null;
+          this.isAuthenticated = false;
+          this.clearCache();
+        }
+        this.updateUI();
+      });
+
+      this.updateUI();
+    } catch (e) {
+      console.error('Auth init error:', e);
+    }
+  },
+
+  // Save auth state to localStorage for quick restoration
+  saveToCache() {
+    if (this.user) {
+      const cacheData = {
+        email: this.user.email,
+        displayName: this.user.user_metadata?.name || this.user.user_metadata?.user_name || this.user.email?.split('@')[0],
+        tier: this.user.profile?.tier || localStorage.getItem('user_tier') || 'free',
+        avatarUrl: this.user.user_metadata?.avatar_url,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('larun-user-cache', JSON.stringify(cacheData));
+    }
+  },
+
+  // Restore from cache for immediate UI update
+  restoreFromCache() {
+    try {
+      const cached = localStorage.getItem('larun-user-cache');
+      if (cached) {
+        const data = JSON.parse(cached);
+        // Cache is valid for 24 hours
+        if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+          this.isAuthenticated = true;
+          this.user = {
+            email: data.email,
+            user_metadata: {
+              name: data.displayName,
+              avatar_url: data.avatarUrl
+            },
+            profile: { tier: data.tier }
+          };
+          this.updateUI();
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to restore from cache:', e);
+    }
+  },
+
+  // Clear cached data
+  clearCache() {
+    localStorage.removeItem('larun-user-cache');
+    this.session = null;
+    this.user = null;
+    this.isAuthenticated = false;
   },
 
   // Load user profile from database
@@ -202,16 +296,24 @@ const Auth = {
   // Logout
   async logout() {
     const client = initSupabaseClient();
+
+    // Clear cache first for immediate UI update
+    this.clearCache();
+    localStorage.removeItem('user_tier');
+    localStorage.removeItem('user_profile');
+    this.updateUI();
+
     if (!client || !client.auth) return;
 
     try {
       await client.auth.signOut();
-      this.user = null;
-      this.session = null;
-      this.isAuthenticated = false;
-      this.updateUI();
     } catch (error) {
       console.error('Logout failed:', error);
+    }
+
+    // Redirect to home page after logout
+    if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+      window.location.href = window.location.pathname.includes('/tools/') ? '../index.html' : 'index.html';
     }
   },
 
@@ -421,8 +523,14 @@ const Auth = {
 let authMode = 'login';
 let modalJustOpened = false;
 
-function openAuthModal(mode = 'login') {
+function openAuthModal(mode = 'login', returnUrl = null) {
   authMode = mode;
+  // Store return URL if provided, otherwise use current page (unless it's index)
+  if (returnUrl) {
+    sessionStorage.setItem('auth_return_url', returnUrl);
+  } else if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+    sessionStorage.setItem('auth_return_url', window.location.href);
+  }
   updateAuthModal();
   modalJustOpened = true;
   document.getElementById('auth-modal')?.classList.add('active');
@@ -495,9 +603,15 @@ async function handleAuth(event) {
       }
       closeAuthModal();
       if (authMode === 'login') {
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        // Check for stored return URL
+        const returnUrl = sessionStorage.getItem('auth_return_url');
+        if (returnUrl) {
+          sessionStorage.removeItem('auth_return_url');
+          window.location.href = returnUrl;
+        } else if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
           window.location.href = 'app.html';
         }
+        // Otherwise stay on current page
       }
     } else {
       alert(result.error || 'Authentication failed. Please try again.');
@@ -520,10 +634,14 @@ async function handleGitHubLogin() {
   }
 
   try {
+    // Use stored return URL or default to app.html
+    const returnUrl = sessionStorage.getItem('auth_return_url') || '/app.html';
+    const redirectTo = returnUrl.startsWith('http') ? returnUrl : window.location.origin + returnUrl;
+
     const { data, error } = await client.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin + '/app.html'
+        redirectTo: redirectTo
       }
     });
 
