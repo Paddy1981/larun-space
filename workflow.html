@@ -1,600 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LARUN.SPACE Workflow - Understand how our exoplanet detection pipeline works">
-  <title>How It Works - LARUN.SPACE</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/space-theme.css">
-  <link rel="stylesheet" href="css/docs.css">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Larun Workflow - Understand how our exoplanet detection pipeline works">
+    <title>How It Works - Larun.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #202124; --dark-gray: #3c4043; --medium-gray: #5f6368;
+            --light-gray: #dadce0; --lighter-gray: #f1f3f4; --white: #ffffff;
+            --primary: #1a73e8; --primary-light: #e8f0fe;
+        }
+        body { font-family: 'Google Sans', 'Roboto', sans-serif; background: var(--lighter-gray); color: var(--black); line-height: 1.6; }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--white); border-bottom: 1px solid var(--light-gray); display: flex; align-items: center; padding: 0 24px; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 22px; font-weight: 500; color: var(--black); text-decoration: none; }
+        .logo span { color: var(--medium-gray); }
+        .nav-center { flex: 1; display: flex; justify-content: center; gap: 8px; }
+        .nav-link { padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px; }
+        .nav-link:hover { background: var(--lighter-gray); }
+        .nav-link.active { color: var(--primary); }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; background: var(--black); color: var(--white); }
+        .main-content { margin-top: 64px; padding: 32px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        h1 { font-size: 32px; font-weight: 400; margin-bottom: 16px; }
+        h2 { font-size: 24px; font-weight: 500; margin: 32px 0 16px; padding-top: 24px; border-top: 1px solid var(--light-gray); }
+        p { margin-bottom: 16px; color: var(--dark-gray); }
+        .pipeline-steps { margin: 24px 0; }
+        .pipeline-step { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 24px; padding: 24px; background: var(--white); border-radius: 8px; border: 1px solid var(--light-gray); }
+        .step-number { width: 40px; height: 40px; background: var(--black); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 18px; flex-shrink: 0; }
+        .step-content h3 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+        .step-content p { margin: 0; font-size: 14px; color: var(--medium-gray); }
+        .footer { padding: 32px; border-top: 1px solid var(--light-gray); background: var(--white); text-align: center; }
+        .footer a { color: var(--medium-gray); text-decoration: none; margin: 0 12px; font-size: 14px; }
+        .footer p { font-size: 12px; color: var(--medium-gray); margin-top: 16px; }
+        @media (max-width: 768px) { .nav-center { display: none; } }
+    </style>
 </head>
 <body>
-  <!-- Star Field Background (subtle) -->
-  <div class="star-field" style="opacity: 0.2;">
-    <div class="stars-layer stars-layer-1"></div>
-  </div>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-content">
-      <a href="index.html" class="logo">
-        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
-      </a>
-
-      <nav class="nav">
-        <div class="nav-links">
-          <a href="index.html#features" class="nav-link">Features</a>
-          <a href="pricing.html" class="nav-link">Pricing</a>
-          <a href="docs.html" class="nav-link">Docs</a>
-          <a href="download.html" class="nav-link">Download</a>
-          <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <nav class="top-nav">
+        <div class="nav-left"><a href="index.html" class="logo">Larun<span>.</span></a></div>
+        <div class="nav-center">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="pricing.html" class="nav-link">Pricing</a>
+            <a href="docs.html" class="nav-link active">Docs</a>
+            <a href="download.html" class="nav-link">Download</a>
         </div>
+        <div class="nav-right"><a href="dashboard.html" class="btn">Get Started</a></div>
+    </nav>
 
-        <div class="nav-actions">
-          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
-          <a href="app.html" class="btn btn-primary">Get Started</a>
-        </div>
-      </nav>
-    </div>
-  </header>
+    <main class="main-content">
+        <h1>How Larun Works</h1>
+        <p>From raw telescope data to validated exoplanet candidates - a complete walkthrough of our detection and analysis pipeline.</p>
 
-  <!-- Main Content -->
-  <main class="page-content">
-    <div class="container">
-      <div class="page-header">
-        <h1>How LARUN Works</h1>
-        <p class="lead">
-          From raw telescope data to validated exoplanet candidates - a complete
-          walkthrough of our detection and analysis pipeline.
-        </p>
-      </div>
-
-      <!-- Pipeline Overview -->
-      <section class="section-block">
         <h2>The Complete Pipeline</h2>
-        <div class="pipeline-visual">
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
+        <div class="pipeline-steps">
+            <div class="pipeline-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Data Acquisition</h3>
+                    <p>Fetch light curves from NASA MAST archive. We support TESS, Kepler, and K2 mission data. Enter a TIC ID or TOI designation and we retrieve the relevant observations automatically.</p>
+                </div>
             </div>
-            <h3>1. Data Acquisition</h3>
-            <p>Fetch light curves from NASA MAST archive</p>
-          </div>
-
-          <div class="pipeline-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <path d="M14 2v6h6"/>
-                <path d="M9 15l2 2 4-4"/>
-              </svg>
+            <div class="pipeline-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Preprocessing</h3>
+                    <p>Clean and normalize the data. Remove outliers, correct for systematic effects, and detrend stellar variability. This prepares the light curve for transit detection.</p>
+                </div>
             </div>
-            <h3>2. Preprocessing</h3>
-            <p>Clean, normalize, and detrend data</p>
-          </div>
-
-          <div class="pipeline-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 3v18h18"/>
-                <path d="M18 17l-5-10-4 8-3-4"/>
-              </svg>
+            <div class="pipeline-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>BLS Analysis</h3>
+                    <p>Box Least Squares periodogram searches for periodic box-shaped dips in brightness. This classical algorithm identifies potential transit periods with high sensitivity.</p>
+                </div>
             </div>
-            <h3>3. BLS Analysis</h3>
-            <p>Search for periodic transit signals</p>
-          </div>
-
-          <div class="pipeline-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
+            <div class="pipeline-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>TinyML Detection</h3>
+                    <p>Our neural network models confirm and classify detected signals. The EXOPLANET-001 model distinguishes real transits from false positives like eclipsing binaries.</p>
+                </div>
             </div>
-            <h3>4. TinyML Detection</h3>
-            <p>Neural network confirms signals</p>
-          </div>
-
-          <div class="pipeline-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M9 12l2 2 4-4"/>
-              </svg>
+            <div class="pipeline-step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Parameter Fitting</h3>
+                    <p>Fit a transit model to derive planetary parameters: orbital period, transit depth, duration, and estimated planet radius. Uncertainties are calculated using MCMC sampling.</p>
+                </div>
             </div>
-            <h3>5. Vetting</h3>
-            <p>Calculate false positive probability</p>
-          </div>
-
-          <div class="pipeline-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-
-          <div class="pipeline-stage">
-            <div class="stage-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <path d="M14 2v6h6"/>
-              </svg>
+            <div class="pipeline-step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>Vetting & Validation</h3>
+                    <p>Calculate False Positive Probability (FPP) and check for common false positive scenarios. Generate disposition: VALIDATED, CANDIDATE, or LIKELY_FP.</p>
+                </div>
             </div>
-            <h3>6. Report</h3>
-            <p>Generate analysis summary</p>
-          </div>
         </div>
-      </section>
 
-      <!-- Detailed Stages -->
-      <section class="section-block">
-        <h2>Stage 1: Data Acquisition</h2>
-        <div class="stage-detail">
-          <div class="stage-diagram">
-            <pre>
-┌─────────────────────────────────────────────────────────────┐
-│                       USER REQUEST                           │
-│              "Analyze TIC 307210830"                         │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    TARGET RESOLVER                           │
-│     TIC ID → Coordinates → Cross-match with catalogs        │
-└─────────────────────────────────────────────────────────────┘
-                            │
-            ┌───────────────┼───────────────┐
-            │               │               │
-            ▼               ▼               ▼
-     ┌──────────┐    ┌──────────┐    ┌──────────┐
-     │   TESS   │    │  Kepler  │    │   Gaia   │
-     │   MAST   │    │   MAST   │    │  DR3     │
-     └──────────┘    └──────────┘    └──────────┘
-            │               │               │
-            └───────────────┼───────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    LIGHT CURVE DATA                          │
-│        Time (BJD) │ Flux │ Flux Error │ Quality Flags       │
-└─────────────────────────────────────────────────────────────┘
-            </pre>
-          </div>
+        <h2>What Makes Larun Different</h2>
+        <p><strong>Browser-Based:</strong> All processing happens locally in your browser using TensorFlow.js. No server uploads required - your data stays private.</p>
+        <p><strong>TinyML Models:</strong> Our models are under 100KB each, enabling instant inference without GPU requirements.</p>
+        <p><strong>Real NASA Data:</strong> Direct integration with NASA's MAST archive means you're analyzing real telescope observations.</p>
+    </main>
 
-          <div class="stage-info">
-            <h3>What Happens</h3>
-            <ul>
-              <li>Parse user request to extract target identifier</li>
-              <li>Resolve TIC/KIC ID to celestial coordinates</li>
-              <li>Query NASA MAST archive for available observations</li>
-              <li>Download FITS files with light curve data</li>
-              <li>Fetch stellar parameters from Gaia DR3</li>
-            </ul>
-
-            <h3>Data Sources</h3>
-            <table class="param-table">
-              <thead>
-                <tr>
-                  <th>Source</th>
-                  <th>Data Type</th>
-                  <th>Cadence</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>TESS FFI</td>
-                  <td>Full-frame images</td>
-                  <td>30 min / 10 min</td>
-                </tr>
-                <tr>
-                  <td>TESS 2-min</td>
-                  <td>Target pixel files</td>
-                  <td>2 minutes</td>
-                </tr>
-                <tr>
-                  <td>TESS 20-sec</td>
-                  <td>Fast cadence</td>
-                  <td>20 seconds</td>
-                </tr>
-                <tr>
-                  <td>Kepler</td>
-                  <td>Long/short cadence</td>
-                  <td>30 min / 1 min</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <h2>Stage 2: Preprocessing</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>Steps</h3>
-            <ol>
-              <li>
-                <strong>Quality Filtering:</strong>
-                Remove data points flagged for spacecraft anomalies, cosmic rays, or other issues
-              </li>
-              <li>
-                <strong>Outlier Removal:</strong>
-                Sigma-clipping to remove statistical outliers (typically 5σ)
-              </li>
-              <li>
-                <strong>Gap Filling:</strong>
-                Handle missing data from Earth occultations, momentum dumps
-              </li>
-              <li>
-                <strong>Normalization:</strong>
-                Scale flux to median = 1.0 for consistent analysis
-              </li>
-              <li>
-                <strong>Detrending:</strong>
-                Remove long-term stellar variability using polynomial or spline fits
-              </li>
-            </ol>
-
-            <h3>Detrending Methods</h3>
-            <ul>
-              <li><strong>Polynomial:</strong> Fast, good for simple trends</li>
-              <li><strong>Spline:</strong> Flexible, handles complex variability</li>
-              <li><strong>Gaussian Process:</strong> Best for active stars, computationally expensive</li>
-              <li><strong>Cofiam:</strong> Cotrending Basis Vectors from Kepler</li>
-            </ul>
-          </div>
-
-          <div class="before-after">
-            <div class="ba-item">
-              <h4>Before Preprocessing</h4>
-              <div class="placeholder-plot">
-                Raw light curve with systematics, outliers, and stellar variability
-              </div>
-            </div>
-            <div class="ba-item">
-              <h4>After Preprocessing</h4>
-              <div class="placeholder-plot">
-                Clean, normalized light curve ready for transit search
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <h2>Stage 3: BLS Analysis</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>Box Least Squares (BLS)</h3>
-            <p>
-              BLS is the gold standard algorithm for finding periodic transit signals.
-              It searches for box-shaped dips in the light curve by testing thousands
-              of possible periods.
-            </p>
-
-            <h3>How It Works</h3>
-            <ol>
-              <li>Define period search range (0.5 - 15 days typical)</li>
-              <li>For each trial period, phase-fold the light curve</li>
-              <li>Fit a box-shaped transit model</li>
-              <li>Calculate Signal Detection Efficiency (SDE)</li>
-              <li>Peaks in SDE indicate potential transit periods</li>
-            </ol>
-
-            <h3>Key Parameters</h3>
-            <table class="param-table">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Description</th>
-                  <th>Typical Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">period_min</span></td>
-                  <td>Minimum search period</td>
-                  <td>0.5 days</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">period_max</span></td>
-                  <td>Maximum search period</td>
-                  <td>15 days</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">duration_grid</span></td>
-                  <td>Transit duration range</td>
-                  <td>0.01 - 0.15 (phase)</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">frequency_factor</span></td>
-                  <td>Oversampling factor</td>
-                  <td>5-10</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <h2>Stage 4: TinyML Detection</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>Neural Network Confirmation</h3>
-            <p>
-              After BLS identifies potential signals, our TinyML models provide
-              independent confirmation. This two-stage approach reduces false positives.
-            </p>
-
-            <h3>Model Federation</h3>
-            <p>
-              Multiple specialized models vote on each candidate:
-            </p>
-            <ul>
-              <li><strong>EXOPLANET-001:</strong> Transit shape classifier</li>
-              <li><strong>VSTAR-001:</strong> Rules out eclipsing binaries</li>
-              <li><strong>FLARE-001:</strong> Identifies stellar flare contamination</li>
-            </ul>
-
-            <h3>Ensemble Voting</h3>
-            <div class="voting-diagram">
-              <pre>
-┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-│ EXOPLANET-001 │ │   VSTAR-001   │ │  FLARE-001    │
-│    Transit?   │ │   Variable?   │ │    Flare?     │
-│   P = 0.85    │ │   P = 0.12    │ │   P = 0.03    │
-└───────┬───────┘ └───────┬───────┘ └───────┬───────┘
-        │                 │                 │
-        └────────────┬────┴────────────────┘
-                     │
-                     ▼
-            ┌────────────────┐
-            │ WEIGHTED VOTE  │
-            │  Transit: 0.78 │
-            │  EB: 0.15      │
-            │  Other: 0.07   │
-            └────────────────┘
-              </pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <h2>Stage 5: Vetting & FPP</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>False Positive Probability</h3>
-            <p>
-              Not every transit-like signal is a planet. LARUN calculates the
-              probability that the signal is caused by something else.
-            </p>
-
-            <h3>False Positive Scenarios</h3>
-            <table class="param-table">
-              <thead>
-                <tr>
-                  <th>Scenario</th>
-                  <th>Description</th>
-                  <th>Distinguishing Features</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">EB</span></td>
-                  <td>Eclipsing binary</td>
-                  <td>Deep eclipses, secondary eclipse, odd-even differences</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">BEB</span></td>
-                  <td>Background eclipsing binary</td>
-                  <td>Centroid shift during eclipse, color-dependent depth</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">HEB</span></td>
-                  <td>Hierarchical triple</td>
-                  <td>RV variations, diluted eclipses</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">NEB</span></td>
-                  <td>Nearby eclipsing binary</td>
-                  <td>Contamination from nearby star</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h3>Vetting Tests</h3>
-            <ul>
-              <li><strong>Secondary Eclipse:</strong> Check for brightness increase at phase 0.5</li>
-              <li><strong>Odd-Even Test:</strong> Compare depths of alternating transits</li>
-              <li><strong>Centroid Analysis:</strong> Does the photocenter shift during transit?</li>
-              <li><strong>Depth vs. Aperture:</strong> Does depth change with aperture size?</li>
-              <li><strong>Ephemeris Match:</strong> Check against known eclipsing binary catalogs</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <h2>Stage 6: Characterization & Reporting</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>Transit Model Fitting</h3>
-            <p>
-              For validated candidates, we fit a detailed transit model to extract
-              planetary parameters.
-            </p>
-
-            <h3>Derived Parameters</h3>
-            <table class="param-table">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Derivation</th>
-                  <th>Accuracy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">Period</span></td>
-                  <td>BLS + transit timing</td>
-                  <td>~0.001%</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">T0</span></td>
-                  <td>Transit center fitting</td>
-                  <td>~1 minute</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">Rp/Rs</span></td>
-                  <td>Transit depth</td>
-                  <td>~5%</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">a/Rs</span></td>
-                  <td>Transit duration + stellar density</td>
-                  <td>~10%</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">i</span></td>
-                  <td>Impact parameter fitting</td>
-                  <td>~2°</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">Rp</span></td>
-                  <td>Rp/Rs × stellar radius</td>
-                  <td>~10%</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h3>Report Contents</h3>
-            <ul>
-              <li>Target summary and stellar parameters</li>
-              <li>Light curve plots (raw, detrended, phase-folded)</li>
-              <li>BLS periodogram with detected period</li>
-              <li>Transit model fit and residuals</li>
-              <li>False positive probability breakdown</li>
-              <li>Planet parameter estimates</li>
-              <li>Habitable zone assessment</li>
-              <li>Recommendations for follow-up</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- Model Deployment Workflow -->
-      <section class="section-block">
-        <h2>Model Training & Deployment</h2>
-        <div class="stage-detail">
-          <div class="stage-info">
-            <h3>Automated Training Pipeline</h3>
-            <p>
-              LARUN models are continuously improved through automated training on new data.
-            </p>
-
-            <div class="training-diagram">
-              <pre>
-┌─────────────────────────────────────────────────────────────────┐
-│                    TRAINING ORCHESTRATOR                         │
-│  Schedule │ Data Fetcher │ Trainer │ Validator │ Publisher      │
-└─────────────────────────────────────────────────────────────────┘
-        │           │            │           │           │
-   ┌────┴────┐ ┌────┴────┐ ┌─────┴─────┐ ┌───┴───┐ ┌────┴────┐
-   │ Weekly  │ │  NASA   │ │ GPU/CPU   │ │ Test  │ │ GitHub  │
-   │ CRON    │ │  MAST   │ │ Training  │ │ Suite │ │ Release │
-   └─────────┘ └─────────┘ └───────────┘ └───────┘ └─────────┘
-              </pre>
-            </div>
-
-            <h3>Quality Gates</h3>
-            <ul>
-              <li><strong>Accuracy:</strong> Must exceed 80% on test set</li>
-              <li><strong>Size:</strong> Must be under 100KB after quantization</li>
-              <li><strong>Inference:</strong> Must complete in under 50ms</li>
-              <li><strong>Regression:</strong> No performance drop on validation set</li>
-            </ul>
-
-            <h3>Deployment Strategy</h3>
-            <p>
-              Models are deployed using a blue-green strategy for zero-downtime updates:
-            </p>
-            <ol>
-              <li>New model deployed to "blue" slot</li>
-              <li>Traffic gradually shifted from "green" to "blue"</li>
-              <li>If errors detected, instant rollback to "green"</li>
-              <li>On success, "blue" becomes primary</li>
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      <div class="cta-box">
-        <h3>Ready to Discover Exoplanets?</h3>
-        <p>Now that you understand how LARUN works, try it yourself!</p>
-        <div class="cta-buttons">
-          <a href="app.html" class="btn btn-primary btn-lg">Launch LARUN</a>
-          <a href="guide.html" class="btn btn-secondary btn-lg">Read User Guide</a>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-links">
-        <a href="guide.html" class="footer-link">User Guide</a>
-        <a href="models.html" class="footer-link">Models</a>
-        <a href="workflow.html" class="footer-link">Workflow</a>
-        <a href="tips.html" class="footer-link">Tips</a>
-        <a href="faq.html" class="footer-link">FAQ</a>
-        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
-      </div>
-      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/auth.js"></script>
+    <footer class="footer">
+        <a href="https://laruneng.com" target="_blank">laruneng.com</a>
+        <a href="https://github.com/Paddy1981/larun" target="_blank">GitHub</a>
+        <a href="docs.html">Documentation</a>
+        <a href="pricing.html">Pricing</a>
+        <p>&copy; 2026 Larun. AstroTinyML. All rights reserved.</p>
+    </footer>
 </body>
 </html>
