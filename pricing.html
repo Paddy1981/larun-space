@@ -1,615 +1,417 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LARUN.SPACE Pricing - Choose your plan for exoplanet detection">
-  <title>Pricing - LARUN.SPACE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Larun Pricing - Choose your plan for exoplanet detection">
+    <title>Pricing - Larun.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #202124; --dark-gray: #3c4043; --medium-gray: #5f6368;
+            --light-gray: #dadce0; --lighter-gray: #f1f3f4; --white: #ffffff;
+            --primary: #1a73e8; --primary-light: #e8f0fe;
+            --success: #137333; --success-light: #e6f4ea;
+        }
+        body { font-family: 'Google Sans', 'Roboto', sans-serif; background: var(--lighter-gray); color: var(--black); line-height: 1.6; }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--white); border-bottom: 1px solid var(--light-gray); display: flex; align-items: center; padding: 0 24px; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 22px; font-weight: 500; color: var(--black); text-decoration: none; }
+        .logo span { color: var(--medium-gray); }
+        .nav-center { flex: 1; display: flex; justify-content: center; gap: 8px; }
+        .nav-link { padding: 8px 16px; color: var(--dark-gray); text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 4px; }
+        .nav-link:hover { background: var(--lighter-gray); }
+        .nav-link.active { color: var(--primary); }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; transition: all 0.2s; }
+        .btn-primary { background: var(--black); color: var(--white); }
+        .btn-primary:hover { background: var(--dark-gray); }
+        .btn-secondary { background: var(--white); color: var(--black); border: 1px solid var(--light-gray); }
+        .btn-secondary:hover { background: var(--lighter-gray); }
+        .main-content { margin-top: 64px; padding: 48px 32px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        h1 { font-size: 36px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--medium-gray); font-size: 18px; margin-bottom: 48px; font-style: italic; }
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+        /* Pricing Grid */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .pricing-card { background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; padding: 32px; position: relative; }
+        .pricing-card.featured { border: 2px solid var(--black); }
+        .pricing-card.featured::before { content: 'Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--white); padding: 4px 16px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .pricing-tier { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--medium-gray); margin-bottom: 16px; }
+        .pricing-price { margin-bottom: 16px; }
+        .pricing-amount { font-size: 48px; font-weight: 500; color: var(--black); }
+        .pricing-period { font-size: 16px; color: var(--medium-gray); }
+        .pricing-desc { color: var(--medium-gray); font-size: 14px; margin-bottom: 24px; }
+        .pricing-features { margin-bottom: 32px; }
+        .pricing-feature { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--dark-gray); }
+        .pricing-feature svg { color: var(--success); flex-shrink: 0; }
+        .pricing-cta { width: 100%; padding: 14px; text-align: center; display: block; }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/space-theme.css">
+        /* Enterprise Card */
+        .enterprise-card { background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; padding: 48px; text-align: center; margin-bottom: 48px; }
+        .enterprise-card h3 { font-size: 24px; font-weight: 500; margin-bottom: 12px; }
+        .enterprise-card p { color: var(--medium-gray); margin-bottom: 24px; }
+        .enterprise-features { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 32px; color: var(--medium-gray); font-size: 14px; }
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+        /* Comparison Table */
+        .comparison-section { background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; padding: 32px; margin-bottom: 48px; }
+        .comparison-section h2 { font-size: 24px; font-weight: 500; text-align: center; margin-bottom: 32px; }
+        .comparison-table { width: 100%; border-collapse: collapse; }
+        .comparison-table th, .comparison-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--lighter-gray); }
+        .comparison-table th { font-weight: 500; color: var(--dark-gray); background: var(--lighter-gray); }
+        .comparison-table th:not(:first-child), .comparison-table td:not(:first-child) { text-align: center; }
+        .comparison-table td { font-size: 14px; color: var(--dark-gray); }
+        .check { color: var(--success); }
+        .dash { color: var(--light-gray); }
 
-  <style>
-    .btn-disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-    .current-plan-badge {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--success, #137333);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    .pricing-card {
-      position: relative;
-    }
-  </style>
+        /* Notes */
+        .notes { text-align: center; max-width: 600px; margin: 0 auto 48px; }
+        .note-item { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--dark-gray); font-size: 14px; margin-bottom: 12px; }
+        .note-item svg { color: var(--success); }
+
+        /* Footer */
+        .footer { padding: 32px; border-top: 1px solid var(--light-gray); background: var(--white); text-align: center; }
+        .footer a { color: var(--medium-gray); text-decoration: none; margin: 0 12px; font-size: 14px; }
+        .footer p { font-size: 12px; color: var(--medium-gray); margin-top: 16px; }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--white); border-radius: 12px; padding: 32px; max-width: 400px; width: 90%; position: relative; }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; font-size: 24px; }
+        .modal h3 { margin-bottom: 24px; }
+        .modal input { width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px; font-size: 16px; margin-bottom: 16px; }
+        .modal .btn { width: 100%; padding: 14px; margin-bottom: 12px; }
+        .modal p { text-align: center; font-size: 14px; color: var(--medium-gray); }
+        .modal a { color: var(--black); font-weight: 500; }
+
+        @media (max-width: 768px) { .nav-center { display: none; } .pricing-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
-  <!-- Star Field Background -->
-  <div class="star-field" style="opacity: 0.5;">
-    <div class="stars-layer stars-layer-1"></div>
-    <div class="stars-layer stars-layer-2"></div>
-    <div class="stars-layer stars-layer-3"></div>
-  </div>
-
-  <!-- Nebula Overlay -->
-  <div class="nebula-overlay"></div>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-content">
-      <a href="index.html" class="logo">
-        <span class="logo-text">Larun<span class="text-accent">.Space</span></span>
-      </a>
-
-      <nav class="nav">
-        <div class="nav-links">
-          <a href="index.html#features" class="nav-link">Features</a>
-          <a href="pricing.html" class="nav-link">Pricing</a>
-          <a href="docs.html" class="nav-link">Docs</a>
-          <a href="download.html" class="nav-link">Download</a>
-          <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <nav class="top-nav">
+        <div class="nav-left"><a href="index.html" class="logo">Larun<span>.</span></a></div>
+        <div class="nav-center">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="pricing.html" class="nav-link active">Pricing</a>
+            <a href="docs.html" class="nav-link">Docs</a>
+            <a href="download.html" class="nav-link">Download</a>
         </div>
+        <div class="nav-right"><a href="dashboard.html" class="btn btn-primary">Get Started</a></div>
+    </nav>
 
-        <div class="nav-actions">
-          <button class="btn btn-ghost" onclick="openAuthModal('login')">Sign In</button>
-          <a href="app.html" class="btn btn-primary">Get Started</a>
-        </div>
+    <main class="main-content">
+        <h1>Pricing</h1>
+        <p class="subtitle">"The stars belong to everyone. Now, so does the science."</p>
 
-        <button class="menu-toggle" aria-label="Toggle menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12h18M3 6h18M3 18h18"/>
-          </svg>
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main style="padding-top: calc(var(--header-height) + var(--space-3xl));">
-    <!-- Pricing Header -->
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <h1 class="section-title" style="font-size: 2.5rem;">Pricing</h1>
-          <p class="section-subtitle" style="font-size: 1.25rem; font-style: italic;">
-            "The stars belong to everyone. Now, so does the science."
-          </p>
-        </div>
-
-        <!-- Pricing Cards -->
         <div class="pricing-grid">
-          <!-- Explorer (Free) -->
-          <div class="pricing-card">
-            <div class="pricing-tier">EXPLORER</div>
-            <div class="pricing-price">
-              <span class="pricing-amount">Free</span>
+            <!-- Explorer (Free) -->
+            <div class="pricing-card">
+                <div class="pricing-tier">Explorer</div>
+                <div class="pricing-price">
+                    <span class="pricing-amount">Free</span>
+                </div>
+                <p class="pricing-desc">Perfect for getting started with exoplanet discovery</p>
+                <div class="pricing-features">
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>10 targets per month</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Basic CLI access</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>TinyML detection</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Community support</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>TESS data access</span>
+                    </div>
+                </div>
+                <a href="dashboard.html" class="btn btn-secondary pricing-cta">Get Started</a>
             </div>
-            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
-              Perfect for getting started with exoplanet discovery
-            </p>
-            <div class="pricing-features">
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>10 targets per month</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Basic CLI access</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>TinyML detection</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Community support</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>TESS data access</span>
-              </div>
-            </div>
-            <a href="app.html" class="btn btn-secondary pricing-cta">
-              Get Started
-            </a>
-          </div>
 
-          <!-- Researcher -->
-          <div class="pricing-card featured">
-            <div class="pricing-tier">RESEARCHER</div>
-            <div class="pricing-price">
-              <span class="pricing-amount">$9</span>
-              <span class="pricing-period">/month</span>
+            <!-- Researcher -->
+            <div class="pricing-card featured">
+                <div class="pricing-tier">Researcher</div>
+                <div class="pricing-price">
+                    <span class="pricing-amount">$9</span>
+                    <span class="pricing-period">/month</span>
+                </div>
+                <p class="pricing-desc">For serious amateur astronomers and students</p>
+                <div class="pricing-features">
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Unlimited targets</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>BLS periodogram analysis</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Transit parameter fitting</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>1,000 API calls/month</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Priority support</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Export reports (PDF)</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary pricing-cta" onclick="subscribe('researcher')">Subscribe</button>
             </div>
-            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
-              For serious amateur astronomers and students
-            </p>
-            <div class="pricing-features">
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Unlimited targets</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>BLS periodogram analysis</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Transit parameter fitting</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>1,000 API calls/month</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Priority support</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Export reports (PDF)</span>
-              </div>
-            </div>
-            <button class="btn btn-accent pricing-cta" onclick="subscribe('researcher')">
-              Subscribe
-            </button>
-          </div>
 
-          <!-- Scientist -->
-          <div class="pricing-card">
-            <div class="pricing-tier">SCIENTIST</div>
-            <div class="pricing-price">
-              <span class="pricing-amount">$29</span>
-              <span class="pricing-period">/month</span>
+            <!-- Scientist -->
+            <div class="pricing-card">
+                <div class="pricing-tier">Scientist</div>
+                <div class="pricing-price">
+                    <span class="pricing-amount">$29</span>
+                    <span class="pricing-period">/month</span>
+                </div>
+                <p class="pricing-desc">Full power for professional researchers</p>
+                <div class="pricing-features">
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Everything in Researcher</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Multi-mission data (TESS + Kepler)</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Unlimited API access</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>JWST spectroscopy data</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>TTV analysis</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Publication templates</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Direct researcher support</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary pricing-cta" onclick="subscribe('scientist')">Subscribe</button>
             </div>
-            <p style="color: var(--medium-gray); margin-bottom: var(--space-lg); font-size: 0.9375rem;">
-              Full power for professional researchers
-            </p>
-            <div class="pricing-features">
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Everything in Researcher</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Multi-mission data (TESS + Kepler)</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Unlimited API access</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>JWST spectroscopy data</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>TTV analysis</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Publication templates</span>
-              </div>
-              <div class="pricing-feature">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Direct researcher support</span>
-              </div>
-            </div>
-            <button class="btn btn-primary pricing-cta" onclick="subscribe('scientist')">
-              Subscribe
-            </button>
-          </div>
         </div>
 
         <!-- Enterprise Card -->
         <div class="enterprise-card">
-          <h3 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Enterprise</h3>
-          <p style="color: var(--light-gray); margin-bottom: var(--space-lg);">
-            Custom solutions for universities, observatories, and research institutions
-          </p>
-          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-lg); margin-bottom: var(--space-xl); color: var(--medium-gray);">
-            <span>White-labeling</span>
-            <span>•</span>
-            <span>On-premise deployment</span>
-            <span>•</span>
-            <span>Volume licensing</span>
-            <span>•</span>
-            <span>Custom integrations</span>
-          </div>
-          <a href="mailto:enterprise@larun.space" class="btn btn-secondary btn-lg">
-            Contact Sales
-          </a>
+            <h3>Enterprise</h3>
+            <p>Custom solutions for universities, observatories, and research institutions</p>
+            <div class="enterprise-features">
+                <span>White-labeling</span>
+                <span>On-premise deployment</span>
+                <span>Volume licensing</span>
+                <span>Custom integrations</span>
+            </div>
+            <a href="mailto:enterprise@larun.space" class="btn btn-secondary">Contact Sales</a>
         </div>
 
-        <!-- FAQ / Notes -->
-        <div style="max-width: 700px; margin: var(--space-3xl) auto 0; text-align: center;">
-          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              Core tools always free for research & education
-            </p>
-            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              BSL-1.1 → MIT License after 4 years
-            </p>
-            <p style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); color: var(--light-gray);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              Cancel anytime, no questions asked
-            </p>
-          </div>
+        <!-- Comparison Table -->
+        <div class="comparison-section">
+            <h2>Feature Comparison</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Explorer</th>
+                        <th>Researcher</th>
+                        <th>Scientist</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Targets per month</td><td>10</td><td>Unlimited</td><td>Unlimited</td></tr>
+                    <tr><td>TinyML Detection</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>BLS Periodogram</td><td class="dash">&mdash;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>Transit Fitting</td><td class="dash">&mdash;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>API Access</td><td class="dash">&mdash;</td><td>1,000/mo</td><td>Unlimited</td></tr>
+                    <tr><td>Kepler Data</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>JWST Data</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>TTV Analysis</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>PDF Reports</td><td class="dash">&mdash;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>Support</td><td>Community</td><td>Priority</td><td>Direct</td></tr>
+                </tbody>
+            </table>
         </div>
-      </div>
-    </section>
 
-    <!-- Comparison Table (optional) -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title text-center" style="margin-bottom: var(--space-2xl);">Feature Comparison</h2>
-
-        <div style="overflow-x: auto;">
-          <table class="data-table" style="max-width: 900px; margin: 0 auto;">
-            <thead>
-              <tr>
-                <th>Feature</th>
-                <th style="text-align: center;">Explorer</th>
-                <th style="text-align: center;">Researcher</th>
-                <th style="text-align: center;">Scientist</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Targets per month</td>
-                <td style="text-align: center;">10</td>
-                <td style="text-align: center;">Unlimited</td>
-                <td style="text-align: center;">Unlimited</td>
-              </tr>
-              <tr>
-                <td>TinyML Detection</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>BLS Periodogram</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>Transit Fitting</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>API Access</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center;">1,000/mo</td>
-                <td style="text-align: center;">Unlimited</td>
-              </tr>
-              <tr>
-                <td>Kepler Data</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>JWST Data</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>TTV Analysis</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>PDF Reports</td>
-                <td style="text-align: center; color: var(--medium-gray);">—</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-                <td style="text-align: center; color: var(--success);">✓</td>
-              </tr>
-              <tr>
-                <td>Support</td>
-                <td style="text-align: center;">Community</td>
-                <td style="text-align: center;">Priority</td>
-                <td style="text-align: center;">Direct</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Notes -->
+        <div class="notes">
+            <div class="note-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Core tools always free for research & education</span>
+            </div>
+            <div class="note-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>BSL-1.1 &rarr; MIT License after 4 years</span>
+            </div>
+            <div class="note-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Cancel anytime, no questions asked</span>
+            </div>
         </div>
-      </div>
-    </section>
-  </main>
+    </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-links">
-        <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
-        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
-        <a href="docs.html" class="footer-link">Docs</a>
-        <a href="download.html" class="footer-link">Download</a>
-        <a href="app.html" class="footer-link">App</a>
-      </div>
-      <p class="footer-copy">&copy; 2026 LARUN.SPACE. All rights reserved.</p>
+    <footer class="footer">
+        <a href="https://laruneng.com" target="_blank">laruneng.com</a>
+        <a href="https://github.com/Paddy1981/larun" target="_blank">GitHub</a>
+        <a href="docs.html">Documentation</a>
+        <a href="download.html">Download</a>
+        <p>&copy; 2026 Larun. AstroTinyML. All rights reserved.</p>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            <h3 id="auth-modal-title">Sign In</h3>
+            <form onsubmit="handleAuth(event)">
+                <input type="email" id="auth-email" placeholder="Email" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary" id="auth-submit-text">Sign In</button>
+            </form>
+            <button class="btn btn-secondary" onclick="handleGitHubLogin()" style="background: #24292e; color: white; border: none;">Continue with GitHub</button>
+            <p style="margin-top: 16px;">
+                <span id="auth-toggle-text">Don't have an account?</span>
+                <a href="#" onclick="toggleAuthMode(); return false;" id="auth-toggle-link">Sign Up</a>
+            </p>
+        </div>
     </div>
-  </footer>
 
-  <!-- Auth Modal -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="auth-modal-title">Sign In</h3>
-        <button class="modal-close" onclick="closeAuthModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <form id="auth-form" onsubmit="handleAuth(event)">
-        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-          <button type="button" class="btn btn-secondary btn-lg" style="width: 100%;" onclick="handleGitHubLogin()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            Continue with GitHub
-          </button>
-          <div style="display: flex; align-items: center; gap: var(--space-md); margin: var(--space-sm) 0;">
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-            <span style="font-size: 0.75rem; color: var(--medium-gray);">OR</span>
-            <div style="flex: 1; height: 1px; background: var(--border-gray);"></div>
-          </div>
-          <input type="email" class="input" placeholder="Email" required id="auth-email">
-          <input type="password" class="input" placeholder="Password" required id="auth-password">
-          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-            <span id="auth-submit-text">Sign In</span>
-          </button>
-        </div>
-        <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.875rem; color: var(--medium-gray);">
-          <span id="auth-toggle-text">Don't have an account?</span>
-          <a href="#" onclick="toggleAuthMode()" style="color: var(--cosmic-purple-light);" id="auth-toggle-link">Sign Up</a>
-        </p>
-      </form>
-    </div>
-  </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const DEMO_MODE = true;
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/auth.js"></script>
-  <script>
-    // Lemon Squeezy checkout URLs
-    // Lemon Squeezy checkout URLs - add your URLs from Lemon Squeezy dashboard
-    // Format: https://YOUR-STORE.lemonsqueezy.com/buy/VARIANT-ID
-    const LEMONSQUEEZY_CHECKOUTS = {
-      researcher: '',  // Add Researcher tier checkout URL when available
-      scientist: ''    // Add Scientist tier checkout URL when available
-    };
+        async function subscribe(tier) {
+            if (!Auth.isAuthenticated || !Auth.user) {
+                openAuthModal('signup', window.location.href);
+                sessionStorage.setItem('pending_subscription', tier);
+                return;
+            }
 
-    // Demo mode enabled until Lemon Squeezy products are configured
-    const DEMO_MODE = true;
+            const btn = event?.target;
+            const originalText = btn?.textContent;
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Processing...';
+            }
 
-    async function subscribe(tier) {
-      // Check if user is logged in via Supabase Auth
-      if (!Auth.isAuthenticated || !Auth.user) {
-        // User not logged in, show signup modal with return URL
-        openAuthModal('signup', window.location.href);
-        // Store intended tier for after signup
-        sessionStorage.setItem('pending_subscription', tier);
-        return;
-      }
+            try {
+                const response = await fetch('https://mwmbcfcvnkwegrjlauis.supabase.co/functions/v1/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${Auth.session?.access_token || ''}`
+                    },
+                    body: JSON.stringify({
+                        tier: tier,
+                        user_id: Auth.user.id,
+                        user_email: Auth.user.email,
+                        success_url: window.location.origin + '/dashboard.html?subscription=success&tier=' + tier,
+                        cancel_url: window.location.origin + '/pricing.html?subscription=cancelled'
+                    })
+                });
 
-      // Show loading state
-      const btn = event?.target;
-      const originalText = btn?.textContent;
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Processing...';
-      }
+                const data = await response.json();
 
-      try {
-        // Option 1: Direct Lemon Squeezy checkout links (simplest for static sites)
-        if (LEMONSQUEEZY_CHECKOUTS[tier]) {
-          const checkoutUrl = new URL(LEMONSQUEEZY_CHECKOUTS[tier]);
-          checkoutUrl.searchParams.set('checkout[email]', Auth.user.email || '');
-          checkoutUrl.searchParams.set('checkout[custom][user_id]', Auth.user.id || '');
-          window.location.href = checkoutUrl.toString();
-          return;
+                if (response.ok && data.url) {
+                    window.location.href = data.url;
+                    return;
+                }
+
+                if (DEMO_MODE || data.error === 'Payment system not configured') {
+                    if (confirm(`Demo Mode: Subscribe to ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month)?`)) {
+                        activateSubscription(tier);
+                    }
+                } else {
+                    throw new Error(data.error || 'Checkout failed');
+                }
+            } catch (error) {
+                console.error('Subscription error:', error);
+                if (DEMO_MODE) {
+                    if (confirm(`Activate ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan in demo mode?`)) {
+                        activateSubscription(tier);
+                    }
+                } else {
+                    alert(`Payment processing unavailable. Please contact support@larun.space to subscribe.`);
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            }
         }
 
-        // Option 2: Try Supabase Edge Function for dynamic checkout
-        const response = await fetch('https://mwmbcfcvnkwegrjlauis.supabase.co/functions/v1/create-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${Auth.session?.access_token || ''}`
-          },
-          body: JSON.stringify({
-            tier: tier,
-            user_id: Auth.user.id,
-            user_email: Auth.user.email,
-            success_url: window.location.origin + '/dashboard.html?subscription=success&tier=' + tier,
-            cancel_url: window.location.origin + '/pricing.html?subscription=cancelled'
-          })
+        function activateSubscription(tier) {
+            localStorage.setItem('user_tier', tier);
+            try {
+                const cached = localStorage.getItem('larun-user-cache');
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    data.tier = tier;
+                    localStorage.setItem('larun-user-cache', JSON.stringify(data));
+                }
+            } catch (e) {}
+            const tierNames = { researcher: 'Researcher', scientist: 'Scientist' };
+            alert(`Welcome to the ${tierNames[tier]} plan! Your subscription is now active.`);
+            window.location.href = 'dashboard.html?subscription=success&tier=' + tier;
+        }
+
+        function updateSubscriptionUI() {
+            const currentTier = localStorage.getItem('user_tier') || 'free';
+            document.querySelectorAll('.pricing-cta').forEach(btn => {
+                const card = btn.closest('.pricing-card');
+                const tierName = card?.querySelector('.pricing-tier')?.textContent?.toLowerCase();
+                if (tierName === currentTier || (currentTier === 'free' && tierName === 'explorer')) {
+                    btn.textContent = 'Current Plan';
+                    btn.disabled = true;
+                    btn.classList.add('btn-disabled');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSubscriptionUI();
+            const checkPendingSubscription = setInterval(() => {
+                if (Auth.isAuthenticated) {
+                    const pendingTier = sessionStorage.getItem('pending_subscription');
+                    if (pendingTier) {
+                        sessionStorage.removeItem('pending_subscription');
+                        setTimeout(() => subscribe(pendingTier), 500);
+                    }
+                    clearInterval(checkPendingSubscription);
+                    updateSubscriptionUI();
+                }
+            }, 500);
+            setTimeout(() => clearInterval(checkPendingSubscription), 10000);
         });
-
-        const data = await response.json();
-
-        if (response.ok && data.url) {
-          window.location.href = data.url;
-          return;
-        }
-
-        // If payment backend not configured, check for demo mode
-        if (DEMO_MODE || data.error === 'Payment system not configured') {
-          // Demo mode: simulate subscription locally
-          if (confirm(`Demo Mode: Subscribe to ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan ($${tier === 'researcher' ? '9' : '29'}/month)?\n\nNote: This is a demo. In production, you will be redirected to Lemon Squeezy checkout.`)) {
-            activateSubscription(tier);
-          }
-        } else {
-          throw new Error(data.error || 'Checkout failed');
-        }
-      } catch (error) {
-        console.error('Subscription error:', error);
-
-        // Fallback to demo mode
-        if (DEMO_MODE) {
-          if (confirm(`Activate ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan in demo mode?`)) {
-            activateSubscription(tier);
-          }
-        } else {
-          alert(`Payment processing unavailable. Please contact support@larun.space to subscribe.`);
-        }
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = originalText;
-        }
-      }
-    }
-
-    // Activate subscription (called after successful payment or in demo mode)
-    function activateSubscription(tier) {
-      // Store subscription tier locally
-      localStorage.setItem('user_tier', tier);
-
-      // Update the user cache with new tier
-      try {
-        const cached = localStorage.getItem('larun-user-cache');
-        if (cached) {
-          const data = JSON.parse(cached);
-          data.tier = tier;
-          localStorage.setItem('larun-user-cache', JSON.stringify(data));
-        }
-      } catch (e) {
-        console.warn('Failed to update cache:', e);
-      }
-
-      // Show success message
-      const tierNames = { researcher: 'Researcher', scientist: 'Scientist' };
-      alert(`Welcome to the ${tierNames[tier]} plan! Your subscription is now active.`);
-
-      // Redirect to dashboard
-      window.location.href = 'dashboard.html?subscription=success&tier=' + tier;
-    }
-
-    // Handle subscription success callback from Lemon Squeezy
-    function handleSubscriptionCallback() {
-      const params = new URLSearchParams(window.location.search);
-      const status = params.get('subscription');
-      const tier = params.get('tier');
-
-      if (status === 'success' && tier) {
-        activateSubscription(tier);
-      } else if (status === 'cancelled') {
-        // User cancelled checkout
-        console.log('Subscription cancelled by user');
-      }
-    }
-
-    // Check for pending subscription after login
-    document.addEventListener('DOMContentLoaded', () => {
-      // Handle subscription callback
-      handleSubscriptionCallback();
-
-      // Update UI based on current subscription
-      updateSubscriptionUI();
-
-      // Listen for auth state changes
-      const checkPendingSubscription = setInterval(() => {
-        if (Auth.isAuthenticated) {
-          const pendingTier = sessionStorage.getItem('pending_subscription');
-          if (pendingTier) {
-            sessionStorage.removeItem('pending_subscription');
-            setTimeout(() => subscribe(pendingTier), 500);
-          }
-          clearInterval(checkPendingSubscription);
-          updateSubscriptionUI();
-        }
-      }, 500);
-
-      // Stop checking after 10 seconds
-      setTimeout(() => clearInterval(checkPendingSubscription), 10000);
-    });
-
-    // Update UI to show current subscription status
-    function updateSubscriptionUI() {
-      const currentTier = localStorage.getItem('user_tier') || 'free';
-
-      // Update button text for current plan
-      document.querySelectorAll('.pricing-cta').forEach(btn => {
-        const card = btn.closest('.pricing-card');
-        const tierName = card?.querySelector('.pricing-tier')?.textContent?.toLowerCase();
-
-        if (tierName === currentTier || (currentTier === 'free' && tierName === 'explorer')) {
-          btn.textContent = 'Current Plan';
-          btn.disabled = true;
-          btn.classList.add('btn-disabled');
-        }
-      });
-    }
-  </script>
+    </script>
 </body>
 </html>
