@@ -440,15 +440,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Lemon Squeezy configuration
-    // Replace these with your actual Lemon Squeezy checkout URLs when ready
+    // Lemon Squeezy checkout URLs
     const LEMONSQUEEZY_CHECKOUTS = {
-      researcher: '', // e.g., 'https://larun.lemonsqueezy.com/checkout/buy/abc123'
-      scientist: ''   // e.g., 'https://larun.lemonsqueezy.com/checkout/buy/xyz789'
+      researcher: 'https://larun.space/checkout/buy/2a358d72-53c7-488d-b26d-536caa6630ef',
+      scientist: ''   // Add Scientist tier checkout URL here when available
     };
 
-    // For development: enable demo mode (simulates subscription locally)
-    const DEMO_MODE = true;
+    // Set to false when payment is configured, true for demo mode
+    const DEMO_MODE = false;
 
     async function subscribe(tier) {
       // Check if user is logged in via Supabase Auth
