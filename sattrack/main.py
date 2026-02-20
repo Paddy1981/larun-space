@@ -1,0 +1,75 @@
+"""
+SatTrack Phase 1 — Entrypoint
+
+Starts APScheduler in a background thread, runs an immediate first
+ingestion, then serves FastAPI on PORT (default 8000).
+"""
+from __future__ import annotations
+
+import logging
+import os
+
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+from api.routes import router
+from scheduler import create_scheduler, run_initial_ingestion
+
+app = FastAPI(
+    title="LARUN SatTrack",
+    description="Phase 1 — TLE history accumulation and space weather ingestion",
+    version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+
+app.include_router(router)
+
+
+@app.get("/")
+def root():
+    return {
+        "service": "LARUN SatTrack",
+        "phase": 1,
+        "docs": "/docs",
+        "status": "/v1/status",
+    }
+
+
+@app.on_event("startup")
+def on_startup():
+    logger.info("SatTrack starting up...")
+
+    # Start the recurring scheduler
+    scheduler = create_scheduler()
+    scheduler.start()
+    logger.info("Scheduler started with %d jobs", len(scheduler.get_jobs()))
+
+    # Fire immediate first ingestion in background thread
+    run_initial_ingestion()
+    logger.info("Initial ingestion bootstrapped (running in background)")
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port,
+        log_level="info",
+    )
