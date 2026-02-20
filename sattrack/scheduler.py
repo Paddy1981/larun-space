@@ -66,6 +66,19 @@ def job_source_health_check():
     logger.debug("source_health_check heartbeat")
 
 
+def job_conjunction_screening():
+    """Run LEO conjunction screening and persist results."""
+    try:
+        from conjunctions.screener import screen_conjunctions
+        from db.client import upsert_conjunctions
+        results = screen_conjunctions(threshold_km=10.0, hours=24)
+        if results:
+            upsert_conjunctions(results)
+        logger.info("Conjunction screening saved %d events", len(results))
+    except Exception as exc:
+        logger.error("Conjunction screening job failed: %s", exc)
+
+
 def create_scheduler() -> BackgroundScheduler:
     """Build and return a configured BackgroundScheduler (not yet started)."""
     scheduler = BackgroundScheduler(timezone="UTC")
@@ -146,6 +159,16 @@ def create_scheduler() -> BackgroundScheduler:
         trigger=IntervalTrigger(minutes=5),
         id="source_health_check",
         name="Source health heartbeat",
+        max_instances=1,
+        coalesce=True,
+    )
+
+    # conjunction screening — every 6 hours
+    scheduler.add_job(
+        job_conjunction_screening,
+        trigger=IntervalTrigger(hours=6),
+        id="conjunction_screening",
+        name="LEO conjunction screening",
         max_instances=1,
         coalesce=True,
     )

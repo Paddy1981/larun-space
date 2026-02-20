@@ -23,12 +23,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 from api.routes import router
+from api.routes_propagate import router as router_propagate
+from api.routes_passes import router as router_passes
+from api.routes_conjunctions import router as router_conjunctions
 from scheduler import create_scheduler, run_initial_ingestion
 
 app = FastAPI(
     title="LARUN SatTrack",
-    description="Phase 1 — TLE history accumulation and space weather ingestion",
-    version="1.0.0",
+    description="Phase 2 — orbit propagation, pass predictions, conjunction screening",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -39,13 +42,16 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(router_propagate)
+app.include_router(router_passes)
+app.include_router(router_conjunctions)
 
 
 @app.get("/")
 def root():
     return {
         "service": "LARUN SatTrack",
-        "phase": 1,
+        "phase": 2,
         "docs": "/docs",
         "status": "/v1/status",
     }

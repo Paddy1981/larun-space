@@ -129,6 +129,34 @@ def upsert_space_weather(records: list[dict[str, Any]]) -> int:
         raise
 
 
+def upsert_conjunctions(records: list[dict[str, Any]]) -> int:
+    """
+    Upsert conjunction screening results.
+
+    Deduplicates on (norad_id_1, norad_id_2, tca_time) via the unique
+    constraint defined in schema_phase2.sql.  Returns number of rows written.
+    """
+    if not records:
+        return 0
+    client = get_client()
+    try:
+        result = (
+            client.table("conjunctions")
+            .upsert(
+                records,
+                on_conflict="norad_id_1,norad_id_2,tca_time",
+                ignore_duplicates=False,
+            )
+            .execute()
+        )
+        count = len(result.data) if result.data else 0
+        logger.info("upsert_conjunctions: %d rows written", count)
+        return count
+    except Exception as exc:
+        logger.error("upsert_conjunctions failed: %s", exc)
+        raise
+
+
 def log_source_health(
     source: str,
     status: str,

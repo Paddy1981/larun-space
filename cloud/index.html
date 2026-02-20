@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LARUN SatTrack — Real-Time Satellite Tracker</title>
+  <meta name="description" content="Real-time satellite tracking, pass predictions, and conjunction alerts powered by LARUN SatTrack." />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Local styles -->
+  <link rel="stylesheet" href="css/sattrack.css" />
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <nav class="nav">
+    <a class="nav-brand" href="https://larun.space">
+      LARUN<span class="dot">.</span>SPACE
+    </a>
+    <span class="nav-badge">SatTrack</span>
+    <div class="nav-spacer"></div>
+    <a class="nav-link" href="https://larun.space/docs.html">Docs</a>
+    <a class="nav-link" href="https://sattrack-production.up.railway.app/docs" target="_blank" rel="noopener">API</a>
+    <a class="nav-link" href="https://larun.space" target="_blank" rel="noopener">larun.space ↗</a>
+  </nav>
+
+  <!-- ── THREE-PANEL LAYOUT ──────────────────────────────────── -->
+  <div class="app-shell">
+
+    <!-- LEFT: satellite list + search -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Satellites <span id="sat-count">…</span></h2>
+        <input
+          id="search-input"
+          class="search-box"
+          type="search"
+          placeholder="Search name or NORAD ID…"
+          autocomplete="off"
+        />
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="ALL">All</button>
+          <button class="filter-btn" data-filter="LEO">LEO</button>
+          <button class="filter-btn" data-filter="MEO">MEO</button>
+          <button class="filter-btn" data-filter="GEO">GEO</button>
+          <button class="filter-btn" data-filter="HEO">HEO</button>
+        </div>
+      </div>
+
+      <div class="sat-list" id="sat-list">
+        <div class="sat-list-empty">Loading…</div>
+      </div>
+
+      <div class="sidebar-footer">
+        Click a satellite for pass prediction
+      </div>
+    </aside>
+
+    <!-- CENTRE: Leaflet map -->
+    <main class="map-panel">
+      <div id="map"></div>
+      <div class="map-overlay">
+        <button class="map-btn" id="btn-locate">⊕ My Location</button>
+        <button class="map-btn" id="btn-clear">✕ Clear Track</button>
+      </div>
+    </main>
+
+    <!-- RIGHT: weather + conjunctions -->
+    <aside class="rightbar">
+      <div class="panel">
+        <div class="panel-title">Space Weather</div>
+
+        <div class="weather-row">
+          <span class="weather-label">Kp Index</span>
+          <span class="weather-value" id="kp-value">—</span>
+        </div>
+        <div class="kp-bar">
+          <div class="kp-bar-fill" id="kp-bar-fill" style="width:0%"></div>
+        </div>
+
+        <div class="weather-row" style="margin-top:10px">
+          <span class="weather-label">F10.7 Flux</span>
+          <span class="weather-value" id="f107-value">—</span>
+        </div>
+
+        <div style="margin-top:6px;font-size:0.65rem;color:var(--medium-gray)" id="weather-updated"></div>
+      </div>
+
+      <div class="rightbar-scroll">
+        <div class="panel" style="border-bottom:none;flex:0">
+          <div class="panel-title">Conjunction Alerts <span style="color:var(--error)">&lt;10 km</span></div>
+        </div>
+        <div class="conj-list" id="conj-list">
+          <div class="conj-empty">Loading…</div>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- .app-shell -->
+
+  <!-- ── PASS MODAL ───────────────────────────────────────────── -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Pass Predictions</h2>
+        <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtitle" id="modal-subtitle"></p>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ────────────────────────────────────────────────── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- CDN libraries (non-module) — must load before ES modules -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqaY=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/satellite.js@4.1.4/dist/satellite.min.js"></script>
+
+  <!-- App (ES module) -->
+  <script type="module" src="js/sattrack-app.js"></script>
+
+</body>
+</html>
