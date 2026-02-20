@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ECSS Knowledge Hub — Complete reference for European Cooperation for Space Standardization. All 7 branches, 139 standards, lifecycle reviews, and tailoring process.">
+    <title>ECSS Knowledge Hub — LARUN.SPACE</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #202124;
+            --dark-gray: #3c4043;
+            --medium-gray: #5f6368;
+            --light-gray: #dadce0;
+            --lighter-gray: #f1f3f4;
+            --white: #ffffff;
+            --hover-bg: #f8f9fa;
+            --accent-blue: #1a73e8;
+            --border-radius: 8px;
+            --shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            --shadow-hover: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+
+            /* ECSS Branch colors (light-theme adapted) */
+            --m-branch: #b45309;
+            --m-branch-bg: #fef3c7;
+            --e-branch: #1a73e8;
+            --e-branch-bg: #dbeafe;
+            --q-branch: #059669;
+            --q-branch-bg: #d1fae5;
+            --u-branch: #7c3aed;
+            --u-branch-bg: #ede9fe;
+            --s-branch: #0369a1;
+            --s-branch-bg: #e0f2fe;
+
+            --sidebar-width: 268px;
+            --topnav-height: 64px;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Roboto', -apple-system, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ============ TOP NAV ============ */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--topnav-height);
+            background: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 200;
+        }
+        .nav-left { display: flex; align-items: center; gap: 8px; }
+        .logo {
+            display: flex; align-items: center; gap: 4px;
+            text-decoration: none;
+        }
+        .logo-text { font-size: 22px; font-weight: 500; color: var(--black); letter-spacing: -0.5px; }
+        .logo-dot { color: var(--black); }
+        .product-name { font-size: 22px; font-weight: 400; color: var(--medium-gray); margin-left: 4px; }
+        .nav-divider { width: 1px; height: 20px; background: var(--light-gray); margin: 0 12px; }
+        .nav-page-label { font-size: 13px; color: var(--medium-gray); font-weight: 500; }
+
+        .nav-center { flex: 1; display: flex; justify-content: center; gap: 4px; }
+        .nav-link {
+            padding: 8px 16px; border-radius: 4px;
+            color: var(--dark-gray); text-decoration: none;
+            font-size: 14px; font-weight: 500;
+            transition: background 0.2s;
+        }
+        .nav-link:hover { background: var(--lighter-gray); }
+        .nav-link.active { color: var(--accent-blue); }
+
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .btn {
+            padding: 10px 24px; border-radius: 4px;
+            font-size: 14px; font-weight: 500;
+            font-family: inherit; cursor: pointer;
+            transition: all 0.2s; text-decoration: none; border: none;
+        }
+        .btn-text { background: transparent; color: var(--dark-gray); padding: 10px 16px; }
+        .btn-text:hover { background: var(--lighter-gray); }
+        .btn-primary { background: var(--black); color: var(--white); }
+        .btn-primary:hover { background: var(--dark-gray); box-shadow: var(--shadow); }
+        .btn-secondary { background: var(--white); color: var(--black); border: 1px solid var(--light-gray); }
+        .btn-secondary:hover { background: var(--lighter-gray); }
+
+        /* ============ APP LAYOUT ============ */
+        .app { display: flex; padding-top: var(--topnav-height); min-height: 100vh; }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: var(--topnav-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            background: var(--lighter-gray);
+        }
+        .sidebar-badge {
+            display: inline-block;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--black);
+        }
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--medium-gray);
+            margin-top: 2px;
+        }
+        .sidebar-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .sidebar-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--black);
+            background: var(--lighter-gray);
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .sidebar-search input:focus {
+            border-color: var(--accent-blue);
+            background: var(--white);
+        }
+        .sidebar-search input::placeholder { color: var(--medium-gray); }
+
+        .sidebar-nav { padding: 8px 0; }
+        .nav-section-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            padding: 12px 20px 4px;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 20px;
+            font-size: 13.5px;
+            color: var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+        }
+        .nav-item:hover { background: var(--hover-bg); color: var(--black); }
+        .nav-item.active {
+            background: #e8f0fe;
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+            font-weight: 500;
+        }
+        .nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .nav-stats {
+            padding: 16px 20px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 8px;
+        }
+        .nav-stat {
+            display: flex; justify-content: space-between;
+            font-size: 12px; color: var(--medium-gray);
+            margin-bottom: 6px;
+        }
+        .nav-stat span { color: var(--black); font-weight: 500; font-family: 'Roboto Mono', monospace; }
+
+        /* ============ MAIN CONTENT ============ */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+        .topbar {
+            position: sticky;
+            top: var(--topnav-height);
+            z-index: 50;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 10px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--medium-gray);
+            white-space: nowrap;
+        }
+        .topbar-stats {
+            display: flex; gap: 20px;
+            font-size: 12px; color: var(--medium-gray);
+            margin-left: auto;
+        }
+        .topbar-stat span { color: var(--black); font-weight: 500; font-family: 'Roboto Mono', monospace; }
+
+        .content { padding: 32px 40px; max-width: 1100px; }
+
+        /* ============ SECTIONS ============ */
+        .section { display: none; animation: fadeIn 0.25s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .section-header h1 {
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 6px;
+        }
+        .section-header p {
+            color: var(--medium-gray);
+            font-size: 15px;
+            max-width: 720px;
+        }
+
+        /* ============ CARDS ============ */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        .card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-1px);
+        }
+        .card-badge {
+            display: inline-block;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .badge-m { background: var(--m-branch-bg); color: var(--m-branch); }
+        .badge-e { background: var(--e-branch-bg); color: var(--e-branch); }
+        .badge-q { background: var(--q-branch-bg); color: var(--q-branch); }
+        .badge-u { background: var(--u-branch-bg); color: var(--u-branch); }
+        .badge-general { background: var(--lighter-gray); color: var(--medium-gray); }
+
+        .card h3 { font-size: 16px; font-weight: 500; color: var(--black); margin-bottom: 6px; }
+        .card p { font-size: 13px; color: var(--medium-gray); line-height: 1.55; }
+        .card-code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: var(--accent-blue);
+            margin-top: 10px;
+        }
+
+        /* ============ TABLES ============ */
+        .table-wrap {
+            overflow-x: auto;
+            margin-bottom: 24px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead { background: var(--lighter-gray); }
+        th {
+            text-align: left;
+            padding: 10px 16px;
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--medium-gray);
+            border-bottom: 1px solid var(--light-gray);
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(218,220,224,0.5);
+            color: var(--dark-gray);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--hover-bg); }
+        td:first-child { color: var(--black); font-weight: 500; }
+        .std-code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: var(--accent-blue);
+            white-space: nowrap;
+        }
+
+        /* ============ INFO BOXES ============ */
+        .info-box {
+            background: #e8f0fe;
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+        }
+        .info-box.warning { background: var(--m-branch-bg); border-left-color: var(--m-branch); }
+        .info-box.success { background: var(--q-branch-bg); border-left-color: var(--q-branch); }
+        .info-box.critical { background: #ffe4e6; border-left-color: #e11d48; }
+        .info-box h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 6px;
+        }
+        .info-box p { color: var(--dark-gray); font-size: 13.5px; line-height: 1.6; }
+
+        /* ============ SUBSECTIONS ============ */
+        .subsection { margin-bottom: 32px; }
+        .subsection h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .subsection h3 { font-size: 14px; font-weight: 500; margin: 12px 0 6px; color: var(--accent-blue); }
+        .subsection p, .subsection li { font-size: 14px; color: var(--dark-gray); line-height: 1.65; }
+        .subsection ul, .subsection ol { padding-left: 20px; margin: 8px 0; }
+        .subsection li { margin-bottom: 4px; }
+
+        /* ============ BRANCH TAGS ============ */
+        .branch-tag {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .branch-m { background: var(--m-branch-bg); color: var(--m-branch); }
+        .branch-e { background: var(--e-branch-bg); color: var(--e-branch); }
+        .branch-q { background: var(--q-branch-bg); color: var(--q-branch); }
+        .branch-u { background: var(--u-branch-bg); color: var(--u-branch); }
+
+        /* ============ LIFECYCLE FLOW ============ */
+        .lifecycle-flow { display: flex; gap: 4px; flex-wrap: wrap; margin: 16px 0; }
+        .phase-block {
+            flex: 1; min-width: 110px;
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 14px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+        .phase-block:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .phase-label { font-family: 'Roboto Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent-blue); }
+        .phase-name { font-size: 11px; color: var(--medium-gray); margin-top: 4px; }
+        .phase-review {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px; color: var(--m-branch);
+            margin-top: 6px; padding-top: 6px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        /* ============ TREE VIEW ============ */
+        .tree { margin: 12px 0; }
+        .tree pre {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: var(--dark-gray);
+            background: var(--lighter-gray);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--light-gray);
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        /* ============ GLOSSARY ============ */
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+        .glossary-item {
+            background: var(--lighter-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+        .glossary-item dt { font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--accent-blue); margin-bottom: 2px; }
+        .glossary-item dd { font-size: 12.5px; color: var(--dark-gray); }
+
+        /* ============ SEVERITY ============ */
+        .severity-1 { color: #dc2626; font-weight: 600; }
+        .severity-2 { color: #ea580c; font-weight: 600; }
+        .severity-3 { color: var(--m-branch); font-weight: 600; }
+        .severity-4 { color: var(--q-branch); font-weight: 600; }
+
+        /* ============ MOBILE TOGGLE ============ */
+        .menu-toggle {
+            display: none; background: none; border: none;
+            color: var(--black); font-size: 22px;
+            cursor: pointer; padding: 4px;
+        }
+
+        /* ============ FOOTER ============ */
+        .page-footer {
+            margin-left: var(--sidebar-width);
+            border-top: 1px solid var(--light-gray);
+            padding: 24px 40px;
+            text-align: center;
+        }
+        .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+        .footer-link { padding: 4px 12px; color: var(--medium-gray); text-decoration: none; font-size: 13px; border-radius: 4px; transition: all 0.2s; }
+        .footer-link:hover { background: var(--lighter-gray); color: var(--black); }
+        .footer-copy { font-size: 12px; color: var(--medium-gray); }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .page-footer { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .card-grid { grid-template-columns: 1fr; }
+            .lifecycle-flow { flex-direction: column; }
+            .content { padding: 20px; }
+            .nav-center { display: none; }
+            .topbar-stats { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="top-nav">
+    <div class="nav-left">
+        <a href="index.html" class="logo">
+            <span class="logo-text">Larun<span class="logo-dot">.</span></span>
+            <span class="product-name">SPACE</span>
+        </a>
+        <div class="nav-divider"></div>
+        <span class="nav-page-label">ECSS Knowledge Hub</span>
+    </div>
+    <div class="nav-center">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="models.html" class="nav-link">Models</a>
+        <a href="app.html" class="nav-link">Analyse</a>
+        <a href="ecss.html" class="nav-link active">ECSS</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+    </div>
+    <div class="nav-right">
+        <button class="btn btn-text" onclick="openAuthModal('login')">Sign In</button>
+        <a href="app.html" class="btn btn-primary">Get Started</a>
+    </div>
+</nav>
+
+<div class="app">
+    <!-- ============ SIDEBAR ============ -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-badge">Knowledge Hub</div>
+            <div class="sidebar-title">ECSS Standards</div>
+            <div class="sidebar-subtitle">European Space Standardization</div>
+        </div>
+        <div class="sidebar-search">
+            <input type="text" id="searchInput" placeholder="Search standards..." oninput="handleSearch(this.value)">
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section-label">Overview</div>
+            <div class="nav-item active" onclick="showSection('overview')">
+                <div class="nav-dot" style="background:#1a73e8"></div> Dashboard
+            </div>
+            <div class="nav-item" onclick="showSection('history')">
+                <div class="nav-dot" style="background:#5f6368"></div> History & Organization
+            </div>
+            <div class="nav-item" onclick="showSection('architecture')">
+                <div class="nav-dot" style="background:#0369a1"></div> Document Architecture
+            </div>
+
+            <div class="nav-section-label">Branches</div>
+            <div class="nav-item" onclick="showSection('m-branch')">
+                <div class="nav-dot" style="background:var(--m-branch)"></div> M — Project Management
+            </div>
+            <div class="nav-item" onclick="showSection('e-branch')">
+                <div class="nav-dot" style="background:var(--e-branch)"></div> E — Engineering
+            </div>
+            <div class="nav-item" onclick="showSection('q-branch')">
+                <div class="nav-dot" style="background:var(--q-branch)"></div> Q — Product Assurance
+            </div>
+            <div class="nav-item" onclick="showSection('u-branch')">
+                <div class="nav-dot" style="background:var(--u-branch)"></div> U — Sustainability
+            </div>
+
+            <div class="nav-section-label">Process</div>
+            <div class="nav-item" onclick="showSection('lifecycle')">
+                <div class="nav-dot" style="background:var(--m-branch)"></div> Lifecycle & Reviews
+            </div>
+            <div class="nav-item" onclick="showSection('tailoring')">
+                <div class="nav-dot" style="background:#ea580c"></div> Tailoring Process
+            </div>
+            <div class="nav-item" onclick="showSection('customer')">
+                <div class="nav-dot" style="background:#e11d48"></div> Customer–Supplier Model
+            </div>
+
+            <div class="nav-section-label">Technical Deep Dives</div>
+            <div class="nav-item" onclick="showSection('systems-eng')">
+                <div class="nav-dot" style="background:var(--e-branch)"></div> Systems Engineering
+            </div>
+            <div class="nav-item" onclick="showSection('safety')">
+                <div class="nav-dot" style="background:var(--q-branch)"></div> Safety & Dependability
+            </div>
+            <div class="nav-item" onclick="showSection('software')">
+                <div class="nav-dot" style="background:var(--u-branch)"></div> Software Standards
+            </div>
+            <div class="nav-item" onclick="showSection('eee')">
+                <div class="nav-dot" style="background:var(--q-branch)"></div> EEE Components
+            </div>
+            <div class="nav-item" onclick="showSection('materials')">
+                <div class="nav-dot" style="background:#ea580c"></div> Materials & Processes
+            </div>
+
+            <div class="nav-section-label">Reference</div>
+            <div class="nav-item" onclick="showSection('complete-list')">
+                <div class="nav-dot" style="background:var(--medium-gray)"></div> Complete Standards List
+            </div>
+            <div class="nav-item" onclick="showSection('glossary')">
+                <div class="nav-dot" style="background:var(--medium-gray)"></div> Glossary & Abbreviations
+            </div>
+            <div class="nav-item" onclick="showSection('crossref')">
+                <div class="nav-dot" style="background:var(--medium-gray)"></div> Cross-Reference Map
+            </div>
+            <div class="nav-item" onclick="showSection('resources')">
+                <div class="nav-dot" style="background:var(--medium-gray)"></div> Training & Resources
+            </div>
+        </div>
+        <div class="nav-stats">
+            <div class="nav-stat">Active Standards <span>139</span></div>
+            <div class="nav-stat">Requirements <span>25,000+</span></div>
+            <div class="nav-stat">Branches <span>7</span></div>
+        </div>
+    </nav>
+
+    <!-- ============ MAIN ============ -->
+    <div class="main">
+        <div class="topbar">
+            <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+            <span class="topbar-title" id="topbar-title">Dashboard</span>
+            <div class="topbar-stats">
+                <div class="topbar-stat"><span>139</span> Active Standards</div>
+                <div class="topbar-stat"><span>25,000+</span> Requirements</div>
+                <div class="topbar-stat"><span>7</span> Branches</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ====================================== -->
+            <!-- OVERVIEW / DASHBOARD                   -->
+            <!-- ====================================== -->
+            <div class="section active" id="sec-overview">
+                <div class="section-header">
+                    <h1>ECSS Knowledge Hub</h1>
+                    <p>Complete reference for the European Cooperation for Space Standardization — the unified standards framework for all European space activities. Established 1993, managing 139 active standards across 7 branches.</p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card" onclick="showSection('m-branch')" style="cursor:pointer;border-top:3px solid var(--m-branch)">
+                        <span class="card-badge badge-m">M-Branch</span>
+                        <h3>Project Management</h3>
+                        <p>Project planning, configuration management, cost & schedule, risk management. 6 active standards governing how space projects are organized and controlled.</p>
+                        <div class="card-code">M-10 · M-40 · M-60 · M-70 · M-80</div>
+                    </div>
+                    <div class="card" onclick="showSection('e-branch')" style="cursor:pointer;border-top:3px solid var(--e-branch)">
+                        <span class="card-badge badge-e">E-Branch</span>
+                        <h3>Space Engineering</h3>
+                        <p>System engineering, electrical, mechanical, thermal, structural, software, communications, control, ground systems. ~65 standards + 46 handbooks.</p>
+                        <div class="card-code">E-10 · E-20 · E-30 · E-40 · E-50 · E-60 · E-70 · E-80</div>
+                    </div>
+                    <div class="card" onclick="showSection('q-branch')" style="cursor:pointer;border-top:3px solid var(--q-branch)">
+                        <span class="card-badge badge-q">Q-Branch</span>
+                        <h3>Product Assurance</h3>
+                        <p>Safety, reliability, quality, dependability, EEE components, materials & processes, software PA. ~62 standards ensuring mission success.</p>
+                        <div class="card-code">Q-10 · Q-20 · Q-30 · Q-40 · Q-60 · Q-70 · Q-80</div>
+                    </div>
+                    <div class="card" onclick="showSection('u-branch')" style="cursor:pointer;border-top:3px solid var(--u-branch)">
+                        <span class="card-badge badge-u">U-Branch</span>
+                        <h3>Space Sustainability</h3>
+                        <p>Space debris mitigation, planetary protection, and space situational awareness. Growing branch addressing long-term responsible space use.</p>
+                        <div class="card-code">U-10 · U-20 · U-30</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h2>Key Facts at a Glance</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <tbody>
+                                <tr><td>Established</td><td>1993 (ESA resolution ESA/C/CXIII/Res.1, 23 June 1994)</td></tr>
+                                <tr><td>Replaced</td><td>ESA PSS (Procedures, Specifications & Standards) system</td></tr>
+                                <tr><td>Active Standards</td><td>139 (316 total releases since 1996)</td></tr>
+                                <tr><td>Total Requirements</td><td>25,000+ across all branches</td></tr>
+                                <tr><td>Managing Body</td><td>ESA Requirements & Standards Division, ESTEC, Noordwijk, Netherlands</td></tr>
+                                <tr><td>Official Website</td><td><a href="https://ecss.nl" target="_blank" style="color:var(--accent-blue)">ecss.nl</a> — all standards freely downloadable</td></tr>
+                                <tr><td>Document Language</td><td>English only</td></tr>
+                                <tr><td>Certification</td><td>ECSS does NOT provide any compliance certification</td></tr>
+                                <tr><td>Applicability</td><td>Binding only through business agreement / contract</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <h4>Core Principle</h4>
+                    <p>ECSS requirements define <strong>what</strong> needs to be fulfilled, not <strong>how</strong> — leaving implementation flexibility to suppliers while ensuring consistent quality across European space programmes.</p>
+                </div>
+
+                <div class="subsection">
+                    <h2>Recently Published Standards (2024–2025)</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Standard</th><th>Date</th><th>Topic</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">ECSS-Q-ST-70-01C Rev.1</td><td>Oct 2025</td><td>Cleanliness and contamination control</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-40-08C</td><td>Aug 2025</td><td>Simulation modelling platform — Level 2</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-40-07C Rev.1</td><td>Aug 2025</td><td>Simulation modelling platform — Level 1</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-40C Rev.1</td><td>Apr 2025</td><td>Software engineering (major update)</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-60C Rev.4</td><td>Apr 2025</td><td>EEE components</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-60-13C Rev.2</td><td>Apr 2025</td><td>Commercial EEE components</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-60-15C Rev.1</td><td>Mar 2025</td><td>Radiation hardness assurance</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-70-12C Rev.1</td><td>Apr 2025</td><td>PCB design rules</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-80C</td><td>Jul 2024</td><td>Security in space systems lifecycles (NEW)</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-10-24C Rev.1</td><td>Nov 2024</td><td>Interface management</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- HISTORY & ORGANIZATION                 -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-history">
+                <div class="section-header">
+                    <h1>History & Organization</h1>
+                    <p>From fragmented national standards to a unified European space standardization framework.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Timeline</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Year</th><th>Milestone</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">1977</td><td>ESA Board for Software Standardization and Control (BSSC) established</td></tr>
+                                <tr><td class="std-code">1988</td><td>Eurospace calls for unified European space standardization</td></tr>
+                                <tr><td class="std-code">1993</td><td>ECSS Terms of Reference signed; Standardization Policy (ECSS-P-00) approved</td></tr>
+                                <tr><td class="std-code">1994</td><td>ESA Council adopts resolution ESA/C/CXIII/Res.1, formally initiating ECSS</td></tr>
+                                <tr><td class="std-code">1996</td><td>First 17 ECSS standards published (19 April)</td></tr>
+                                <tr><td class="std-code">1997</td><td>Agreements with CENELEC (June) and CEN (June) for European Standards adoption</td></tr>
+                                <tr><td class="std-code">1998</td><td>Cooperation agreement with ISO TC20/SC14</td></tr>
+                                <tr><td class="std-code">2008–09</td><td>Major "Issue C" revision — most currently active versions date from here</td></tr>
+                                <tr><td class="std-code">2012</td><td>U-Branch (Space Sustainability) initiated</td></tr>
+                                <tr><td class="std-code">2024</td><td>E-80 Security standard published; ECSS NextGen modernization underway</td></tr>
+                                <tr><td class="std-code">2025</td><td>Major updates: Software (E-ST-40C Rev.1), EEE (Q-ST-60C Rev.4), PCBs, contamination control</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>ECSS Organization Structure</h2>
+                    <div class="info-box">
+                        <h4>Five Entities</h4>
+                        <p><strong>Steering Board</strong> — Elaborates objectives, policy, strategies (one rep per member body; meets twice yearly)<br>
+                        <strong>Technical Authority (TA)</strong> — Implements Steering Board decisions; meets 4 times/year<br>
+                        <strong>Executive Secretariat</strong> — Administrative support, promotion, communication management<br>
+                        <strong>Network of Experts</strong> — Technical support to TA and secretariat<br>
+                        <strong>Working Groups</strong> — Initiated as needed for defining/updating specific standards</p>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>ECSS Members</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Organization</th><th>Abbreviation</th><th>Country</th></tr></thead>
+                            <tbody>
+                                <tr><td>European Space Agency</td><td class="std-code">ESA</td><td>International</td></tr>
+                                <tr><td>Eurospace (European space industry)</td><td class="std-code">—</td><td>International</td></tr>
+                                <tr><td>Agenzia Spaziale Italiana</td><td class="std-code">ASI</td><td>Italy</td></tr>
+                                <tr><td>UK Space Agency</td><td class="std-code">UKSA</td><td>United Kingdom</td></tr>
+                                <tr><td>Centre National d'Études Spatiales</td><td class="std-code">CNES</td><td>France</td></tr>
+                                <tr><td>Deutsches Zentrum für Luft- und Raumfahrt</td><td class="std-code">DLR</td><td>Germany</td></tr>
+                                <tr><td>Netherlands Space Office</td><td class="std-code">NSO</td><td>Netherlands</td></tr>
+                                <tr><td>Norwegian Space Centre</td><td class="std-code">NSC</td><td>Norway</td></tr>
+                                <tr><td>Canadian Space Agency (Observer)</td><td class="std-code">CSA</td><td>Canada</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- DOCUMENT ARCHITECTURE                  -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-architecture">
+                <div class="section-header">
+                    <h1>Document Architecture</h1>
+                    <p>How ECSS standards are structured, named, and organized into branches, disciplines, and document types.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Naming Convention</h2>
+                    <div class="info-box">
+                        <h4>Document Identifier Format</h4>
+                        <p style="font-family:'Roboto Mono',monospace;font-size:15px;color:var(--accent-blue);margin:8px 0">
+                            ECSS-&lt;Branch&gt;-&lt;Type&gt;-&lt;Number&gt;&lt;Version&gt; &lt;Revision&gt;
+                        </p>
+                        <p>Example: <span style="font-family:'Roboto Mono',monospace;color:var(--m-branch)">ECSS-E-ST-10-02C Rev.1</span> = Engineering branch, Standard, System Engineering — Verification, Version C, Revision 1</p>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Field</th><th>Values</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td>Branch</td><td class="std-code">S, M, E, Q, U</td><td>Standardization branch (also P, D for internal)</td></tr>
+                                <tr><td>Document Type</td><td class="std-code">ST, HB, TM, AS, AH</td><td>Standard / Handbook / Tech Memo / Adopted Std / Adopted HB</td></tr>
+                                <tr><td>Number</td><td class="std-code">XX or XX-XX</td><td>Discipline (2 digits) + optional sub-discipline (2 digits)</td></tr>
+                                <tr><td>Version</td><td class="std-code">A, B, C, ...</td><td>Release version (most are at "C" currently)</td></tr>
+                                <tr><td>Revision</td><td class="std-code">Rev.1, Rev.2, ...</td><td>Updated release within same version</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Document Types</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Type</th><th>Code</th><th>Nature</th><th>Purpose</th></tr></thead>
+                            <tbody>
+                                <tr><td>Standard</td><td class="std-code">ST</td><td>Normative</td><td>Verifiable requirements; used in ITTs and business agreements. Contains "shall" statements.</td></tr>
+                                <tr><td>Handbook</td><td class="std-code">HB</td><td>Non-normative</td><td>Guidelines, best practices, technical data — "how to do it"</td></tr>
+                                <tr><td>Technical Memorandum</td><td class="std-code">TM</td><td>Non-normative</td><td>Informational data for the space community</td></tr>
+                                <tr><td>Adopted Standard</td><td class="std-code">AS</td><td>Normative</td><td>External standard adopted into ECSS (e.g., ISO, CCSDS)</td></tr>
+                                <tr><td>Adopted Handbook</td><td class="std-code">AH</td><td>Non-normative</td><td>External handbook adopted into ECSS</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Seven Branches</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Branch</th><th>Prefix</th><th>Name</th><th>Type</th><th>Purpose</th></tr></thead>
+                            <tbody>
+                                <tr><td style="color:var(--medium-gray)">Policy</td><td class="std-code">P</td><td>ECSS Policy</td><td>Internal</td><td>Objectives, policies, organization of ECSS itself</td></tr>
+                                <tr><td style="color:var(--s-branch)">System Description</td><td class="std-code">S</td><td>System Description</td><td>Internal</td><td>Top-level description, glossary, tailoring rules</td></tr>
+                                <tr><td style="color:var(--medium-gray)">Document Config</td><td class="std-code">D</td><td>Config & Info Mgmt</td><td>Internal</td><td>Document lifecycle, templates, review criteria</td></tr>
+                                <tr><td style="color:var(--m-branch)"><strong>Management</strong></td><td class="std-code">M</td><td>Space Project Management</td><td>User</td><td>Project planning, configuration, cost, schedule, risk</td></tr>
+                                <tr><td style="color:var(--e-branch)"><strong>Engineering</strong></td><td class="std-code">E</td><td>Space Engineering</td><td>User</td><td>All technical engineering disciplines</td></tr>
+                                <tr><td style="color:var(--q-branch)"><strong>Product Assurance</strong></td><td class="std-code">Q</td><td>Space Product Assurance</td><td>User</td><td>Safety, reliability, quality, materials</td></tr>
+                                <tr><td style="color:var(--u-branch)"><strong>Sustainability</strong></td><td class="std-code">U</td><td>Space Sustainability</td><td>User</td><td>Debris mitigation, planetary protection</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Complete Discipline Map</h2>
+                    <div class="tree"><pre>ECSS System
+├── P-Branch: Policy
+│   └── ECSS-P-00A (Standardization Objectives, Policies, Organization)
+│
+├── S-Branch: System Description
+│   ├── ECSS-S-ST-00C Rev.1 (Description, Implementation, General Requirements)
+│   ├── ECSS-S-ST-00-01C Rev.1 (Glossary of Terms)
+│   └── ECSS-S-ST-00-02C (Tailoring)
+│
+├── M-Branch: Space Project Management
+│   ├── M-10: Project Planning &amp; Implementation
+│   ├── M-40: Configuration &amp; Information Management
+│   ├── M-60: Cost &amp; Schedule Management
+│   ├── M-70: Integrated Logistic Support
+│   └── M-80: Risk Management
+│
+├── E-Branch: Space Engineering
+│   ├── E-10: System Engineering
+│   ├── E-20: Electrical &amp; Optical Engineering
+│   ├── E-30: Mechanical Engineering
+│   │   ├── E-31: Thermal Control
+│   │   ├── E-32: Structural
+│   │   ├── E-33: Mechanisms &amp; Pyrotechnics
+│   │   ├── E-34: Environment Control &amp; Life Support
+│   │   └── E-35: Propulsion
+│   ├── E-40: Software Engineering
+│   ├── E-50: Communications
+│   ├── E-60: Control Engineering
+│   ├── E-70: Ground Systems &amp; Operations
+│   └── E-80: Security (NEW 2024)
+│
+├── Q-Branch: Space Product Assurance
+│   ├── Q-10: PA Management
+│   ├── Q-20: Quality Assurance
+│   ├── Q-30: Dependability
+│   ├── Q-40: Safety
+│   ├── Q-60: EEE Components
+│   ├── Q-70: Materials, Mechanical Parts &amp; Processes
+│   └── Q-80: Software Product Assurance
+│
+└── U-Branch: Space Sustainability
+    ├── U-10: Space Debris Mitigation
+    ├── U-20: Planetary Protection
+    └── U-30: Space Situation Awareness (in development)</pre></div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- M-BRANCH                               -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-m-branch">
+                <div class="section-header">
+                    <h1><span class="branch-tag branch-m">M</span> Space Project Management</h1>
+                    <p>Governs how space projects are planned, organized, controlled, and reviewed. Contains 6 active standards with templates and frameworks.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Standard</th><th>Title</th><th>Date</th><th>Key Content</th></tr></thead>
+                        <tbody>
+                            <tr><td class="std-code">ECSS-M-ST-10C Rev.1</td><td>Project Planning & Implementation</td><td>6 Mar 2009</td><td>Project phases (0–F), product trees, WBS, organizational structure</td></tr>
+                            <tr><td class="std-code">ECSS-M-ST-10-01C</td><td>Organization & Conduct of Reviews</td><td>15 Nov 2008</td><td>Review planning, execution, RID processing, review types (MDR through MCR)</td></tr>
+                            <tr><td class="std-code">ECSS-M-ST-40C Rev.1</td><td>Configuration & Information Management</td><td>6 Mar 2009</td><td>Configuration identification, control, status accounting, document management</td></tr>
+                            <tr><td class="std-code">ECSS-M-ST-60C</td><td>Cost & Schedule Management</td><td>31 Jul 2008</td><td>Cost estimation, scheduling, earned value management, budget tracking</td></tr>
+                            <tr><td class="std-code">ECSS-M-70A</td><td>Integrated Logistic Support</td><td>Legacy</td><td>ILS planning, supportability analysis. Still in Issue A</td></tr>
+                            <tr><td class="std-code">ECSS-M-ST-80C</td><td>Risk Management</td><td>31 Jul 2008</td><td>Risk identification, assessment, mitigation, acceptance, monitoring</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="subsection">
+                    <h2>Key Deliverables (DRDs)</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Document</th><th>DRD Source</th><th>Key Reviews</th></tr></thead>
+                            <tbody>
+                                <tr><td>Project Management Plan</td><td class="std-code">M-ST-10, Annex A</td><td>MDR, PRR, SRR, CDR</td></tr>
+                                <tr><td>Product Tree</td><td class="std-code">M-ST-10, Annex B</td><td>MDR through AR</td></tr>
+                                <tr><td>Work Breakdown Structure</td><td class="std-code">M-ST-10, Annex C</td><td>PRR, SRR, PDR</td></tr>
+                                <tr><td>Schedule</td><td class="std-code">M-ST-60, Annex B</td><td>Multiple reviews</td></tr>
+                                <tr><td>Cost Estimate Report</td><td class="std-code">M-ST-60, Annex G</td><td>PRR, SRR, PDR</td></tr>
+                                <tr><td>Configuration Management Plan</td><td class="std-code">M-ST-40, Annex A</td><td>MDR, PRR, SRR</td></tr>
+                                <tr><td>Risk Management Plan</td><td class="std-code">M-ST-80, Annex A</td><td>MDR, PRR, SRR</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- E-BRANCH                               -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-e-branch">
+                <div class="section-header">
+                    <h1><span class="branch-tag branch-e">E</span> Space Engineering</h1>
+                    <p>Defines all technical engineering processes and requirements. The largest branch with ~65 standards, ~46 handbooks, and ~6 technical memoranda across 8 disciplines.</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card" onclick="showSection('systems-eng')" style="cursor:pointer">
+                        <span class="card-badge badge-e">E-10</span>
+                        <h3>System Engineering</h3>
+                        <p>Requirements engineering, verification, testing, technical specs, interface management, space environment, human factors, TRL.</p>
+                        <div class="card-code">9 standards + handbooks + TMs</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-e">E-20</span>
+                        <h3>Electrical & Optical Engineering</h3>
+                        <p>Electrical/electronic design, photovoltaic assemblies, EMC, ASIC/FPGA engineering, radiation effects mitigation.</p>
+                        <div class="card-code">7 standards | E-ST-20C Rev.2</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-e">E-30</span>
+                        <h3>Mechanical Engineering</h3>
+                        <p>Five sub-disciplines: Thermal (E-31), Structural (E-32), Mechanisms (E-33), ECLS (E-34), Propulsion (E-35).</p>
+                        <div class="card-code">~20 standards across sub-disciplines</div>
+                    </div>
+                    <div class="card" onclick="showSection('software')" style="cursor:pointer">
+                        <span class="card-badge badge-e">E-40</span>
+                        <h3>Software Engineering</h3>
+                        <p>Software development lifecycle, requirements, design, coding, V&V. Recently updated (Apr 2025). Includes simulation modelling platform.</p>
+                        <div class="card-code">E-ST-40C Rev.1 (2025)</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-e">E-50</span>
+                        <h3>Communications</h3>
+                        <p>TM/TC protocols, space data link, RF & modulation, MIL-STD-1553B, SpaceWire, Time-Triggered Ethernet. Many CCSDS adoptions.</p>
+                        <div class="card-code">17 standards (6 AS + 11 ST)</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-e">E-60</span>
+                        <h3>Control Engineering</h3>
+                        <p>Attitude & orbit control, GNC requirements, control performance, star sensor specifications.</p>
+                        <div class="card-code">4 standards | E-ST-60C</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-e">E-70</span>
+                        <h3>Ground Systems & Operations</h3>
+                        <p>Ground segment operations, TM/TC packet utilization, monitoring & control data, operations procedures language.</p>
+                        <div class="card-code">6 standards | E-ST-70-41C</div>
+                    </div>
+                    <div class="card" style="border-top:3px solid #e11d48">
+                        <span class="card-badge badge-e">E-80 <span style="color:#e11d48;font-size:9px">NEW</span></span>
+                        <h3>Security</h3>
+                        <p>Security in space systems lifecycles — cybersecurity for spacecraft and ground systems. Published July 2024.</p>
+                        <div class="card-code">E-ST-80C (Jul 2024)</div>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>E-30 Mechanical Sub-Disciplines</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Standard</th><th>Title</th><th>Date</th></tr></thead>
+                            <tbody>
+                                <tr><td colspan="3" style="color:var(--e-branch);font-weight:500;background:var(--lighter-gray)">E-31 Thermal Control</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-31C</td><td>Thermal control general requirements</td><td>15 Nov 2008</td></tr>
+                                <tr><td colspan="3" style="color:var(--e-branch);font-weight:500;background:var(--lighter-gray)">E-32 Structural</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-32C Rev.1</td><td>Structural general requirements</td><td>15 Nov 2008</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-32-01C Rev.2</td><td>Fracture control</td><td>30 Jul 2021</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-32-02C Rev.2</td><td>Structural design & verification of pressurized hardware</td><td>15 Oct 2025</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-32-10C Rev.2 Corr.1</td><td>Structural factors of safety for spaceflight hardware</td><td>1 Aug 2019</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-32-11C</td><td>Modal survey assessment</td><td>31 Jul 2008</td></tr>
+                                <tr><td colspan="3" style="color:var(--e-branch);font-weight:500;background:var(--lighter-gray)">E-33 Mechanisms & Pyrotechnics</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-33-01C Rev.2</td><td>Mechanisms</td><td>1 Mar 2019</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-33-11C Rev.1</td><td>Explosive subsystems and devices</td><td>1 Jun 2017</td></tr>
+                                <tr><td colspan="3" style="color:var(--e-branch);font-weight:500;background:var(--lighter-gray)">E-34 Environment Control & Life Support</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-34C</td><td>Environmental control and life support (ECLS)</td><td>31 Jul 2008</td></tr>
+                                <tr><td colspan="3" style="color:var(--e-branch);font-weight:500;background:var(--lighter-gray)">E-35 Propulsion</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-35-01C</td><td>Liquid and electric propulsion for spacecraft</td><td>15 Nov 2008</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-35-02C</td><td>Solid propulsion for spacecraft and launchers</td><td>8 Oct 2010</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-35-06C Rev.2</td><td>Cleanliness requirements for spacecraft propulsion hardware</td><td>7 Apr 2020</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- Q-BRANCH                               -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-q-branch">
+                <div class="section-header">
+                    <h1><span class="branch-tag branch-q">Q</span> Space Product Assurance</h1>
+                    <p>Ensures space products are safe, available, and reliable. Contains ~62 standards, ~10 handbooks, ~4 technical memoranda across 7 disciplines.</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card">
+                        <span class="card-badge badge-q">Q-10</span>
+                        <h3>PA Management</h3>
+                        <p>PA planning, supplier management, nonconformance control (NCR), alert management.</p>
+                        <div class="card-code">Q-ST-10C · Q-ST-10-04C · Q-ST-10-09C</div>
+                    </div>
+                    <div class="card">
+                        <span class="card-badge badge-q">Q-20</span>
+                        <h3>Quality Assurance</h3>
+                        <p>QA requirements, inspection, metrology & calibration, test facilities qualification.</p>
+                        <div class="card-code">Q-ST-20C Rev.1 · Q-ST-20-07C · Q-ST-20-10C</div>
+                    </div>
+                    <div class="card" onclick="showSection('safety')" style="cursor:pointer">
+                        <span class="card-badge badge-q">Q-30</span>
+                        <h3>Dependability</h3>
+                        <p>FMEA/FMECA, availability analysis, derating requirements, worst case analysis. Core RAMS discipline.</p>
+                        <div class="card-code">Q-ST-30C Rev.1 + 3 sub-standards</div>
+                    </div>
+                    <div class="card" onclick="showSection('safety')" style="cursor:pointer">
+                        <span class="card-badge badge-q">Q-40</span>
+                        <h3>Safety</h3>
+                        <p>Hazard analysis, fault tree analysis, safety risk assessment. Non-tailorable for human life protection.</p>
+                        <div class="card-code">Q-ST-40C Rev.1 · Q-ST-40-02C · Q-ST-40-12C</div>
+                    </div>
+                    <div class="card" onclick="showSection('eee')" style="cursor:pointer">
+                        <span class="card-badge badge-q">Q-60</span>
+                        <h3>EEE Components</h3>
+                        <p>Component selection, COTS components, ASIC/FPGA PA, radiation hardness, relifing, hybrids.</p>
+                        <div class="card-code">Q-ST-60C Rev.4 (Apr 2025) + 6 sub-stds</div>
+                    </div>
+                    <div class="card" onclick="showSection('materials')" style="cursor:pointer">
+                        <span class="card-badge badge-q">Q-70</span>
+                        <h3>Materials, Mech. Parts & Processes</h3>
+                        <p>The largest discipline: ~40 standards covering cleanliness, PCBs, welding, bonding, contamination, and more.</p>
+                        <div class="card-code">Q-ST-70C Rev.2 + ~40 sub-standards</div>
+                    </div>
+                    <div class="card" onclick="showSection('software')" style="cursor:pointer">
+                        <span class="card-badge badge-q">Q-80</span>
+                        <h3>Software PA</h3>
+                        <p>Software product assurance — criticality categorization, quality characteristics, development requirements.</p>
+                        <div class="card-code">Q-ST-80C Rev.1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- U-BRANCH                               -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-u-branch">
+                <div class="section-header">
+                    <h1><span class="branch-tag branch-u">U</span> Space Sustainability</h1>
+                    <p>Initiated in 2012, this growing branch addresses long-term responsible use of the space environment.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Discipline</th><th>Standard</th><th>Title</th><th>Notes</th></tr></thead>
+                        <tbody>
+                            <tr><td>U-10 Space Debris</td><td class="std-code">ECSS-U-AS-10C Rev.2</td><td>Adoption of ISO 24113: Space debris mitigation requirements</td><td>Feb 2024. <strong style="color:#e11d48">NOT subject to tailoring.</strong></td></tr>
+                            <tr><td>U-20 Planetary Protection</td><td class="std-code">ECSS-U-ST-20C</td><td>Planetary protection requirements</td><td>Bioburden control for missions to other bodies</td></tr>
+                            <tr><td>U-30 Space Situation Awareness</td><td class="std-code">—</td><td>Under development</td><td>SSA requirements being drafted</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-box critical">
+                    <h4>Non-Tailorable Requirements</h4>
+                    Space debris mitigation (ECSS-U-AS-10C / ISO 24113) and safety requirements concerning protection of human life are explicitly NOT subject to tailoring. They must always be fully applied regardless of mission complexity.
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- LIFECYCLE & REVIEWS                    -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-lifecycle">
+                <div class="section-header">
+                    <h1>Project Lifecycle & Reviews</h1>
+                    <p>ECSS defines 7 project phases (0 through F) with 13 major milestone reviews governing progression.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Project Phases</h2>
+                    <div class="lifecycle-flow">
+                        <div class="phase-block"><div class="phase-label">0</div><div class="phase-name">Mission Analysis</div><div class="phase-review">→ MDR</div></div>
+                        <div class="phase-block"><div class="phase-label">A</div><div class="phase-name">Feasibility</div><div class="phase-review">→ PRR</div></div>
+                        <div class="phase-block"><div class="phase-label">B</div><div class="phase-name">Preliminary Definition</div><div class="phase-review">SRR → PDR</div></div>
+                        <div class="phase-block"><div class="phase-label">C</div><div class="phase-name">Detailed Definition</div><div class="phase-review">→ CDR</div></div>
+                        <div class="phase-block"><div class="phase-label">D</div><div class="phase-name">Qualification & Production</div><div class="phase-review">QR → AR</div></div>
+                        <div class="phase-block"><div class="phase-label">E</div><div class="phase-name">Utilization</div><div class="phase-review">ORR · FRR · LRR · CRR</div></div>
+                        <div class="phase-block"><div class="phase-label">F</div><div class="phase-name">Disposal</div><div class="phase-review">ELR → MCR</div></div>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Major Reviews</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Abbreviation</th><th>Review Name</th><th>Phase</th><th>Purpose</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">MDR</td><td>Mission Definition Review</td><td>End Phase 0</td><td>Judge readiness to enter feasibility; mission baseline established</td></tr>
+                                <tr><td class="std-code">PRR</td><td>Preliminary Requirements Review</td><td>End Phase A</td><td>System concept selection; functional specification baseline</td></tr>
+                                <tr><td class="std-code">SRR</td><td>System Requirements Review</td><td>During Phase B</td><td>Confirm system requirements complete and correct</td></tr>
+                                <tr><td class="std-code">PDR</td><td>Preliminary Design Review</td><td>End Phase B</td><td>Judge readiness for detailed design; release technical specs</td></tr>
+                                <tr><td class="std-code">CDR</td><td>Critical Design Review</td><td>End Phase C</td><td>Judge readiness for qualification & production</td></tr>
+                                <tr><td class="std-code">QR</td><td>Qualification Review</td><td>During Phase D</td><td>Confirm qualification test results; first article review</td></tr>
+                                <tr><td class="std-code">AR</td><td>Acceptance Review</td><td>End Phase D</td><td>Accept product for delivery to customer</td></tr>
+                                <tr><td class="std-code">ORR</td><td>Operational Readiness Review</td><td>Phase D/E</td><td>Confirm ground segment and operations readiness</td></tr>
+                                <tr><td class="std-code">FRR</td><td>Flight Readiness Review</td><td>Before launch</td><td>Final go/no-go for launch</td></tr>
+                                <tr><td class="std-code">LRR</td><td>Launch Readiness Review</td><td>Before launch</td><td>Launch-specific readiness confirmation</td></tr>
+                                <tr><td class="std-code">CRR</td><td>Commissioning Result Review</td><td>Phase E</td><td>Review commissioning activities and results</td></tr>
+                                <tr><td class="std-code">ELR</td><td>End-of-Life Review</td><td>Phase E/F</td><td>Plan for decommissioning</td></tr>
+                                <tr><td class="std-code">MCR</td><td>Mission Close-out Review</td><td>End Phase F</td><td>Final project close-out, lessons learned</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Configuration Baselines</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Baseline</th><th>Established At</th><th>Content</th></tr></thead>
+                            <tbody>
+                                <tr><td>Functional Baseline</td><td>After PRR</td><td>Functional specification (what the system does)</td></tr>
+                                <tr><td>Allocated Baseline ("design-to")</td><td>After PDR</td><td>Design-to specifications for all subsystems</td></tr>
+                                <tr><td>Product Configuration Baseline</td><td>After QR/AR</td><td>As-built configuration (CIDL release)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- TAILORING                              -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-tailoring">
+                <div class="section-header">
+                    <h1>Tailoring Process</h1>
+                    <p>ECSS standards are intentionally generic. Tailoring adapts them to specific project needs through a formal 7-step process.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Governing Documents</h2>
+                    <div class="info-box">
+                        <p><span class="std-code">ECSS-S-ST-00C Rev.1</span> — System description, implementation, general requirements<br>
+                        <span class="std-code">ECSS-S-ST-00-02C</span> — ECSS System Tailoring (dedicated tailoring standard)</p>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Key Tailoring Instruments</h2>
+                    <p><strong>EARM (ECSS Applicability Requirements Matrix):</strong> Identifies which ECSS standards and individual requirements apply to a specific project. Included as part of the Project Requirements Document (PRD).</p><br>
+                    <p><strong>Standards Tailoring Baseline:</strong> Selection of applicable standards for the project.</p><br>
+                    <p><strong>Requirements Tailoring Baseline:</strong> Selection of applicable requirements within those standards.</p><br>
+                    <p><strong>Compliance Matrix:</strong> Supplier demonstrates compliance with tailored requirements.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Tailoring Drivers</h2>
+                    <ul>
+                        <li>Security requirements and classification</li>
+                        <li>Dependability and safety targets</li>
+                        <li>Development and programmatic constraints</li>
+                        <li>Product quality objectives</li>
+                        <li>Business needs, budget, and schedule</li>
+                        <li>Heritage and reuse considerations</li>
+                        <li>Mission criticality and risk appetite</li>
+                    </ul>
+                </div>
+                <div class="subsection">
+                    <h2>Typical Tailoring Scale</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Mission Complexity</th><th>Approx. Requirements</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td>Full complexity (flagship)</td><td>25,000+</td><td>Copernicus Sentinels, JUICE, ExoMars</td></tr>
+                                <tr><td>Medium complexity</td><td>~15,000</td><td>Telecom satellites, Earth observation</td></tr>
+                                <tr><td>Reduced complexity</td><td>~10,000</td><td>Technology demonstrators</td></tr>
+                                <tr><td>Simple / IOD</td><td>&lt; 7,500</td><td>In-Orbit Demonstration, CubeSat+</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- CUSTOMER–SUPPLIER MODEL                -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-customer">
+                <div class="section-header">
+                    <h1>Customer–Supplier Model</h1>
+                    <p>The fundamental framework through which ECSS standards are applied in space programmes.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Core Principles</h2>
+                    <ul>
+                        <li>Every project actor is a <strong>customer</strong>, a <strong>supplier</strong>, or both</li>
+                        <li>Standards become binding only through a <strong>business agreement or contract</strong></li>
+                        <li>The top-level customer's <strong>PRD</strong> forms the basis for all lower-level PRDs</li>
+                        <li>Each PRD includes an <strong>EARM</strong> (ECSS Applicability Requirements Matrix)</li>
+                        <li>Suppliers demonstrate compliance through a <strong>compliance matrix</strong></li>
+                        <li>The party imposing the standard is responsible for monitoring correct application</li>
+                        <li>ECSS does <strong>not</strong> provide any certification or accreditation process</li>
+                        <li>Reviews cascade <strong>top-down</strong> through the supplier chain</li>
+                    </ul>
+                </div>
+                <div class="subsection">
+                    <h2>Typical Hierarchy</h2>
+                    <div class="info-box">
+                        <p><strong>Project Initiator</strong> (e.g., ESA) → <strong>Top-Level Customer / Prime Contractor</strong> → <strong>1st Level Suppliers</strong> (Subsystem Providers) → <strong>2nd Level Suppliers</strong> (Equipment Providers) → <strong>nth Level Suppliers</strong> (Component Providers)</p>
+                        <p style="margin-top:8px;color:var(--medium-gray)">The customer always retains the right to attend any lower-level review, including those below the level of its direct suppliers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- SYSTEMS ENGINEERING                    -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-systems-eng">
+                <div class="section-header">
+                    <h1>Systems Engineering (E-10)</h1>
+                    <p>The integrating discipline that coordinates all engineering work, ensuring technical consistency across the project.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Standard</th><th>Title</th><th>Date</th></tr></thead>
+                        <tbody>
+                            <tr><td class="std-code">ECSS-E-ST-10C Rev.1</td><td>System engineering general requirements</td><td>15 Feb 2017</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-02C Rev.1</td><td>Verification</td><td>1 Feb 2018</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-03C Rev.1</td><td>Testing</td><td>31 May 2022</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-04C</td><td>Space environment</td><td>15 Nov 2008</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-06C</td><td>Technical requirements specification</td><td>6 Mar 2009</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-11C</td><td>Human factors engineering</td><td>31 Jul 2008</td></tr>
+                            <tr><td class="std-code">ECSS-E-ST-10-24C Rev.1</td><td>Interface management</td><td>15 Nov 2024</td></tr>
+                            <tr><td class="std-code">ECSS-E-AS-11C</td><td>Adoption of ISO 16290: Technology Readiness Levels</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="subsection">
+                    <h2>Technology Readiness Levels (TRL)</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>TRL</th><th>Definition</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">TRL 1</td><td>Basic principles observed and reported</td></tr>
+                                <tr><td class="std-code">TRL 2</td><td>Technology concept and/or application formulated</td></tr>
+                                <tr><td class="std-code">TRL 3</td><td>Analytical/experimental critical function proof of concept</td></tr>
+                                <tr><td class="std-code">TRL 4</td><td>Component/breadboard validated in laboratory environment</td></tr>
+                                <tr><td class="std-code">TRL 5</td><td>Component/breadboard validated in relevant environment</td></tr>
+                                <tr><td class="std-code">TRL 6</td><td>System/subsystem prototype demonstrated in relevant environment</td></tr>
+                                <tr><td class="std-code">TRL 7</td><td>System prototype demonstrated in space environment</td></tr>
+                                <tr><td class="std-code">TRL 8</td><td>Actual system flight-qualified through test and demonstration</td></tr>
+                                <tr><td class="std-code">TRL 9</td><td>Actual system "flight-proven" through successful mission operations</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Verification Methods (ECSS-E-ST-10-02)</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Method</th><th>Code</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td>Test</td><td class="std-code">T</td><td>Direct measurement/demonstration under controlled conditions. All safety-critical functions must be verified by test.</td></tr>
+                                <tr><td>Analysis</td><td class="std-code">A</td><td>Theoretical/empirical evaluation including modelling, simulation, calculation.</td></tr>
+                                <tr><td>Review of Design</td><td class="std-code">R</td><td>Examination of documentation, drawings, specifications against requirements.</td></tr>
+                                <tr><td>Inspection</td><td class="std-code">I</td><td>Physical examination of the product — visual checks, measurements, audits.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- SAFETY & DEPENDABILITY                 -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-safety">
+                <div class="section-header">
+                    <h1>Safety & Dependability (Q-30 / Q-40)</h1>
+                    <p>The core RAMS (Reliability, Availability, Maintainability, Safety) disciplines within product assurance.</p>
+                </div>
+                <div class="subsection">
+                    <h2>FMEA/FMECA (Q-ST-30-02C)</h2>
+                    <p>Failure Modes, Effects (and Criticality) Analysis — a systematic bottom-up technique applied at all project levels:</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Severity Category</th><th>Description</th><th>Examples</th></tr></thead>
+                            <tbody>
+                                <tr><td class="severity-1">1 — Catastrophic</td><td>Loss of life or system</td><td>Loss of manned flight system, severe environmental effects</td></tr>
+                                <tr><td class="severity-2">2 — Critical</td><td>Major damage or loss</td><td>Loss of mission, major environmental effects</td></tr>
+                                <tr><td class="severity-3">3 — Major</td><td>Significant degradation</td><td>Mission degradation, short-term environmental effects</td></tr>
+                                <tr><td class="severity-4">4 — Minor</td><td>Minor effects</td><td>Any other effects not covered above</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Hazard Analysis (Q-ST-40-02C)</h2>
+                    <p>Comprises identification, classification, and reduction of hazards. Interfaces with dependability analysis (FMECA) and project risk management (M-ST-80). Safety risk assessment contributes to overall project risk management.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Fault Tree Analysis (Q-ST-40-12C)</h2>
+                    <p>Adoption of IEC 61025 — top-down deductive analysis method. Results can be integrated with system-level FTA. Software FTA (SFTA) uses same technique steps and formats as hardware FTA.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Comparison with Process Industry Standards</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Aspect</th><th>ECSS (Space)</th><th>IEC 61508/61511 (Process)</th></tr></thead>
+                            <tbody>
+                                <tr><td>Safety Standard</td><td class="std-code">Q-ST-40C Rev.1</td><td>IEC 61508 / IEC 61511</td></tr>
+                                <tr><td>Hazard Analysis</td><td class="std-code">Q-ST-40-02C</td><td>HAZOP + LOPA</td></tr>
+                                <tr><td>Failure Analysis</td><td class="std-code">Q-ST-30-02C (FMEA/FMECA)</td><td>FMEA per IEC 60812</td></tr>
+                                <tr><td>Fault Tree</td><td class="std-code">Q-ST-40-12C (IEC 61025)</td><td>FTA per IEC 61025</td></tr>
+                                <tr><td>Dependability</td><td class="std-code">Q-ST-30C Rev.1</td><td>SIL concept (IEC 61508)</td></tr>
+                                <tr><td>Software Safety</td><td class="std-code">E-ST-40C + Q-ST-80C</td><td>IEC 61508 Part 3</td></tr>
+                                <tr><td>Worst Case Analysis</td><td class="std-code">Q-HB-30-01A</td><td>N/A (different approach)</td></tr>
+                                <tr><td>Derating</td><td class="std-code">Q-ST-30-11C Rev.2</td><td>N/A</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- SOFTWARE STANDARDS                     -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-software">
+                <div class="section-header">
+                    <h1>Software Standards (E-40 & Q-80)</h1>
+                    <p>Two complementary standards govern software in space: engineering (E-40) and product assurance (Q-80).</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card" style="border-top:3px solid var(--e-branch)">
+                        <span class="card-badge badge-e">E-ST-40C Rev.1</span>
+                        <h3>Software Engineering</h3>
+                        <p>Defines software development lifecycle: requirements, architecture, design, coding, V&V, operations, maintenance, migration, retirement. Major update April 2025.</p>
+                    </div>
+                    <div class="card" style="border-top:3px solid var(--q-branch)">
+                        <span class="card-badge badge-q">Q-ST-80C Rev.1</span>
+                        <h3>Software Product Assurance</h3>
+                        <p>Software PA requirements: criticality categorization (using inputs from Q-30 dependability and Q-40 safety), quality characteristics (reliability, maintainability, safety, security).</p>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Related Software Standards</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Standard</th><th>Title</th><th>Date</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">ECSS-E-ST-40C Rev.1</td><td>Software</td><td>30 Apr 2025</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-40-07C Rev.1</td><td>Simulation modelling platform — Level 1</td><td>5 Aug 2025</td></tr>
+                                <tr><td class="std-code">ECSS-E-ST-40-08C</td><td>Simulation modelling platform — Level 2</td><td>5 Aug 2025</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-80C Rev.1</td><td>Software product assurance</td><td>—</td></tr>
+                                <tr><td class="std-code">ECSS-E-HB-40-01A</td><td>Agile software development handbook</td><td>7 Apr 2020</td></tr>
+                                <tr><td class="std-code">ECSS-Q-HB-80-04A</td><td>Software metrication handbook</td><td>30 Mar 2011</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Required Software Metrics (Q-ST-80C)</h2>
+                    <ul>
+                        <li>Code size (SLOC / function points)</li>
+                        <li>Complexity (cyclomatic complexity)</li>
+                        <li>Fault and failure intensity</li>
+                        <li>Test coverage (including object code coverage)</li>
+                        <li>Number of failures</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- EEE COMPONENTS                         -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-eee">
+                <div class="section-header">
+                    <h1>EEE Components (Q-60)</h1>
+                    <p>Electrical, Electronic, and Electromechanical component selection, qualification, and assurance — critical for space hardware reliability.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Standard</th><th>Title</th><th>Date</th></tr></thead>
+                        <tbody>
+                            <tr><td class="std-code">ECSS-Q-ST-60C Rev.4</td><td>EEE components — general</td><td>30 Apr 2025</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-03C</td><td>ASIC, FPGA and IP Core product assurance</td><td>11 Oct 2023</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-05C</td><td>Generic requirements for hybrids</td><td>31 Jul 2008</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-12C</td><td>Design, selection, procurement of MMICs</td><td>31 Jul 2008</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-13C Rev.2</td><td>Commercial (COTS) EEE components</td><td>30 Apr 2025</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-14C Rev.1 Corr.1</td><td>Relifing procedure — EEE components</td><td>2 Mar 2020</td></tr>
+                            <tr><td class="std-code">ECSS-Q-ST-60-15C Rev.1</td><td>Radiation hardness assurance</td><td>20 Mar 2025</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-box">
+                    <h4>EEE Component Classes</h4>
+                    <p>Three classes defined: <strong>Class 1</strong> (lowest risk / highest assurance), <strong>Class 2</strong> (medium), <strong>Class 3</strong> (highest risk / lowest assurance). Interfaces with the European Space Components Coordination (ESCC) qualification system.</p>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- MATERIALS & PROCESSES                  -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-materials">
+                <div class="section-header">
+                    <h1>Materials, Mechanical Parts & Processes (Q-70)</h1>
+                    <p>The largest single discipline with ~40 sub-standards covering everything from welding to bioburden control.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Standard</th><th>Title</th></tr></thead>
+                        <tbody>
+                            <tr><td class="std-code">Q-ST-70C Rev.2</td><td>Materials, mechanical parts and processes — general</td></tr>
+                            <tr><td class="std-code">Q-ST-70-01C Rev.1</td><td>Cleanliness and contamination control</td></tr>
+                            <tr><td class="std-code">Q-ST-70-02C</td><td>Thermal vacuum outgassing test</td></tr>
+                            <tr><td class="std-code">Q-ST-70-04C</td><td>Thermal testing for evaluation of space materials</td></tr>
+                            <tr><td class="std-code">Q-ST-70-06C</td><td>Particle and UV radiation testing</td></tr>
+                            <tr><td class="std-code">Q-ST-70-12C Rev.1</td><td>Design rules for printed circuit boards</td></tr>
+                            <tr><td class="std-code">Q-ST-70-15C</td><td>Non-destructive testing</td></tr>
+                            <tr><td class="std-code">Q-ST-70-21C</td><td>Flammability testing</td></tr>
+                            <tr><td class="std-code">Q-ST-70-26C Rev.1 Corr.1</td><td>Crimping of high-reliability electrical connections</td></tr>
+                            <tr><td class="std-code">Q-ST-70-36C</td><td>Material selection for stress-corrosion cracking</td></tr>
+                            <tr><td class="std-code">Q-ST-70-39C</td><td>Welding of metallic materials for flight hardware</td></tr>
+                            <tr><td class="std-code">Q-ST-70-40C</td><td>Brazing processing & QA requirements</td></tr>
+                            <tr><td class="std-code">Q-ST-70-45C</td><td>Mechanical testing of metallic materials</td></tr>
+                            <tr><td class="std-code">Q-ST-70-50C</td><td>Particles contamination monitoring</td></tr>
+                            <tr><td class="std-code">Q-ST-70-54C</td><td>Ultracleaning of flight hardware</td></tr>
+                            <tr><td class="std-code">Q-ST-70-60C Rev.1</td><td>Qualification & procurement of PCBs</td></tr>
+                            <tr><td class="std-code">Q-ST-70-61C</td><td>High reliability assembly for SMT & through-hole</td></tr>
+                            <tr><td class="std-code">Q-ST-70-71C Rev.1</td><td>Materials, processes and their data selection</td></tr>
+                            <tr><td class="std-code">Q-ST-70-80C</td><td>Metallic powder bed fusion technologies (additive manufacturing)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- COMPLETE STANDARDS LIST                -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-complete-list">
+                <div class="section-header">
+                    <h1>Complete Standards List</h1>
+                    <p>All 139 active ECSS standards organized by branch. Full list at <a href="https://ecss.nl/standards/active-standards/" target="_blank" style="color:var(--accent-blue)">ecss.nl/standards/active-standards</a></p>
+                </div>
+                <div class="info-box success">
+                    <h4>Access & Downloads</h4>
+                    <p>All ECSS standards are <strong>freely downloadable</strong> from the ECSS website after free registration. Also available in IBM DOORS format and as a complete ZIP archive from the ESCIES server.</p>
+                </div>
+                <div class="subsection">
+                    <p>For the complete itemized list of all 139 active standards, visit the official active standards page at <a href="https://ecss.nl" target="_blank" style="color:var(--accent-blue)">ecss.nl</a>. The knowledge hub sections above provide detailed breakdowns by discipline with the most commonly referenced standards highlighted.</p>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- GLOSSARY                               -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-glossary">
+                <div class="section-header">
+                    <h1>Glossary & Abbreviations</h1>
+                    <p>Key terms and abbreviations used across the ECSS system. Full glossary in ECSS-S-ST-00-01C Rev.1.</p>
+                </div>
+                <div class="glossary-grid">
+                    <div class="glossary-item"><dt>AR</dt><dd>Acceptance Review</dd></div>
+                    <div class="glossary-item"><dt>CDR</dt><dd>Critical Design Review</dd></div>
+                    <div class="glossary-item"><dt>CI</dt><dd>Configuration Item</dd></div>
+                    <div class="glossary-item"><dt>CIDL</dt><dd>Configuration Item Data List</dd></div>
+                    <div class="glossary-item"><dt>COTS</dt><dd>Commercial Off-The-Shelf</dd></div>
+                    <div class="glossary-item"><dt>DJF</dt><dd>Design Justification File</dd></div>
+                    <div class="glossary-item"><dt>DRD</dt><dd>Document Requirement Definition</dd></div>
+                    <div class="glossary-item"><dt>EARM</dt><dd>ECSS Applicability Requirements Matrix</dd></div>
+                    <div class="glossary-item"><dt>ECLS</dt><dd>Environment Control & Life Support</dd></div>
+                    <div class="glossary-item"><dt>EEE</dt><dd>Electrical, Electronic & Electromechanical</dd></div>
+                    <div class="glossary-item"><dt>EMC</dt><dd>Electromagnetic Compatibility</dd></div>
+                    <div class="glossary-item"><dt>ESCC</dt><dd>European Space Components Coordination</dd></div>
+                    <div class="glossary-item"><dt>FDIR</dt><dd>Fault Detection, Isolation & Recovery</dd></div>
+                    <div class="glossary-item"><dt>FMEA</dt><dd>Failure Modes & Effects Analysis</dd></div>
+                    <div class="glossary-item"><dt>FMECA</dt><dd>Failure Modes, Effects & Criticality Analysis</dd></div>
+                    <div class="glossary-item"><dt>FRR</dt><dd>Flight Readiness Review</dd></div>
+                    <div class="glossary-item"><dt>FTA</dt><dd>Fault Tree Analysis</dd></div>
+                    <div class="glossary-item"><dt>GNC</dt><dd>Guidance, Navigation & Control</dd></div>
+                    <div class="glossary-item"><dt>GSE</dt><dd>Ground Support Equipment</dd></div>
+                    <div class="glossary-item"><dt>HSIA</dt><dd>Hardware-Software Interaction Analysis</dd></div>
+                    <div class="glossary-item"><dt>ICD</dt><dd>Interface Control Document</dd></div>
+                    <div class="glossary-item"><dt>ILS</dt><dd>Integrated Logistic Support</dd></div>
+                    <div class="glossary-item"><dt>ITT</dt><dd>Invitation to Tender</dd></div>
+                    <div class="glossary-item"><dt>LRR</dt><dd>Launch Readiness Review</dd></div>
+                    <div class="glossary-item"><dt>MDR</dt><dd>Mission Definition Review</dd></div>
+                    <div class="glossary-item"><dt>MMP&P</dt><dd>Materials, Mechanical Parts & Processes</dd></div>
+                    <div class="glossary-item"><dt>NCR</dt><dd>Non-Conformance Report</dd></div>
+                    <div class="glossary-item"><dt>ORR</dt><dd>Operational Readiness Review</dd></div>
+                    <div class="glossary-item"><dt>PA</dt><dd>Product Assurance</dd></div>
+                    <div class="glossary-item"><dt>PDR</dt><dd>Preliminary Design Review</dd></div>
+                    <div class="glossary-item"><dt>PMP</dt><dd>Project Management Plan</dd></div>
+                    <div class="glossary-item"><dt>PRD</dt><dd>Project Requirements Document</dd></div>
+                    <div class="glossary-item"><dt>PRR</dt><dd>Preliminary Requirements Review</dd></div>
+                    <div class="glossary-item"><dt>QR</dt><dd>Qualification Review</dd></div>
+                    <div class="glossary-item"><dt>RAMS</dt><dd>Reliability, Availability, Maintainability, Safety</dd></div>
+                    <div class="glossary-item"><dt>RID</dt><dd>Review Item Discrepancy</dd></div>
+                    <div class="glossary-item"><dt>RTM</dt><dd>Requirements Traceability Matrix</dd></div>
+                    <div class="glossary-item"><dt>SE</dt><dd>System Engineering</dd></div>
+                    <div class="glossary-item"><dt>SEP</dt><dd>System Engineering Plan</dd></div>
+                    <div class="glossary-item"><dt>SRR</dt><dd>System Requirements Review</dd></div>
+                    <div class="glossary-item"><dt>TCS</dt><dd>Thermal Control Subsystem</dd></div>
+                    <div class="glossary-item"><dt>TRL</dt><dd>Technology Readiness Level</dd></div>
+                    <div class="glossary-item"><dt>VCD</dt><dd>Verification Control Document</dd></div>
+                    <div class="glossary-item"><dt>VP</dt><dd>Verification Plan</dd></div>
+                    <div class="glossary-item"><dt>WBS</dt><dd>Work Breakdown Structure</dd></div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- CROSS-REFERENCE MAP                    -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-crossref">
+                <div class="section-header">
+                    <h1>Cross-Reference Map</h1>
+                    <p>How ECSS interrelates with international standards and other standardization organizations.</p>
+                </div>
+                <div class="subsection">
+                    <h2>International Partnerships</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Organization</th><th>Agreement</th><th>Scope</th></tr></thead>
+                            <tbody>
+                                <tr><td>CENELEC</td><td>6 Jun 1997</td><td>E-branch → European Standards (EN 16603-xx series)</td></tr>
+                                <tr><td>CEN</td><td>19 Jun 1997</td><td>M & Q branches → CEN European Standards (EN 16601/16602)</td></tr>
+                                <tr><td>ISO TC20/SC14</td><td>15 May 1998</td><td>Mutual recognition, harmonization of space standards</td></tr>
+                                <tr><td>CCSDS</td><td>Ongoing</td><td>Space data communications protocols adopted as E-AS-50-xx</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Key Adopted Standards</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>ECSS Document</th><th>Adopted Standard</th><th>Topic</th></tr></thead>
+                            <tbody>
+                                <tr><td class="std-code">ECSS-U-AS-10C Rev.2</td><td>ISO 24113</td><td>Space debris mitigation</td></tr>
+                                <tr><td class="std-code">ECSS-E-AS-11C</td><td>ISO 16290</td><td>Technology Readiness Levels</td></tr>
+                                <tr><td class="std-code">ECSS-Q-ST-40-12C</td><td>IEC 61025</td><td>Fault tree analysis</td></tr>
+                                <tr><td class="std-code">ECSS-E-AS-50-xx series</td><td>CCSDS protocols</td><td>Space data link, TM, TC, SpaceWire</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>EN (European Standard) Numbering</h2>
+                    <div class="info-box">
+                        <p>ECSS standards adopted as EN standards use this mapping:<br>
+                        <span class="std-code">EN 16601-xx</span> = M-branch (Management)<br>
+                        <span class="std-code">EN 16602-xx</span> = Q-branch (Product Assurance)<br>
+                        <span class="std-code">EN 16603-xx</span> = E-branch (Engineering)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================== -->
+            <!-- TRAINING & RESOURCES                   -->
+            <!-- ====================================== -->
+            <div class="section" id="sec-resources">
+                <div class="section-header">
+                    <h1>Training & Resources</h1>
+                    <p>Where to access ECSS standards, training, and compliance tools.</p>
+                </div>
+                <div class="subsection">
+                    <h2>Official Resources</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Resource</th><th>URL / Access</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td>ECSS Website</td><td><a href="https://ecss.nl" target="_blank" style="color:var(--accent-blue)">ecss.nl</a></td><td>All standards freely downloadable (register for free)</td></tr>
+                                <tr><td>ESA Learning Hub</td><td><a href="https://learninghub.esa.int" target="_blank" style="color:var(--accent-blue)">learninghub.esa.int</a></td><td>Recorded ECSS training courses on all branches</td></tr>
+                                <tr><td>ECSS Reader</td><td><a href="https://www.read-the-ecss.space" target="_blank" style="color:var(--accent-blue)">read-the-ecss.space</a></td><td>Interactive browsing of ECSS requirements</td></tr>
+                                <tr><td>ESCIES Server</td><td>ESA hosted</td><td>Complete ECSS system as ZIP archive</td></tr>
+                                <tr><td>DOORS Format</td><td>On request</td><td>IBM DOORS format for requirements management</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Training Providers</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Provider</th><th>Offering</th></tr></thead>
+                            <tbody>
+                                <tr><td>ESA / ECSS Secretariat</td><td>Official ECSS Training Level 1 (Introduction) & branch-specific courses</td></tr>
+                                <tr><td>SEAC (Space Economy Academy)</td><td>ECSS Standards Certificate — online course covering all branches (ESA BIC incubated)</td></tr>
+                                <tr><td>ESA Academy</td><td>Periodic training on ECSS application & tailoring</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h2>Compliance & Engineering Tools</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Tool</th><th>Vendor</th><th>ECSS Use</th></tr></thead>
+                            <tbody>
+                                <tr><td>ECLIPSE Software Suite</td><td>ECLIPSE</td><td>ECSS compliance (DCCM, eRID, NCR, action management)</td></tr>
+                                <tr><td>Jama Connect</td><td>Jama Software</td><td>MBSE with ECSS traceability & requirements management</td></tr>
+                                <tr><td>LDRA Tool Suite</td><td>LDRA</td><td>Software verification aligned with E-ST-40C & Q-ST-80C</td></tr>
+                                <tr><td>IBM DOORS</td><td>IBM</td><td>Requirements management; ECSS available in DOORS format</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end content -->
+    </div><!-- end main -->
+</div><!-- end app -->
+
+<!-- ============ FOOTER ============ -->
+<footer class="page-footer">
+    <div class="footer-links">
+        <a href="index.html" class="footer-link">Home</a>
+        <a href="https://laruneng.com" class="footer-link" target="_blank">laruneng.com</a>
+        <a href="https://github.com/Paddy1981/larun" class="footer-link" target="_blank">GitHub</a>
+        <a href="docs.html" class="footer-link">API Docs</a>
+        <a href="guide.html" class="footer-link">User Guide</a>
+        <a href="models.html" class="footer-link">Models</a>
+        <a href="https://ecss.nl" class="footer-link" target="_blank">ecss.nl</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Larun. AstroTinyML. ECSS content sourced from official ECSS documentation.</p>
+</footer>
+
+<script>
+const sectionTitles = {
+    'overview': 'Dashboard',
+    'history': 'History & Organization',
+    'architecture': 'Document Architecture',
+    'm-branch': 'M — Project Management',
+    'e-branch': 'E — Space Engineering',
+    'q-branch': 'Q — Product Assurance',
+    'u-branch': 'U — Space Sustainability',
+    'lifecycle': 'Lifecycle & Reviews',
+    'tailoring': 'Tailoring Process',
+    'customer': 'Customer–Supplier Model',
+    'systems-eng': 'Systems Engineering',
+    'safety': 'Safety & Dependability',
+    'software': 'Software Standards',
+    'eee': 'EEE Components',
+    'materials': 'Materials & Processes',
+    'complete-list': 'Complete Standards List',
+    'glossary': 'Glossary',
+    'crossref': 'Cross-Reference Map',
+    'resources': 'Training & Resources'
+};
+
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const section = document.getElementById('sec-' + id);
+    if (section) {
+        section.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const onclick = item.getAttribute('onclick') || '';
+        if (onclick.includes("'" + id + "'")) {
+            item.classList.add('active');
+        }
+    });
+
+    const title = document.getElementById('topbar-title');
+    if (title) title.textContent = sectionTitles[id] || id;
+
+    document.getElementById('sidebar').classList.remove('open');
+}
+
+function handleSearch(query) {
+    if (!query || query.length < 2) {
+        showSection('overview');
+        return;
+    }
+    const q = query.toLowerCase();
+    const sections = document.querySelectorAll('.section');
+    let found = false;
+    sections.forEach(section => {
+        if (!found && section.textContent.toLowerCase().includes(q)) {
+            const id = section.id.replace('sec-', '');
+            showSection(id);
+            found = true;
+        }
+    });
+}
+</script>
+</body>
+</html>
