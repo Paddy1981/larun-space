@@ -114,7 +114,15 @@ async def fetch_f107_flux() -> None:
             text = resp.text
 
         records: list[dict[str, Any]] = []
+        in_observed = False
         for line in text.splitlines():
+            if line.strip() == "BEGIN OBSERVED":
+                in_observed = True
+                continue
+            if line.strip() == "END OBSERVED":
+                break  # Stop — ignore DAILY_PREDICTED and MONTHLY_PREDICTED
+            if not in_observed:
+                continue
             parsed = _parse_f107_line(line)
             if parsed:
                 records.append(parsed)

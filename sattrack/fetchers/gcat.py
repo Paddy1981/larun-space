@@ -124,9 +124,12 @@ async def fetch_gcat_catalog() -> None:
                 "name": name,
                 "cospar_id": cospar if cospar and cospar != "-" else None,
                 "object_type": object_type,
-                "orbit_class": orbit_class,
                 "source_flags": {"gcat": True},
             }
+            # Only set orbit_class if GCAT has a meaningful value — don't
+            # overwrite the correct value already set by CelesTrak/AMSAT
+            if orbit_class != "UNKNOWN":
+                record["orbit_class"] = orbit_class
             if launch_date:
                 record["launch_date"] = launch_date
             if decay_date:
