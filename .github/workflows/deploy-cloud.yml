@@ -3,7 +3,7 @@ name: Deploy cloud/ → gh-pages (sattrack.larun.space)
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - "cloud/**"
 
