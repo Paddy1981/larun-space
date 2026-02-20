@@ -135,6 +135,12 @@ async def fetch_gcat_catalog() -> None:
 
             records.append(record)
 
+        # Deduplicate by norad_id — GCAT TSV can list the same object multiple times
+        seen: dict[int, dict] = {}
+        for r in records:
+            seen[r["norad_id"]] = r
+        records = list(seen.values())
+
         elapsed = int((time.time() - t0) * 1000)
 
         if records:

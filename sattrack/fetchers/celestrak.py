@@ -21,38 +21,37 @@ from quality.scorer import score_tle_quality
 
 logger = logging.getLogger(__name__)
 
-_BASE = "https://celestrak.org/SOCRATES/query.php"  # not used
-_OMM_BASE = "https://celestrak.org/SOCRATES/SATCAT/GP.php"  # not used
-_GP_URL = "https://celestrak.org/SATCAT/GP.php?FORMAT=JSON"  # fallback
+# Correct CelesTrak GP base path (SATCAT/GP.php returns 404 — correct path is NORAD/elements/gp.php)
+_GP_BASE = "https://celestrak.org/NORAD/elements/gp.php"
 
-# 18 CelesTrak GP groups (OMM JSON)
+# 20 CelesTrak GP groups (OMM JSON)
 GP_GROUPS: list[dict[str, str]] = [
-    {"name": "stations", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=stations&FORMAT=JSON"},
-    {"name": "active", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=active&FORMAT=JSON"},
-    {"name": "analyst", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=analyst&FORMAT=JSON"},
-    {"name": "last-30-days", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=last-30-days&FORMAT=JSON"},
-    {"name": "weather", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=weather&FORMAT=JSON"},
-    {"name": "noaa", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=noaa&FORMAT=JSON"},
-    {"name": "goes", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=goes&FORMAT=JSON"},
-    {"name": "resource", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=resource&FORMAT=JSON"},
-    {"name": "sarsat", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=sarsat&FORMAT=JSON"},
-    {"name": "dmc", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=dmc&FORMAT=JSON"},
-    {"name": "tdrss", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=tdrss&FORMAT=JSON"},
-    {"name": "argos", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=argos&FORMAT=JSON"},
-    {"name": "planet", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=planet&FORMAT=JSON"},
-    {"name": "spire", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=spire&FORMAT=JSON"},
-    {"name": "gnss", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=gnss&FORMAT=JSON"},
-    {"name": "galileo", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=galileo&FORMAT=JSON"},
-    {"name": "iridium", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=iridium&FORMAT=JSON"},
-    {"name": "iridium-NEXT", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=iridium-NEXT&FORMAT=JSON"},
-    {"name": "starlink", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=starlink&FORMAT=JSON"},
-    {"name": "oneweb", "url": "https://celestrak.org/SATCAT/GP.php?GROUP=oneweb&FORMAT=JSON"},
+    {"name": "stations",      "url": f"{_GP_BASE}?GROUP=stations&FORMAT=JSON"},
+    {"name": "active",        "url": f"{_GP_BASE}?GROUP=active&FORMAT=JSON"},
+    {"name": "analyst",       "url": f"{_GP_BASE}?GROUP=analyst&FORMAT=JSON"},
+    {"name": "last-30-days",  "url": f"{_GP_BASE}?GROUP=last-30-days&FORMAT=JSON"},
+    {"name": "weather",       "url": f"{_GP_BASE}?GROUP=weather&FORMAT=JSON"},
+    {"name": "noaa",          "url": f"{_GP_BASE}?GROUP=noaa&FORMAT=JSON"},
+    {"name": "goes",          "url": f"{_GP_BASE}?GROUP=goes&FORMAT=JSON"},
+    {"name": "resource",      "url": f"{_GP_BASE}?GROUP=resource&FORMAT=JSON"},
+    {"name": "sarsat",        "url": f"{_GP_BASE}?GROUP=sarsat&FORMAT=JSON"},
+    {"name": "dmc",           "url": f"{_GP_BASE}?GROUP=dmc&FORMAT=JSON"},
+    {"name": "tdrss",         "url": f"{_GP_BASE}?GROUP=tdrss&FORMAT=JSON"},
+    {"name": "argos",         "url": f"{_GP_BASE}?GROUP=argos&FORMAT=JSON"},
+    {"name": "planet",        "url": f"{_GP_BASE}?GROUP=planet&FORMAT=JSON"},
+    {"name": "spire",         "url": f"{_GP_BASE}?GROUP=spire&FORMAT=JSON"},
+    {"name": "gnss",          "url": f"{_GP_BASE}?GROUP=gnss&FORMAT=JSON"},
+    {"name": "galileo",       "url": f"{_GP_BASE}?GROUP=galileo&FORMAT=JSON"},
+    {"name": "iridium",       "url": f"{_GP_BASE}?GROUP=iridium&FORMAT=JSON"},
+    {"name": "iridium-NEXT",  "url": f"{_GP_BASE}?GROUP=iridium-NEXT&FORMAT=JSON"},
+    {"name": "starlink",      "url": f"{_GP_BASE}?GROUP=starlink&FORMAT=JSON"},
+    {"name": "oneweb",        "url": f"{_GP_BASE}?GROUP=oneweb&FORMAT=JSON"},
 ]
 
-# High-frequency supplemental groups (Starlink, OneWeb get fresh data here)
+# High-frequency supplemental groups (Starlink/OneWeb fresh data)
 SUPPLEMENTAL_GROUPS: list[dict[str, str]] = [
-    {"name": "starlink-supp", "url": "https://celestrak.org/SATCAT/GP.php?SPECIAL=starlink&FORMAT=JSON"},
-    {"name": "oneweb-supp", "url": "https://celestrak.org/SATCAT/GP.php?SPECIAL=oneweb&FORMAT=JSON"},
+    {"name": "starlink-supp", "url": f"{_GP_BASE}?SPECIAL=starlink&FORMAT=JSON"},
+    {"name": "oneweb-supp",   "url": f"{_GP_BASE}?SPECIAL=oneweb&FORMAT=JSON"},
 ]
 
 TIMEOUT = httpx.Timeout(30.0)
