@@ -90,13 +90,15 @@ def job_mark_active():
     set by the CelesTrak fetcher (e.g. from AMSAT or backfill ingestions).
     """
     try:
+        from datetime import datetime, timezone, timedelta
         from db.client import get_client, mark_satellites_active
         client = get_client()
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
         result = (
             client.table("tle_history")
             .select("norad_id")
             .eq("is_current", True)
-            .gte("epoch", "now() - interval '30 days'")
+            .gte("epoch", cutoff)
             .execute()
         )
         norad_ids = list({row["norad_id"] for row in (result.data or [])})
