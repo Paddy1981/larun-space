@@ -241,6 +241,8 @@ def run_initial_ingestion() -> None:
                 logger.error("Bootstrap job %s failed: %s", job_fn.__name__, exc)
         # After full ingestion, promote all fresh-TLE satellites to active
         job_mark_active()
+        # Run conjunction screening immediately so the panel isn't blank
+        job_conjunction_screening()
         logger.info("Initial ingestion bootstrap complete.")
 
     t = threading.Thread(target=_bootstrap, daemon=True, name="bootstrap")
