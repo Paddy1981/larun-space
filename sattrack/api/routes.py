@@ -15,7 +15,8 @@ import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Body, HTTPException, Query
+from typing import List
 
 from db.client import get_client
 
@@ -112,6 +113,33 @@ def get_current_tle(norad_id: int) -> dict[str, Any]:
         raise
     except Exception as exc:
         logger.error("get_current_tle %d: %s", norad_id, exc)
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.post("/v1/tle/bulk")
+def get_bulk_tles(norad_ids: List[int] = Body(...)) -> dict[str, Any]:
+    """Return current TLEs for multiple NORAD IDs in a single DB query.
+
+    Request body: JSON array of NORAD IDs, e.g. [25544, 48274, 55044]
+    Capped at 2000 IDs per request.
+    """
+    try:
+        if not norad_ids:
+            return {"count": 0, "data": []}
+        norad_ids = norad_ids[:2000]
+        result = (
+            _db().table("tle_history")
+            .select("norad_id, tle_line1, tle_line2, epoch, is_current")
+            .in_("norad_id", norad_ids)
+            .eq("is_current", True)
+            .execute()
+        )
+        return {
+            "count": len(result.data),
+            "data": result.data,
+        }
+    except Exception as exc:
+        logger.error("get_bulk_tles: %s", exc)
         raise HTTPException(status_code=500, detail=str(exc))
 
 
