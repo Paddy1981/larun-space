@@ -79,6 +79,34 @@ def job_conjunction_screening():
         logger.error("Conjunction screening job failed: %s", exc)
 
 
+def job_mark_active():
+    """Promote satellites with fresh TLEs to active status.
+
+    Queries tle_history for all norad_ids with is_current=True and an epoch
+    within the last 30 days, then marks those satellites active (unless they
+    are already flagged as decayed/inactive by GCAT or SatNOGS).
+
+    This catch-all runs daily to capture any satellites whose status was not
+    set by the CelesTrak fetcher (e.g. from AMSAT or backfill ingestions).
+    """
+    try:
+        from db.client import get_client, mark_satellites_active
+        client = get_client()
+        result = (
+            client.table("tle_history")
+            .select("norad_id")
+            .eq("is_current", True)
+            .gte("epoch", "now() - interval '30 days'")
+            .execute()
+        )
+        norad_ids = list({row["norad_id"] for row in (result.data or [])})
+        promoted = mark_satellites_active(norad_ids)
+        logger.info("job_mark_active: promoted %d satellites to active from %d with fresh TLEs",
+                    promoted, len(norad_ids))
+    except Exception as exc:
+        logger.error("job_mark_active failed: %s", exc)
+
+
 def create_scheduler() -> BackgroundScheduler:
     """Build and return a configured BackgroundScheduler (not yet started)."""
     scheduler = BackgroundScheduler(timezone="UTC")
@@ -173,6 +201,17 @@ def create_scheduler() -> BackgroundScheduler:
         coalesce=True,
     )
 
+    # mark active — daily at 04:00 UTC (runs after gcat_catalog at 03:00)
+    # Promotes all satellites with a fresh TLE to active status as a catch-all
+    scheduler.add_job(
+        job_mark_active,
+        trigger=CronTrigger(hour=4, minute=0),
+        id="mark_active",
+        name="Promote fresh-TLE satellites to active",
+        max_instances=1,
+        coalesce=True,
+    )
+
     return scheduler
 
 
@@ -198,6 +237,8 @@ def run_initial_ingestion() -> None:
                 job_fn()
             except Exception as exc:
                 logger.error("Bootstrap job %s failed: %s", job_fn.__name__, exc)
+        # After full ingestion, promote all fresh-TLE satellites to active
+        job_mark_active()
         logger.info("Initial ingestion bootstrap complete.")
 
     t = threading.Thread(target=_bootstrap, daemon=True, name="bootstrap")

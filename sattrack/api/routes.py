@@ -15,7 +15,8 @@ import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
-from fastapi import APIRouter, Body, HTTPException, Query
+import os
+from fastapi import APIRouter, Body, HTTPException, Header, Query
 from typing import List
 
 from db.client import get_client
@@ -256,4 +257,49 @@ def get_current_weather() -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_current_weather: %s", exc)
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+# ─────────────────────────────────────────────
+# /v1/admin  (protected by ADMIN_SECRET env var)
+# ─────────────────────────────────────────────
+
+def _require_admin(x_admin_secret: str | None) -> None:
+    """Raise 403 if the caller doesn't supply the correct admin secret."""
+    expected = os.environ.get("ADMIN_SECRET", "")
+    if not expected or x_admin_secret != expected:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+@router.post("/v1/admin/mark-active")
+def admin_mark_active(
+    x_admin_secret: str | None = Header(default=None),
+) -> dict[str, Any]:
+    """Scan tle_history for satellites with a fresh TLE (≤30 days) and promote
+    them to status='active'.  Useful after first deploy or data backfills.
+
+    Requires X-Admin-Secret header matching ADMIN_SECRET environment variable.
+    """
+    _require_admin(x_admin_secret)
+    try:
+        from db.client import mark_satellites_active
+        db = _db()
+        result = (
+            db.table("tle_history")
+            .select("norad_id")
+            .eq("is_current", True)
+            .gte("epoch", (datetime.now(timezone.utc) - timedelta(days=30)).isoformat())
+            .execute()
+        )
+        norad_ids = list({row["norad_id"] for row in (result.data or [])})
+        promoted = mark_satellites_active(norad_ids)
+        return {
+            "candidates": len(norad_ids),
+            "promoted": promoted,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("admin_mark_active: %s", exc)
         raise HTTPException(status_code=500, detail=str(exc))

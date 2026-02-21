@@ -129,6 +129,48 @@ def upsert_space_weather(records: list[dict[str, Any]]) -> int:
         raise
 
 
+def mark_satellites_active(norad_ids: list[int]) -> int:
+    """Set status='active' for satellites that a live TLE source considers operational.
+
+    Only updates rows where:
+      - status IS NULL  (never classified)
+      - status = 'unknown'  (SatNOGS couldn't determine status)
+    Intentionally skips 'decayed' and 'inactive' so GCAT/SatNOGS terminal
+    states are preserved.  Also skips rows with a known decay_date.
+
+    Called after every CelesTrak GP + supplemental ingest to promote freshly
+    tracked satellites into the pool visible to the 3D frontend.
+    """
+    if not norad_ids:
+        return 0
+    client = get_client()
+    total = 0
+    CHUNK = 500
+    for i in range(0, len(norad_ids), CHUNK):
+        chunk = norad_ids[i : i + CHUNK]
+        try:
+            # Two separate updates because supabase-py can't express
+            # "status IS NULL OR status = 'unknown'" in a single filter chain.
+            for q in [
+                client.table("satellites")
+                    .update({"status": "active"})
+                    .in_("norad_id", chunk)
+                    .is_("decay_date", "null")
+                    .is_("status", "null"),
+                client.table("satellites")
+                    .update({"status": "active"})
+                    .in_("norad_id", chunk)
+                    .is_("decay_date", "null")
+                    .eq("status", "unknown"),
+            ]:
+                r = q.execute()
+                total += len(r.data) if r.data else 0
+        except Exception as exc:
+            logger.error("mark_satellites_active chunk %d failed: %s", i, exc)
+    logger.info("mark_satellites_active: promoted %d satellites to active", total)
+    return total
+
+
 def upsert_conjunctions(records: list[dict[str, Any]]) -> int:
     """
     Upsert conjunction screening results.

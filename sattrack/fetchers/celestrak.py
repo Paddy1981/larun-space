@@ -16,7 +16,7 @@ from typing import Any
 import httpx
 from sgp4.api import Satrec
 
-from db.client import upsert_tle_batch, upsert_satellites, log_source_health
+from db.client import upsert_tle_batch, upsert_satellites, log_source_health, mark_satellites_active
 from quality.scorer import score_tle_quality
 
 logger = logging.getLogger(__name__)
@@ -261,6 +261,11 @@ async def fetch_celestrak_gp() -> None:
     try:
         upsert_satellites(sat_records)
         upsert_tle_batch(tle_records)
+        # Promote all freshly ingested satellites to active status.
+        # CelesTrak GP only lists operationally active objects, so every satellite
+        # we received from it should be marked active (unless already 'decayed').
+        norad_ids = [s["norad_id"] for s in sat_records]
+        promoted = mark_satellites_active(norad_ids)
         freshest = max((t["epoch"] for t in tle_records), default=None)
         freshest_dt = datetime.fromisoformat(freshest) if freshest else None
         log_source_health(
@@ -270,7 +275,8 @@ async def fetch_celestrak_gp() -> None:
             response_time_ms=elapsed,
             freshest_epoch=freshest_dt,
         )
-        logger.info("celestrak GP: upserted %d satellites", len(tle_records))
+        logger.info("celestrak GP: upserted %d satellites, promoted %d to active",
+                    len(tle_records), promoted)
     except Exception as exc:
         log_source_health(source="celestrak", status="error", error=str(exc),
                           response_time_ms=elapsed)
@@ -299,6 +305,8 @@ async def fetch_celestrak_supplemental() -> None:
     try:
         upsert_satellites(sat_records)
         upsert_tle_batch(tle_records)
+        norad_ids = [s["norad_id"] for s in sat_records]
+        mark_satellites_active(norad_ids)
         freshest = max((t["epoch"] for t in tle_records), default=None)
         freshest_dt = datetime.fromisoformat(freshest) if freshest else None
         log_source_health(
