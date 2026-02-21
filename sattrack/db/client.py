@@ -145,6 +145,11 @@ def mark_satellites_active(norad_ids: list[int]) -> int:
         return 0
     client = get_client()
     total = 0
+    # Exclude non-payload object types from active promotion to avoid
+    # debris and rocket bodies cluttering the 3D view.
+    # Covers both CelesTrak format ("ROCKET BODY", "DEBRIS") and
+    # GCAT format ("R", "Rb", "D", "DEB").
+    _NON_PAYLOAD = ["ROCKET BODY", "DEBRIS", "R", "Rb", "D", "DEB"]
     CHUNK = 500
     for i in range(0, len(norad_ids), CHUNK):
         chunk = norad_ids[i : i + CHUNK]
@@ -156,12 +161,14 @@ def mark_satellites_active(norad_ids: list[int]) -> int:
                     .update({"status": "active"})
                     .in_("norad_id", chunk)
                     .is_("decay_date", "null")
-                    .is_("status", "null"),
+                    .is_("status", "null")
+                    .not_.in_("object_type", _NON_PAYLOAD),
                 client.table("satellites")
                     .update({"status": "active"})
                     .in_("norad_id", chunk)
                     .is_("decay_date", "null")
-                    .eq("status", "unknown"),
+                    .eq("status", "unknown")
+                    .not_.in_("object_type", _NON_PAYLOAD),
             ]:
                 r = q.execute()
                 total += len(r.data) if r.data else 0

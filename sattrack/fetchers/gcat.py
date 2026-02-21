@@ -134,7 +134,10 @@ async def fetch_gcat_catalog() -> None:
                 record["launch_date"] = launch_date
             if decay_date:
                 record["decay_date"] = decay_date
-                record["status"] = "decayed"
+                # Do NOT override status here — CelesTrak active tracking is the
+                # authoritative source for operational status.  mark_satellites_active
+                # already skips satellites with a decay_date (decay_date IS NULL check),
+                # so decayed objects will naturally not be promoted.
 
             records.append(record)
 
