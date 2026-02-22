@@ -133,6 +133,7 @@ def get_bulk_tles(norad_ids: List[int] = Body(...)) -> dict[str, Any]:
             .select("norad_id, tle_line1, tle_line2, epoch, is_current")
             .in_("norad_id", norad_ids)
             .eq("is_current", True)
+            .limit(2001)
             .execute()
         )
         return {
