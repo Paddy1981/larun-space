@@ -15,6 +15,7 @@ import httpx
 from sgp4.api import Satrec, WGS84
 
 from db.client import upsert_tle_batch, upsert_satellites, log_source_health
+from fetchers.retries import http_retry
 from quality.scorer import score_tle_quality
 
 logger = logging.getLogger(__name__)
@@ -110,14 +111,19 @@ def _classify(mean_motion: float, eccentricity: float) -> str:
     return "DEEP"
 
 
+@http_retry
+async def _http_get_text(client: httpx.AsyncClient, url: str) -> str:
+    resp = await client.get(url, timeout=TIMEOUT)
+    resp.raise_for_status()
+    return resp.text
+
+
 async def fetch_amsat_elements() -> None:
     """Fetch AMSAT TLE file and upsert."""
     t0 = time.time()
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(AMSAT_URL, timeout=TIMEOUT)
-            resp.raise_for_status()
-            text = resp.text
+            text = await _http_get_text(client, AMSAT_URL)
 
         parsed = _parse_three_line_tle(text)
         elapsed = int((time.time() - t0) * 1000)

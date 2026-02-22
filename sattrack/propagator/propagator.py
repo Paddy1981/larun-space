@@ -12,6 +12,7 @@ a real-time tracker.
 from __future__ import annotations
 
 import math
+import time
 import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any
@@ -20,6 +21,11 @@ import pymap3d
 from sgp4.api import Satrec, jday
 
 logger = logging.getLogger(__name__)
+
+# In-memory TLE cache: {norad_id: (monotonic_time, (line1, line2))}
+# Avoids a Supabase round-trip on every propagation request.
+_TLE_CACHE: dict[int, tuple[float, tuple[str, str]]] = {}
+_TLE_CACHE_TTL = 60.0  # seconds
 
 
 # ─────────────────────────────────────────────
@@ -52,7 +58,12 @@ def _check_sgp4(err: int, norad_id: int) -> None:
 
 
 def _load_tle(norad_id: int) -> tuple[str, str] | None:
-    """Fetch the current best TLE lines from tle_history."""
+    """Fetch the current best TLE lines from tle_history, with 60-second cache."""
+    now = time.monotonic()
+    cached = _TLE_CACHE.get(norad_id)
+    if cached is not None and (now - cached[0]) < _TLE_CACHE_TTL:
+        return cached[1]
+
     from db.client import get_client
     result = (
         get_client()
@@ -67,7 +78,9 @@ def _load_tle(norad_id: int) -> tuple[str, str] | None:
     if not result.data:
         return None
     r = result.data[0]
-    return r["tle_line1"], r["tle_line2"]
+    tle = (r["tle_line1"], r["tle_line2"])
+    _TLE_CACHE[norad_id] = (now, tle)
+    return tle
 
 
 # ─────────────────────────────────────────────

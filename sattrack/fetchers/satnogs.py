@@ -13,6 +13,7 @@ from typing import Any
 import httpx
 
 from db.client import upsert_satellites, log_source_health
+from fetchers.retries import http_retry
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,13 @@ def _status_map(satnogs_status: str) -> str:
     return "unknown"
 
 
+@http_retry
+async def _fetch_page(client: httpx.AsyncClient, url: str) -> Any:
+    resp = await client.get(url, timeout=TIMEOUT)
+    resp.raise_for_status()
+    return resp.json()
+
+
 async def fetch_satnogs_metadata() -> None:
     """Fetch all SatNOGS satellites and upsert metadata."""
     t0 = time.time()
@@ -42,9 +50,7 @@ async def fetch_satnogs_metadata() -> None:
         async with httpx.AsyncClient() as client:
             url: str | None = f"{SATNOGS_API}?format=json&page_size={PAGE_SIZE}"
             while url:
-                resp = await client.get(url, timeout=TIMEOUT)
-                resp.raise_for_status()
-                data = resp.json()
+                data = await _fetch_page(client, url)
 
                 # SatNOGS uses DRF pagination: {"count": N, "next": url, "results": [...]}
                 if isinstance(data, dict):

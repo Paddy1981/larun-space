@@ -14,6 +14,7 @@ from typing import Any
 import httpx
 
 from db.client import upsert_satellites, log_source_health
+from fetchers.retries import http_retry
 
 logger = logging.getLogger(__name__)
 
@@ -58,14 +59,19 @@ def _orbit_class_from_type(orbit_type: str) -> str:
     return "UNKNOWN"
 
 
+@http_retry
+async def _http_get_text(client: httpx.AsyncClient, url: str) -> str:
+    resp = await client.get(url, timeout=TIMEOUT)
+    resp.raise_for_status()
+    return resp.text
+
+
 async def fetch_gcat_catalog() -> None:
     """Fetch GCAT TSV and upsert satellite metadata."""
     t0 = time.time()
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(GCAT_URL, timeout=TIMEOUT)
-            resp.raise_for_status()
-            text = resp.text
+            text = await _http_get_text(client, GCAT_URL)
 
         lines = text.splitlines()
         if not lines:
