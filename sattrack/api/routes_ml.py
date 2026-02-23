@@ -204,7 +204,15 @@ def get_orbital_density() -> dict[str, Any]:
     Queries the local PostgreSQL tle_features table (port POSTGRES_PORT),
     groups by ROUND(perigee_km/50)*50, and returns object counts and mean
     eccentricity per bin.
+
+    Returns empty data when the local ML database is not configured
+    (i.e. on Railway production where only POSTGRES_HOST=localhost would apply).
     """
+    # Guard: skip entirely when running on Railway (no local ML DB).
+    # ENABLE_ML_DENSITY must be set explicitly in the Railway environment to opt in.
+    if not os.environ.get("ENABLE_ML_DENSITY"):
+        return {"count": 0, "data": [], "unavailable": True}
+
     sql = """
         SELECT
             ROUND(perigee_km / 50.0) * 50  AS altitude_km,
