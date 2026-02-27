@@ -15,12 +15,15 @@ first 6-hour scheduler run completes.
 """
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 
 from db.client import get_client
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -116,4 +119,5 @@ def get_conjunctions(
         return {"last_computed": last_computed, "hours": hours, "conjunctions": conjunctions}
 
     except Exception as exc:
+        logger.error("get_conjunctions: %s", exc)
         raise HTTPException(status_code=500, detail="Internal server error")
