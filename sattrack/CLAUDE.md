@@ -41,14 +41,15 @@ sattrack/
 # Local dev
 uvicorn main:app --reload --port 8000
 
-# Deploy to Railway
-railway up --service web --detach
+# Deploy to Railway (from /c/Dev/larun-space, NOT sattrack/)
+railway up --service sattrack --detach
 
+# If not linked: railway link --project f870c885-96b8-4758-bb1c-a296a5ff01a1
 # Railway status check
 railway whoami && railway status
 
 # Health check
-curl https://sattrack-production.up.railway.app/health
+curl https://sattrack-production.up.railway.app/v1/satellites?limit=1
 
 # Local ML DB (Docker)
 docker compose -f ml-db/docker-compose.yml up -d
@@ -83,7 +84,9 @@ python ml-db/push_to_supabase.py --all
 
 - **psycopg2**: import locally inside functions in `routes_ml.py` (not at module top) — avoids Railway build issues
 - **Decimal types**: use `_clean_row()` helper before sending to Supabase
-- **Railway**: repo uses `master` branch. Always `railway up` — do NOT rely on GitHub auto-deploy
+- **Railway**: ALWAYS use `railway up --service sattrack --detach` from `/c/Dev/larun-space` — do NOT rely on GitHub auto-deploy (unreliable; `redeploy` reuses old image, doesn't rebuild)
+- **Railway service name**: `sattrack` (NOT `web` — CLAUDE.md was wrong previously)
+- **Railway root Dockerfile**: `/c/Dev/larun-space/Dockerfile` builds FastAPI from sattrack/ — prevents Railway from auto-detecting HTML/JS and deploying Caddy static site
 - **`.railwayignore`**: excludes `ml-db/pgdata/` (was 580MB — keep excluded)
 - **pgAdmin local**: `admin@sattrack.dev` / `pgadmin_local` → `sattrack_ml_db:5432`, user `sattrack_ml`
 - **TLE cache**: 60-second cache in `propagator.py`
@@ -101,6 +104,9 @@ EOF
 )"
 git push
 
-# Deploy
-railway up --service web --detach
+# Deploy backend (from /c/Dev/larun-space — NOT from sattrack/)
+railway up --service sattrack --detach
+
+# Deploy frontend (from /c/Dev/sattrack-web)
+npx vercel --prod
 ```
