@@ -500,6 +500,44 @@ html, body {
 .pass-table tr:last-child td { border-bottom: none; }
 .pass-table .good { color: var(--success); }
 .pass-table .moderate { color: var(--warning); }
+.pass-table .high { color: var(--error); }
+
+/* GEO satellite info */
+.geo-info {
+  color: var(--star-gold);
+  font-size: 0.875rem;
+  padding: var(--space-md) 0;
+  line-height: 1.6;
+}
+
+/* Sun outage section */
+.outage-section {
+  margin-top: var(--space-lg);
+  border-top: 1px solid var(--border-gray);
+  padding-top: var(--space-md);
+}
+
+.outage-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--medium-gray);
+  margin-bottom: var(--space-sm);
+}
+
+.outage-threshold {
+  color: var(--warning);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.outage-empty {
+  color: var(--medium-gray);
+  font-size: 0.8rem;
+  padding: var(--space-sm) 0;
+}
 
 .modal-loading {
   text-align: center;

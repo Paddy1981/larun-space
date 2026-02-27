@@ -176,21 +176,32 @@ function onListClick(noradId) {
 function openPassModal(noradId) {
   const sat = state.satellites.find((s) => s.norad_id === noradId);
   modalTitle.textContent = sat ? sat.name : `NORAD ${noradId}`;
-  modalSubtitle.textContent = "Fetching your location…";
-  modalBody.innerHTML = `<div class="modal-loading"><span class="loading-spinner"></span></div>`;
+  modalSubtitle.textContent = "Fetching your location\u2026";
+  modalBody.innerHTML = "";
+  const spinnerEl = document.createElement("div");
+  spinnerEl.className = "modal-loading";
+  spinnerEl.innerHTML = '<span class="loading-spinner"></span>';
+  modalBody.appendChild(spinnerEl);
   modalBackdrop.classList.add("open");
 
-  // Get observer location then fetch passes
+  const isGeo = sat && sat.orbit_class === "GEO";
+
+  // Get observer location then fetch passes (+ sun outage in parallel for GEO)
   _getLocation()
     .then(({ lat, lon }) => {
       state.userLat = lat;
       state.userLon = lon;
-      modalSubtitle.textContent = `Next passes from ${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
-      return API.getPasses(noradId, { lat, lon, days: 3, min_elevation: 10 });
+      modalSubtitle.textContent = `Next passes from ${lat.toFixed(2)}\xb0, ${lon.toFixed(2)}\xb0`;
+      const passesPromise = API.getPasses(noradId, { lat, lon, days: 3, min_elevation: 10 });
+      const sunOutagePromise = isGeo
+        ? API.getSunOutage(noradId, { lat, lon }).catch(() => null)
+        : Promise.resolve(null);
+      return Promise.all([passesPromise, sunOutagePromise]);
     })
-    .then((data) => renderPassTable(data.passes))
+    .then(([passData, sunOutageData]) => renderPassTable(passData.passes, sunOutageData))
     .catch((err) => {
-      modalBody.innerHTML = `<div class="modal-error">${err.message}</div>`;
+      modalBody.textContent = err.message;
+      modalBody.className = "modal-error";
     });
 }
 
@@ -223,44 +234,97 @@ function _fmtDate(iso) {
   return new Date(iso).toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
-function renderPassTable(passes) {
+function renderPassTable(passes, sunOutageData) {
+  modalBody.innerHTML = "";
+
   if (!passes || passes.length === 0) {
-    modalBody.innerHTML = `<div class="modal-loading">No visible passes in the next 3 days.</div>`;
+    const msg = document.createElement("div");
+    msg.className = "modal-loading";
+    msg.textContent = "No visible passes in the next 3 days.";
+    modalBody.appendChild(msg);
     return;
   }
 
   // Handle geostationary
   if (passes[0].type === "geostationary") {
     const p = passes[0];
-    modalBody.innerHTML = `
-      <div class="modal-loading" style="color:var(--star-gold)">
-        Geostationary satellite — always above horizon.<br>
-        Elevation: <strong>${p.max_elevation_deg}°</strong> · Direction: <strong>${p.direction}</strong>
-      </div>`;
+    const geoDiv = document.createElement("div");
+    geoDiv.className = "geo-info";
+    geoDiv.innerHTML = `Geostationary \u2014 always above horizon.<br>
+      Elevation: <strong>${p.max_elevation_deg}\xb0</strong> \xb7 Direction: <strong>${p.direction}</strong>`;
+    modalBody.appendChild(geoDiv);
+
+    if (sunOutageData) {
+      modalBody.appendChild(renderSunOutages(sunOutageData));
+    }
     return;
   }
 
-  const rows = passes.slice(0, 5).map((p) => `
-    <tr>
-      <td>${_fmtDate(p.aos)}</td>
-      <td>${_fmtTime(p.aos)}</td>
-      <td>${_fmtTime(p.tca)}</td>
-      <td>${_fmtTime(p.los)}</td>
-      <td class="${_elClass(p.max_elevation_deg)}">${p.max_elevation_deg}°</td>
-      <td>${Math.round(p.duration_sec)}s</td>
-      <td>${p.direction}</td>
-    </tr>`).join("");
-
-  modalBody.innerHTML = `
-    <table class="pass-table">
-      <thead>
+  const table = document.createElement("table");
+  table.className = "pass-table";
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Date</th><th>AOS</th><th>TCA</th><th>LOS</th>
+        <th>Max El</th><th>Dur</th><th>Dir</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${passes.slice(0, 5).map((p) => `
         <tr>
-          <th>Date</th><th>AOS</th><th>TCA</th><th>LOS</th>
-          <th>Max El</th><th>Dur</th><th>Dir</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+          <td>${_fmtDate(p.aos)}</td>
+          <td>${_fmtTime(p.aos)}</td>
+          <td>${_fmtTime(p.tca)}</td>
+          <td>${_fmtTime(p.los)}</td>
+          <td class="${_elClass(p.max_elevation_deg)}">${p.max_elevation_deg}\xb0</td>
+          <td>${Math.round(p.duration_sec)}s</td>
+          <td>${p.direction}</td>
+        </tr>`).join("")}
+    </tbody>`;
+  modalBody.appendChild(table);
+}
+
+function renderSunOutages(data) {
+  const section = document.createElement("div");
+  section.className = "outage-section";
+
+  const title = document.createElement("div");
+  title.className = "outage-title";
+  title.innerHTML = `Sun Outage Forecast <span class="outage-threshold">&lt;${data.threshold_deg}\xb0 separation</span>`;
+  section.appendChild(title);
+
+  if (!data.outages || data.outages.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "outage-empty";
+    empty.textContent = "No sun outages predicted in the next 12 months.";
+    section.appendChild(empty);
+    return section;
+  }
+
+  const table = document.createElement("table");
+  table.className = "pass-table";
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Date</th><th>Start</th><th>Peak</th><th>End</th><th>Dur</th><th>Min Sep</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${data.outages.map((o) => {
+        const sepClass = o.min_separation_deg < 0.5 ? "high" : "moderate";
+        const durMin = Math.round(o.duration_sec / 60);
+        return `<tr>
+          <td>${_fmtDate(o.start)}</td>
+          <td>${_fmtTime(o.start)}</td>
+          <td>${_fmtTime(o.peak)}</td>
+          <td>${_fmtTime(o.end)}</td>
+          <td>${durMin} min</td>
+          <td class="${sepClass}">${o.min_separation_deg}\xb0</td>
+        </tr>`;
+      }).join("")}
+    </tbody>`;
+  section.appendChild(table);
+  return section;
 }
 
 // Close modal

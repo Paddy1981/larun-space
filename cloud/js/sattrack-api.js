@@ -48,6 +48,10 @@ export async function getPasses(noradId, { lat, lon, alt_m = 0, days = 3, min_el
   return _get(`/v1/passes/${noradId}`, { lat, lon, alt_m, days, min_elevation });
 }
 
+export async function getSunOutage(noradId, { lat, lon, alt_m = 0, days = 365, threshold_deg = 2.0 } = {}) {
+  return _get(`/v1/satellites/${noradId}/sun-outage`, { lat, lon, alt_m, days, threshold_deg });
+}
+
 // ── Conjunctions ─────────────────────────────────────────────────────────────
 
 export async function getConjunctions({ threshold_km = 10, limit = 50 } = {}) {
