@@ -10,7 +10,7 @@
  */
 
 import * as API from "./sattrack-api.js";
-import { getSession, signInWithGitHub, signOut, onAuthStateChange } from "./sattrack-auth.js";
+import { getSession, signInWithGitHub, signInWithGoogle, signOut, onAuthStateChange } from "./sattrack-auth.js";
 import {
   initMap,
   loadTles,
@@ -426,6 +426,14 @@ $("btn-clear").addEventListener("click", () => {
 // ── Auth nav ──────────────────────────────────────────────────────────────────
 
 const authBtn = $("auth-btn");
+const authDropdown = $("auth-dropdown");
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!authBtn.closest(".auth-wrapper").contains(e.target)) {
+    authDropdown.classList.remove("open");
+  }
+});
 
 function updateAuthBtn(session) {
   if (session?.user) {
@@ -433,14 +441,26 @@ function updateAuthBtn(session) {
       || session.user.email
       || "Account";
     authBtn.textContent = label;
-    authBtn.title = "Sign out";
+    authDropdown.classList.remove("open");
     authBtn.onclick = () => signOut().catch(() => {});
   } else {
     authBtn.textContent = "Sign In";
-    authBtn.title = "Sign in with GitHub";
-    authBtn.onclick = () => signInWithGitHub().catch((e) => showToast(e.message, 4000));
+    authBtn.onclick = (e) => {
+      e.stopPropagation();
+      authDropdown.classList.toggle("open");
+    };
   }
 }
+
+$("signin-github").addEventListener("click", () => {
+  authDropdown.classList.remove("open");
+  signInWithGitHub().catch((e) => showToast(e.message, 4000));
+});
+
+$("signin-google").addEventListener("click", () => {
+  authDropdown.classList.remove("open");
+  signInWithGoogle().catch((e) => showToast(e.message, 4000));
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 

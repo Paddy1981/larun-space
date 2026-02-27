@@ -20,9 +20,16 @@ export async function getSession() {
 export async function signInWithGitHub() {
   const { data, error } = await client.auth.signInWithOAuth({
     provider: 'github',
-    options: {
-      redirectTo: window.location.origin + '/',
-    },
+    options: { redirectTo: window.location.origin + '/' },
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function signInWithGoogle() {
+  const { data, error } = await client.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/' },
   });
   if (error) throw error;
   return data;

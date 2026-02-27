@@ -126,6 +126,42 @@ html, body {
   padding: 0;
 }
 
+.auth-wrapper {
+  position: relative;
+}
+
+.auth-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--space-dark);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 160px;
+  z-index: 1100;
+  overflow: hidden;
+}
+.auth-dropdown.open { display: block; }
+
+.auth-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--pure-white);
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  padding: 10px var(--space-md);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+.auth-option:hover { background: var(--space-gray); }
+
 .nav-badge {
   background: var(--cosmic-purple);
   color: var(--pure-white);
