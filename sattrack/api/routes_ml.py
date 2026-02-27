@@ -6,18 +6,30 @@ Endpoints:
   GET /ml/maneuvers/recent      — recent maneuvers across all satellites (last 30 days)
   GET /ml/decay                 — all satellites with a predicted reentry date
   GET /ml/decay/{norad_id}      — single satellite decay prediction or 404
-  GET /ml/density               — orbital density bins from local tle_features DB
+  GET /ml/density               — orbital density bins computed from Supabase tle_history
 """
 from __future__ import annotations
 
 import logging
-import os
+import math
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 
 from db.client import get_client
+
+try:
+    from slowapi import Limiter
+    from slowapi.util import get_remote_address
+    _limiter = Limiter(key_func=get_remote_address)
+except ImportError:
+    _limiter = None
+
+def _limit(rate: str):
+    if _limiter:
+        return _limiter.limit(rate)
+    return lambda f: f
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -29,18 +41,6 @@ router = APIRouter()
 
 def _db():
     return get_client()
-
-
-def _local_pg_conn():
-    """Open a connection to the local PostgreSQL instance that holds tle_features."""
-    import psycopg2  # local import — not available on Railway production
-    return psycopg2.connect(
-        host=os.environ.get("POSTGRES_HOST", "localhost"),
-        port=int(os.environ.get("POSTGRES_PORT", 5433)),
-        dbname=os.environ.get("POSTGRES_DB", "sattrack_ml"),
-        user=os.environ.get("POSTGRES_USER", "sattrack_ml"),
-        password=os.environ.get("POSTGRES_PASSWORD", ""),
-    )
 
 
 # ─────────────────────────────────────────────
@@ -93,7 +93,7 @@ def get_recent_maneuvers(
         }
     except Exception as exc:
         logger.error("get_recent_maneuvers: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
@@ -129,7 +129,7 @@ def get_maneuvers_for_satellite(norad_id: int) -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_maneuvers_for_satellite norad_id=%d: %s", norad_id, exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
@@ -158,7 +158,7 @@ def get_decay_predictions() -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_decay_predictions: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
@@ -190,7 +190,7 @@ def get_decay_prediction_for_satellite(norad_id: int) -> dict[str, Any]:
         raise
     except Exception as exc:
         logger.error("get_decay_prediction_for_satellite norad_id=%d: %s", norad_id, exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
@@ -198,61 +198,74 @@ def get_decay_prediction_for_satellite(norad_id: int) -> dict[str, Any]:
 # ─────────────────────────────────────────────
 
 @router.get("/ml/density")
-def get_orbital_density() -> dict[str, Any]:
+@_limit("10/minute")
+def get_orbital_density(request: Request) -> dict[str, Any]:
     """Return orbital density binned in 50 km altitude bands.
 
-    Queries the local PostgreSQL tle_features table (port POSTGRES_PORT),
-    groups by ROUND(perigee_km/50)*50, and returns object counts and mean
-    eccentricity per bin.
-
-    Returns empty data when the local ML database is not configured
-    (i.e. on Railway production where only POSTGRES_HOST=localhost would apply).
+    Computes perigee altitude from mean_motion + eccentricity (Kepler's third
+    law) for every current TLE in Supabase tle_history, then bins into 50 km
+    altitude shells.  No local ML database or environment flag required.
     """
-    # Guard: skip entirely when running on Railway (no local ML DB).
-    # ENABLE_ML_DENSITY must be set explicitly in the Railway environment to opt in.
-    if not os.environ.get("ENABLE_ML_DENSITY"):
-        return {"count": 0, "data": [], "unavailable": True}
+    _MU = 398600.4418      # Earth gravitational parameter (km³/s²)
+    _RE = 6371.0           # Earth mean radius (km)
+    _BIN = 50              # altitude bin width (km)
+    _PAGE = 1000           # rows per Supabase page
+    _MAX_ROWS = 20_000     # safety cap — ~65K TLEs exist but we stop early
 
-    sql = """
-        SELECT
-            ROUND(perigee_km / 50.0) * 50  AS altitude_km,
-            COUNT(*)                         AS object_count,
-            AVG(eccentricity)                AS avg_eccentricity
-        FROM tle_features
-        WHERE perigee_km IS NOT NULL
-        GROUP BY ROUND(perigee_km / 50.0) * 50
-        ORDER BY altitude_km
-    """
     try:
-        conn = _local_pg_conn()
+        db = _db()
+        rows: list[dict] = []
+        offset = 0
+
+        # Paginate through current TLEs — only fetch the two columns needed
+        while len(rows) < _MAX_ROWS:
+            result = (
+                db.table("tle_history")
+                .select("mean_motion, eccentricity")
+                .eq("is_current", True)
+                .not_.is_("mean_motion", "null")
+                .not_.is_("eccentricity", "null")
+                .gt("mean_motion", 0)
+                .range(offset, offset + _PAGE - 1)
+                .execute()
+            )
+            page = result.data or []
+            rows.extend(page)
+            if len(page) < _PAGE:
+                break
+            offset += _PAGE
+
+        # Compute perigee and bin
+        bins: dict[int, dict] = {}
+        for row in rows:
+            try:
+                n = row["mean_motion"] * 2 * math.pi / 86400   # rad/s
+                sma = (_MU / n ** 2) ** (1.0 / 3.0)            # km
+                perigee = sma * (1.0 - row["eccentricity"]) - _RE
+                if perigee <= 0 or perigee > 40_000:            # sanity bounds
+                    continue
+                band = int(perigee / _BIN) * _BIN
+                if band not in bins:
+                    bins[band] = {"count": 0, "ecc_sum": 0.0}
+                bins[band]["count"] += 1
+                bins[band]["ecc_sum"] += row["eccentricity"]
+            except (ZeroDivisionError, ValueError):
+                continue
+
+        data = sorted(
+            [
+                {
+                    "altitude_km": float(alt),
+                    "object_count": b["count"],
+                    "avg_eccentricity": round(b["ecc_sum"] / b["count"], 6),
+                }
+                for alt, b in bins.items()
+            ],
+            key=lambda x: x["altitude_km"],
+        )
+
+        return {"count": len(data), "data": data}
+
     except Exception as exc:
-        # Local ML database is not available (expected on Railway production).
-        # Return an empty result so the frontend can degrade gracefully rather
-        # than logging a noisy 500 error.
-        logger.warning("get_orbital_density: local ML DB unavailable — %s", exc)
-        return {"count": 0, "data": [], "unavailable": True}
-
-    try:
-        import psycopg2.extras  # local import — not available on Railway production
-        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(sql)
-            rows = cur.fetchall()
-    finally:
-        conn.close()
-
-    bins = [
-        {
-            "altitude_km": float(row["altitude_km"]),
-            "object_count": int(row["object_count"]),
-            "avg_eccentricity": (
-                float(row["avg_eccentricity"])
-                if row["avg_eccentricity"] is not None
-                else None
-            ),
-        }
-        for row in rows
-    ]
-    return {
-        "count": len(bins),
-        "data": bins,
-    }
+        logger.error("get_orbital_density: %s", exc)
+        raise HTTPException(status_code=500, detail="Internal server error")

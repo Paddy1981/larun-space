@@ -1,0 +1,14 @@
+# Exclude local ML database data directories (PostgreSQL files with restricted permissions)
+ml-db/pgdata/
+ml-db/pgadmin_data/
+ml-db/tle_training_data/
+ml-db/models/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Local env
+.env

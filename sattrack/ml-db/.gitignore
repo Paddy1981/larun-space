@@ -1,0 +1,15 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Postgres data volume
+pgdata/
+
+# Trained models (large binaries)
+models/*.pkl
+models/*.joblib
+
+# Python
+__pycache__/
+*.py[cod]

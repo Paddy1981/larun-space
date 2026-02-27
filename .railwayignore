@@ -1,0 +1,24 @@
+# Exclude everything except the sattrack service
+cloud/
+docker/
+k8s/
+larun_space.egg-info/
+supabase/
+tests/
+models.html
+*.html
+assets/
+css/
+js/
+docs/
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local data
+sattrack/ml-db/pgdata/
+sattrack/ml-db/pgadmin_data/
+sattrack/ml-db/models/
+sattrack/ml-db/tle_training_data/

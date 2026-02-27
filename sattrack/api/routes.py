@@ -11,15 +11,29 @@ Endpoints:
 """
 from __future__ import annotations
 
+import hmac
 import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
 import os
-from fastapi import APIRouter, Body, HTTPException, Header, Query
+from fastapi import APIRouter, Body, HTTPException, Header, Query, Request
 from typing import List
 
 from db.client import get_client
+
+try:
+    from slowapi import Limiter
+    from slowapi.util import get_remote_address
+    _limiter = Limiter(key_func=get_remote_address)
+except ImportError:
+    _limiter = None
+
+def _limit(rate: str):
+    """Return a slowapi limit decorator, or a no-op if slowapi is unavailable."""
+    if _limiter:
+        return _limiter.limit(rate)
+    return lambda f: f
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -37,41 +51,87 @@ def _db():
 # /v1/satellites
 # ─────────────────────────────────────────────
 
-@router.get("/v1/satellites")
+@router.get("/v1/satellites", tags=["Satellites"])
 def list_satellites(
     limit: int = Query(default=50, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
+    after_id: int = Query(default=0, ge=0),
     orbit_class: str | None = Query(default=None),
     status: str | None = Query(default=None),
     search: str | None = Query(default=None),
+    has_current_tle: bool = Query(default=False),
 ) -> dict[str, Any]:
-    """Return a paginated list of satellites with optional filters."""
+    """Return a paginated list of satellites with optional filters.
+
+    has_current_tle=true restricts results to satellites that have at least
+    one TLE record with is_current=true (i.e. propagatable right now).
+    Uses cursor-based pagination via after_id (norad_id) to avoid offset
+    timeouts on large result sets from join queries.
+    """
     try:
-        q = _db().table("satellites").select("*")
+        db = _db()
+        if has_current_tle:
+            # Inner-join via tle_history; cursor pagination on norad_id avoids
+            # the expensive OFFSET clause on joined queries.
+            q = db.table("satellites").select(
+                "norad_id, name, cospar_id, orbit_class, status, operator, country, "
+                "launch_date, decay_date, object_type, source_flags, created_at, updated_at, "
+                "tle_history!inner(is_current)"
+            ).eq("tle_history.is_current", True).order("norad_id")
+            if after_id:
+                q = q.gt("norad_id", after_id)
+        else:
+            q = db.table("satellites").select("*")
+            if after_id:
+                q = q.gt("norad_id", after_id).order("norad_id")
+
         if orbit_class:
             q = q.eq("orbit_class", orbit_class.upper())
         if status:
             q = q.eq("status", status.lower())
         if search:
-            q = q.ilike("name", f"%{search}%")
-        result = q.range(offset, offset + limit - 1).execute()
+            if search.strip().isdigit():
+                q = q.eq("norad_id", int(search.strip()))
+            else:
+                # Escape ilike special chars so user input can't craft wildcard patterns
+                safe = search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+                q = q.ilike("name", f"%{safe}%")
+
+        if after_id:
+            result = q.limit(limit).execute()
+        else:
+            result = q.range(offset, offset + limit - 1).execute()
+
+        rows = result.data or []
+        if has_current_tle:
+            for row in rows:
+                row.pop("tle_history", None)
+
+        # Expose last_id for cursor-based next-page fetch
+        last_id = rows[-1]["norad_id"] if rows else None
+
         return {
-            "count": len(result.data),
+            "count": len(rows),
             "offset": offset,
+            "after_id": after_id,
+            "last_id": last_id,
             "limit": limit,
-            "data": result.data,
+            "data": rows,
         }
     except Exception as exc:
         logger.error("list_satellites: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/v1/satellites/{norad_id}")
+@router.get("/v1/satellites/{norad_id}", tags=["Satellites"])
 def get_satellite(norad_id: int) -> dict[str, Any]:
-    """Return a single satellite by NORAD ID."""
+    """Return a single satellite by NORAD ID, merged with enrichment metadata."""
     try:
+        db = _db()
+
+        # Primary satellite row
         result = (
-            _db().table("satellites")
+            db.table("satellites")
             .select("*")
             .eq("norad_id", norad_id)
             .single()
@@ -79,19 +139,66 @@ def get_satellite(norad_id: int) -> dict[str, Any]:
         )
         if not result.data:
             raise HTTPException(status_code=404, detail="Satellite not found")
-        return result.data
+
+        satellite = dict(result.data)
+
+        # Enrichment row (LEFT JOIN equivalent � absent row is not an error)
+        enrichment_result = (
+            db.table("satellite_enrichment")
+            .select("*")
+            .eq("norad_id", norad_id)
+            .limit(1)
+            .execute()
+        )
+        if enrichment_result.data:
+            enrichment = dict(enrichment_result.data[0])
+            # Remove duplicate key before merging; satellite.norad_id is authoritative
+            enrichment.pop("norad_id", None)
+            satellite["enrichment"] = enrichment
+        else:
+            satellite["enrichment"] = None
+
+        return satellite
     except HTTPException:
         raise
     except Exception as exc:
         logger.error("get_satellite %d: %s", norad_id, exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/v1/satellites/{norad_id}/enrichment", tags=["Satellites"])
+def get_satellite_enrichment(norad_id: int) -> dict[str, Any]:
+    """Return only the enrichment metadata row for a satellite.
+
+    Returns 404 if the satellite_enrichment table has no row for this NORAD ID
+    (i.e. enrichment data has not yet been populated).
+    """
+    try:
+        result = (
+            _db().table("satellite_enrichment")
+            .select("*")
+            .eq("norad_id", norad_id)
+            .limit(1)
+            .execute()
+        )
+        if not result.data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No enrichment data found for NORAD ID {norad_id}",
+            )
+        return result.data[0]
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("get_satellite_enrichment %d: %s", norad_id, exc)
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
 # /v1/tle
 # ─────────────────────────────────────────────
 
-@router.get("/v1/tle/{norad_id}")
+@router.get("/v1/tle/{norad_id}", tags=["TLE"])
 def get_current_tle(norad_id: int) -> dict[str, Any]:
     """Return the current best TLE for a satellite."""
     try:
@@ -114,11 +221,12 @@ def get_current_tle(norad_id: int) -> dict[str, Any]:
         raise
     except Exception as exc:
         logger.error("get_current_tle %d: %s", norad_id, exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.post("/v1/tle/bulk")
-def get_bulk_tles(norad_ids: List[int] = Body(...)) -> dict[str, Any]:
+@router.post("/v1/tle/bulk", tags=["TLE"])
+@_limit("30/minute")
+def get_bulk_tles(request: Request, norad_ids: List[int] = Body(...)) -> dict[str, Any]:
     """Return current TLEs for multiple NORAD IDs in a single DB query.
 
     Request body: JSON array of NORAD IDs, e.g. [25544, 48274, 55044]
@@ -142,14 +250,14 @@ def get_bulk_tles(norad_ids: List[int] = Body(...)) -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_bulk_tles: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
 # /v1/status
 # ─────────────────────────────────────────────
 
-@router.get("/v1/status")
+@router.get("/v1/status", tags=["System"])
 def get_status() -> dict[str, Any]:
     """Return system health summary."""
     try:
@@ -182,10 +290,10 @@ def get_status() -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_status: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/v1/status/sources")
+@router.get("/v1/status/sources", tags=["System"])
 def get_source_status() -> dict[str, Any]:
     """Return per-source freshness and health."""
     try:
@@ -213,14 +321,14 @@ def get_source_status() -> dict[str, Any]:
         return {"sources": list(by_source.values())}
     except Exception as exc:
         logger.error("get_source_status: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
 # /v1/weather
 # ─────────────────────────────────────────────
 
-@router.get("/v1/weather/current")
+@router.get("/v1/weather/current", tags=["Space Weather"])
 def get_current_weather() -> dict[str, Any]:
     """Return the latest Kp index and F10.7 flux."""
     try:
@@ -258,7 +366,7 @@ def get_current_weather() -> dict[str, Any]:
         }
     except Exception as exc:
         logger.error("get_current_weather: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # ─────────────────────────────────────────────
@@ -268,11 +376,11 @@ def get_current_weather() -> dict[str, Any]:
 def _require_admin(x_admin_secret: str | None) -> None:
     """Raise 403 if the caller doesn't supply the correct admin secret."""
     expected = os.environ.get("ADMIN_SECRET", "")
-    if not expected or x_admin_secret != expected:
+    if not expected or not hmac.compare_digest(x_admin_secret or "", expected):
         raise HTTPException(status_code=403, detail="Forbidden")
 
 
-@router.post("/v1/admin/mark-active")
+@router.post("/v1/admin/mark-active", tags=["System"])
 def admin_mark_active(
     x_admin_secret: str | None = Header(default=None),
 ) -> dict[str, Any]:
@@ -303,4 +411,4 @@ def admin_mark_active(
         raise
     except Exception as exc:
         logger.error("admin_mark_active: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")

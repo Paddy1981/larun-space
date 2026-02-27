@@ -231,3 +231,80 @@ def log_source_health(
         client.table("source_health").insert(record).execute()
     except Exception as exc:
         logger.error("log_source_health failed: %s", exc)
+
+
+def upsert_satellite_enrichment(records: list[dict[str, Any]]) -> int:
+    """
+    Batch upsert satellite enrichment metadata (physical specs, mission data,
+    debris risk labels).  Conflicts on norad_id; all other columns are updated,
+    and updated_at is refreshed to NOW() via the upsert payload.
+    Returns number of rows written.
+    """
+    if not records:
+        return 0
+    client = get_client()
+    try:
+        result = (
+            client.table("satellite_enrichment")
+            .upsert(records, on_conflict="norad_id")
+            .execute()
+        )
+        count = len(result.data) if result.data else 0
+        logger.debug("upsert_satellite_enrichment: %d rows", count)
+        return count
+    except Exception as exc:
+        logger.error("upsert_satellite_enrichment failed: %s", exc)
+        raise
+
+
+def upsert_maneuver_events(records: list[dict[str, Any]]) -> int:
+    """
+    Batch upsert maneuver detection events.
+    Deduplicates on (norad_id, detected_epoch) via the unique index; existing
+    confirmed events are NOT overwritten (ignore_duplicates=True) so that
+    rule-based detections never silently replace analyst-confirmed records.
+    Returns number of rows written.
+    """
+    if not records:
+        return 0
+    client = get_client()
+    try:
+        result = (
+            client.table("maneuver_events")
+            .upsert(
+                records,
+                on_conflict="norad_id,detected_epoch",
+                ignore_duplicates=True,
+            )
+            .execute()
+        )
+        count = len(result.data) if result.data else 0
+        logger.debug("upsert_maneuver_events: %d rows", count)
+        return count
+    except Exception as exc:
+        logger.error("upsert_maneuver_events failed: %s", exc)
+        raise
+
+
+def upsert_decay_predictions(records: list[dict[str, Any]]) -> int:
+    """
+    Batch upsert orbital decay predictions.
+    Conflicts on norad_id; all columns are replaced with the latest
+    computation so stale reentry dates are always overwritten.
+    Returns number of rows written.
+    """
+    if not records:
+        return 0
+    client = get_client()
+    try:
+        result = (
+            client.table("decay_predictions")
+            .upsert(records, on_conflict="norad_id")
+            .execute()
+        )
+        count = len(result.data) if result.data else 0
+        logger.debug("upsert_decay_predictions: %d rows", count)
+        return count
+    except Exception as exc:
+        logger.error("upsert_decay_predictions failed: %s", exc)
+        raise

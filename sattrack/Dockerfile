@@ -1,5 +1,6 @@
 FROM python:3.11-slim
 
+# Build: 2026-02-23
 WORKDIR /app
 
 # Install system dependencies

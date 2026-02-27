@@ -1,0 +1,32 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# ML database data
+ml-db/pgdata/
+ml-db/pgadmin_data/
+ml-db/.env
+ml-db/.env.*
+
+# IDE / AI tools
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Models (large binaries — use object storage)
+ml-db/models/*.pkl
+ml-db/models/*.joblib
+
+# Logs
+*.log
+build_output.log
+
+# Railway
+.railway/

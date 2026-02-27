@@ -35,6 +35,7 @@ def get_conjunctions(
     ),
     threshold_km: float = Query(default=10.0, ge=0.1, le=100.0),
     limit: int = Query(default=100, ge=1, le=500),
+    min_risk: float = Query(default=0.0, ge=0.0, le=10.0, description="Minimum risk score filter"),
 ) -> dict[str, Any]:
     """Return latest conjunction screenings below the distance threshold.
 
@@ -67,10 +68,12 @@ def get_conjunctions(
             db.table("conjunctions")
             .select(
                 "norad_id_1, norad_id_2, tca_time, "
-                "miss_distance_km, relative_velocity_km_s, screening_window_hrs"
+                "miss_distance_km, relative_velocity_km_s, screening_window_hrs, "
+                "risk_score, conjunction_risk_label"
             )
             .gte("tca_time", cutoff.isoformat())
             .lte("miss_distance_km", threshold_km)
+            .gte("risk_score", min_risk)
             .order("miss_distance_km", desc=False)
             .limit(limit)
             .execute()
@@ -104,6 +107,8 @@ def get_conjunctions(
                 "miss_distance_km": r["miss_distance_km"],
                 "relative_velocity_km_s": r["relative_velocity_km_s"],
                 "screening_window_hrs": r["screening_window_hrs"],
+                "risk_score": r.get("risk_score"),
+                "conjunction_risk_label": r.get("conjunction_risk_label"),
             }
             for r in rows
         ]
@@ -111,4 +116,4 @@ def get_conjunctions(
         return {"last_computed": last_computed, "hours": hours, "conjunctions": conjunctions}
 
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="Internal server error")
