@@ -119,6 +119,13 @@ html, body {
 }
 .nav-link:hover { color: var(--pure-white); }
 
+.nav-auth-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
 .nav-badge {
   background: var(--cosmic-purple);
   color: var(--pure-white);

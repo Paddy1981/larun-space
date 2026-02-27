@@ -10,6 +10,7 @@
  */
 
 import * as API from "./sattrack-api.js";
+import { getSession, signInWithGitHub, signOut, onAuthStateChange } from "./sattrack-auth.js";
 import {
   initMap,
   loadTles,
@@ -358,10 +359,35 @@ $("btn-clear").addEventListener("click", () => {
   renderSatList();
 });
 
+// ── Auth nav ──────────────────────────────────────────────────────────────────
+
+const authBtn = $("auth-btn");
+
+function updateAuthBtn(session) {
+  if (session?.user) {
+    const label = session.user.user_metadata?.user_name
+      || session.user.email
+      || "Account";
+    authBtn.textContent = label;
+    authBtn.title = "Sign out";
+    authBtn.onclick = () => signOut().catch(() => {});
+  } else {
+    authBtn.textContent = "Sign In";
+    authBtn.title = "Sign in with GitHub";
+    authBtn.onclick = () => signInWithGitHub().catch((e) => showToast(e.message, 4000));
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 async function init() {
   initMap("map");
+
+  // Auth: restore existing session then keep nav in sync
+  const session = await getSession();
+  updateAuthBtn(session);
+  onAuthStateChange(updateAuthBtn);
+
   await loadSatellites();
   await Promise.all([refreshWeather(), refreshConjunctions()]);
 

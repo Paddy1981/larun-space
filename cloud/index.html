@@ -25,6 +25,7 @@
     <a class="nav-link" href="https://larun.space/docs.html">Docs</a>
     <a class="nav-link" href="https://sattrack-production.up.railway.app/docs" target="_blank" rel="noopener">API</a>
     <a class="nav-link" href="https://larun.space" target="_blank" rel="noopener">larun.space ↗</a>
+    <button id="auth-btn" class="nav-link nav-auth-btn">Sign In</button>
   </nav>
 
   <!-- ── THREE-PANEL LAYOUT ──────────────────────────────────── -->
@@ -119,6 +120,7 @@
   <div class="toast" id="toast"></div>
 
   <!-- CDN libraries (non-module) — must load before ES modules -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqaY=" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/satellite.js@4.1.4/dist/satellite.min.js"></script>
