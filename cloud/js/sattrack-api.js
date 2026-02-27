@@ -3,7 +3,7 @@
  * All /v1/ endpoints on the Railway deployment.
  */
 
-const API_BASE = "https://web-production-5f0e4.up.railway.app";
+const API_BASE = "https://sattrack-production.up.railway.app";
 
 async function _get(path, params = {}) {
   const url = new URL(API_BASE + path);

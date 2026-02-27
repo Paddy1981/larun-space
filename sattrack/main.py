@@ -148,7 +148,6 @@ app.add_middleware(
     allow_origins=[
         "https://sattrack.larun.space",
         "https://larun.space",
-        "https://sattrack-production.up.railway.app",  # Railway-hosted frontend
         "http://localhost:3000",   # local dev
         "http://localhost:5500",   # local dev (Live Server)
         "http://127.0.0.1:5500",
