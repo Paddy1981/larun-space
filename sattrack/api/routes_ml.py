@@ -177,7 +177,7 @@ def get_decay_prediction_for_satellite(norad_id: int) -> dict[str, Any]:
                 "satellites(name)"
             )
             .eq("norad_id", norad_id)
-            .single()
+            .maybe_single()
             .execute()
         )
         if not result.data:
