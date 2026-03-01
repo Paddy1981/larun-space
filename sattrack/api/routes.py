@@ -20,7 +20,7 @@ import os
 from fastapi import APIRouter, Body, HTTPException, Header, Query, Request
 from typing import List
 
-from db.client import get_client
+from db.client import get_client, is_conn_err, reset_client
 
 try:
     from slowapi import Limiter
@@ -236,14 +236,27 @@ def get_bulk_tles(request: Request, norad_ids: List[int] = Body(...)) -> dict[st
         if not norad_ids:
             return {"count": 0, "data": []}
         norad_ids = norad_ids[:2000]
-        result = (
-            _db().table("tle_history")
-            .select("norad_id, tle_line1, tle_line2, epoch, is_current")
-            .in_("norad_id", norad_ids)
-            .eq("is_current", True)
-            .limit(2001)
-            .execute()
-        )
+
+        def _fetch():
+            return (
+                _db().table("tle_history")
+                .select("norad_id, tle_line1, tle_line2, epoch, is_current")
+                .in_("norad_id", norad_ids)
+                .eq("is_current", True)
+                .limit(2001)
+                .execute()
+            )
+
+        try:
+            result = _fetch()
+        except Exception as exc:
+            if is_conn_err(exc):
+                reset_client()
+                logger.info("get_bulk_tles: retrying after connection reset")
+                result = _fetch()
+            else:
+                raise
+
         return {
             "count": len(result.data),
             "data": result.data,
